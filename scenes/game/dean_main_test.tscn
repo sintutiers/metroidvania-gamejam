@@ -175,5 +175,3 @@ scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_q1sf4")
 autoplay = "default"
 frame_progress = 0.026022155
-
-[connection signal="body_entered" from="launch2" to="launch2" method="_on_body_entered"]

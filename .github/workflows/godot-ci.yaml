@@ -9,7 +9,7 @@ permissions:
 
 env:
   GODOT_VERSION: 4.7.1
-  EXPORT_NAME: b1t game jam cool dean version
+  EXPORT_NAME: metroidvania jam cool dean version
   PROJECT_PATH: .
 
 jobs:

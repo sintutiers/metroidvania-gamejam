@@ -62,6 +62,7 @@ var _dash_timer: float = 0.0
 var _dash_cooldown_timer: float = 0.0
 var _standing_shape_position: Vector2
 var _dash_direction: float = 1.0
+var _is_running: bool = false
 
 @onready var body: CharacterBody2D = get_parent() as CharacterBody2D
 @onready var state_chart: StateChart = %StateChart
@@ -74,6 +75,7 @@ var _dash_direction: float = 1.0
 
 
 func _physics_process(delta: float) -> void:
+	_is_running = Input.is_action_pressed("run")
 	if _dash_cooldown_timer > 0.0:
 		_dash_cooldown_timer -= delta
 
@@ -102,6 +104,9 @@ func _on_setup() -> void:
 
 func _on_wall_slide_entered() -> void:
 	_jump_buffer_timer = 0.0
+	if wall_jump_enabled:
+		_jumps_used = 0
+		_coyote_timer = coyote_time
 
 
 func _apply_horizontal(
@@ -187,7 +192,6 @@ func _update_jump_buffer(delta: float) -> void:
 
 func _on_ground_physics(delta: float) -> void:
 	var input_dir: float = Input.get_axis("move_left", "move_right")
-	var is_running: bool = Input.is_action_pressed("run")
 
 	_coyote_timer = coyote_time
 	_update_jump_buffer(delta)
@@ -200,14 +204,14 @@ func _on_ground_physics(delta: float) -> void:
 		state_chart.send_event(&"crouch")
 		return
 
-	_apply_horizontal(delta, input_dir, is_running)
+	_apply_horizontal(delta, input_dir, _is_running)
 
-	if _try_jump(is_running):
+	if _try_jump(_is_running):
 		state_chart.send_event(&"jump")
 		return
 
 	body.move_and_slide()
-	_update_current_motion(true, input_dir, is_running)
+	_update_current_motion(true, input_dir, _is_running)
 	if not body.is_on_floor():
 		state_chart.send_event(&"fall")
 
@@ -259,9 +263,6 @@ func _on_wall_slide_physics(delta: float) -> void:
 		body.velocity.y + (base_gravity + fall_gravity_offset) * delta,
 		wall_slide_speed,
 	)
-	if wall_jump_enabled:
-		_jumps_used = 0
-		_coyote_timer = coyote_time
 	wall_slid.emit()
 	_update_jump_buffer(delta)
 
@@ -302,11 +303,7 @@ func _on_dash_physics(delta: float) -> void:
 		return
 
 	if body.is_on_floor():
-		_update_current_motion(
-			true,
-			Input.get_axis("move_left", "move_right"),
-			Input.is_action_pressed("run"),
-		)
+		_update_current_motion(true, Input.get_axis("move_left", "move_right"), _is_running)
 		landed.emit(_current_motion)
 		state_chart.send_event(&"land")
 		ground_motion_changed.emit(_current_motion)
@@ -349,11 +346,7 @@ func _on_crouch_exited() -> void:
 func _on_launch_landed() -> void:
 	_jumps_used = 0
 	_coyote_timer = coyote_time
-	_update_current_motion(
-		true,
-		Input.get_axis("move_left", "move_right"),
-		Input.is_action_pressed("run"),
-	)
+	_update_current_motion(true, Input.get_axis("move_left", "move_right"), _is_running)
 	landed.emit(_current_motion)
 	state_chart.send_event(&"land")
 	ground_motion_changed.emit(_current_motion)
