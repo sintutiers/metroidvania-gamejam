@@ -1,23 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://byh6mcqhp6ky2"]
+[gd_scene format=3 uid="uid://byh6mcqhp6ky2"]
 
 [ext_resource type="PackedScene" uid="uid://bddhmoj1g5lv3" path="res://godot_state_charts_examples/performance_test/hundred_state_charts.tscn" id="1_1oume"]
 
-[node name="thousand_state_charts" type="Node2D"]
+[node name="thousand_state_charts" type="Node2D" unique_id=200598077]
 
-[node name="hundred_state_charts" parent="." instance=ExtResource("1_1oume")]
+[node name="hundred_state_charts" parent="." unique_id=1626304829 instance=ExtResource("1_1oume")]
 
-[node name="hundred_state_charts2" parent="." instance=ExtResource("1_1oume")]
+[node name="hundred_state_charts2" parent="." unique_id=703763501 instance=ExtResource("1_1oume")]
 
-[node name="hundred_state_charts3" parent="." instance=ExtResource("1_1oume")]
+[node name="hundred_state_charts3" parent="." unique_id=1190167213 instance=ExtResource("1_1oume")]
 
-[node name="hundred_state_charts4" parent="." instance=ExtResource("1_1oume")]
+[node name="hundred_state_charts4" parent="." unique_id=1823805178 instance=ExtResource("1_1oume")]
 
-[node name="hundred_state_charts5" parent="." instance=ExtResource("1_1oume")]
+[node name="hundred_state_charts5" parent="." unique_id=439881666 instance=ExtResource("1_1oume")]
 
-[node name="hundred_state_charts6" parent="." instance=ExtResource("1_1oume")]
+[node name="hundred_state_charts6" parent="." unique_id=1252756611 instance=ExtResource("1_1oume")]
 
-[node name="hundred_state_charts7" parent="." instance=ExtResource("1_1oume")]
+[node name="hundred_state_charts7" parent="." unique_id=2143735076 instance=ExtResource("1_1oume")]
 
-[node name="hundred_state_charts8" parent="." instance=ExtResource("1_1oume")]
+[node name="hundred_state_charts8" parent="." unique_id=496365516 instance=ExtResource("1_1oume")]
 
-[node name="hundred_state_charts9" parent="." instance=ExtResource("1_1oume")]
+[node name="hundred_state_charts9" parent="." unique_id=839432775 instance=ExtResource("1_1oume")]

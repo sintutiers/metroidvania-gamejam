@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://djfiocbje8q1s"]
+[gd_scene format=3 uid="uid://cx86p0trnt0t7"]
 
 [ext_resource type="Script" path="res://scenes/menus/options_menu/mini_options_menu.gd" id="1_7t2pa"]
 [ext_resource type="PackedScene" path="res://addons/maaacks_game_template/base/nodes/menus/options_menu/option_control/slider_option_control.tscn" id="2_x0e25"]

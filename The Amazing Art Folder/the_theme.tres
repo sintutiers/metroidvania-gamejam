@@ -1,7 +1,7 @@
 [gd_resource type="Theme" format=3 uid="uid://dudh2k1jjvgdk"]
 
-[ext_resource type="Texture2D" uid="uid://m2ta7oqlwy3f" path="res://assets/material/atlas_texture.tres" id="2_5sm08"]
-[ext_resource type="StyleBox" uid="uid://db1836yw6vlr" path="res://assets/material/style_box.tres" id="2_wrsb0"]
+[ext_resource type="Texture2D" uid="uid://m2ta7oqlwy3f" path="res://The Amazing Art Folder/atlas_texture.tres" id="2_5sm08"]
+[ext_resource type="StyleBox" uid="uid://db1836yw6vlr" path="res://The Amazing Art Folder/style_box.tres" id="2_wrsb0"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fijtp"]
 
@@ -29,7 +29,7 @@ texture_margin_bottom = 1.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8t5h1"]
 
-[sub_resource type="Image" id="Image_mnlgb"]
+[sub_resource type="Image" id="Image_ussu0"]
 data = {
 "data": PackedByteArray(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
 "format": "RGBA8",
@@ -39,7 +39,7 @@ data = {
 }
 
 [sub_resource type="ImageTexture" id="ImageTexture_cytoj"]
-image = SubResource("Image_mnlgb")
+image = SubResource("Image_ussu0")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lkf7m"]
 
