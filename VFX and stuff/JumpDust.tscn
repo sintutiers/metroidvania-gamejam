@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://cnfeymuwv6c4q"]
+
+[ext_resource type="Script" uid="uid://xhaaeb64ferr" path="res://scripts/one_shot_particles.gd" id="1_q4ngu"]
+
+[node name="Node2D" type="Node2D" unique_id=828356419]
+
+[node name="JumpDust" type="CPUParticles2D" parent="." unique_id=1719739957]
+position = Vector2(-3, 19)
+lifetime = 0.5
+speed_scale = 2.0
+emission_shape = 1
+emission_sphere_radius = 1.0
+gravity = Vector2(-20, -1)
+orbit_velocity_min = -0.1
+color = Color(0.06291681, 0.062916815, 0.06291681, 1)
+script = ExtResource("1_q4ngu")

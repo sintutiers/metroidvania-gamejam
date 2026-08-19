@@ -23,6 +23,8 @@
 [ext_resource type="Texture2D" uid="uid://biwl0swru74qt" path="res://The Amazing Art and Sound Folder/player wall slide 48x48.png" id="8_knjtp"]
 [ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="9_3vq1g"]
 [ext_resource type="Script" uid="uid://ccv1q2cdjiacc" path="res://scripts/components/launch_component.gd" id="11_mr2x2"]
+[ext_resource type="Script" uid="uid://c04nw515cb8mx" path="res://scripts/components/vfx_component.gd" id="19_1rckg"]
+[ext_resource type="PackedScene" uid="uid://cnfeymuwv6c4q" path="res://VFX and stuff/JumpDust.tscn" id="20_vrrwq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_j148u"]
 atlas = ExtResource("1_ey0fj")
@@ -738,6 +740,15 @@ metadata/_custom_type_script = "uid://b81q8i2kndqdf"
 [node name="AnimationComponent" type="Node" parent="." unique_id=1124669972]
 script = ExtResource("6_dsw4c")
 metadata/_custom_type_script = "uid://b0bul4sdikiw3"
+
+[node name="VFXComponent" type="Node" parent="." unique_id=1047895015]
+script = ExtResource("19_1rckg")
+jump_dust = ExtResource("20_vrrwq")
+dash_trail = ExtResource("20_vrrwq")
+run_dust_scene = ExtResource("20_vrrwq")
+run_dust_mode = 1
+footstep_interval = 0.2
+metadata/_custom_type_script = "uid://c04nw515cb8mx"
 
 [node name="AudioComponent" type="Node" parent="." unique_id=663669822]
 script = ExtResource("7_0eoyi")
