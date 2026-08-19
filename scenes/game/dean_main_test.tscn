@@ -2,15 +2,15 @@
 
 [ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="1_caqox"]
 [ext_resource type="PackedScene" uid="uid://07mfr2h0v760" path="res://scenes/game/player.tscn" id="2_y1rhm"]
-[ext_resource type="Texture2D" uid="uid://b1hhqiedxtx81" path="res://The Amazing Art Folder/entity1_grief.png" id="3_yakda"]
-[ext_resource type="Texture2D" uid="uid://sbysu1agubiy" path="res://The Amazing Art Folder/erinnewpath.png" id="5_tqpjq"]
+[ext_resource type="Texture2D" uid="uid://b1hhqiedxtx81" path="res://The Amazing Art and Sound Folder/entity1_grief.png" id="3_yakda"]
+[ext_resource type="Texture2D" uid="uid://sbysu1agubiy" path="res://The Amazing Art and Sound Folder/erinnewpath.png" id="5_tqpjq"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="6_o3iea"]
 [ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="7_2xufa"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="8_5nru6"]
 [ext_resource type="Script" uid="uid://br8ja4246nfyg" path="res://scripts/jumpad.gd" id="9_h3gf6"]
-[ext_resource type="Texture2D" uid="uid://dynhqydehk1ve" path="res://The Amazing Art Folder/jumpTiles(jumpTileUp) _0001.png" id="9_ibjn2"]
-[ext_resource type="Texture2D" uid="uid://0es5efbo4548" path="res://The Amazing Art Folder/eye.png" id="10_aew1q"]
-[ext_resource type="Texture2D" uid="uid://dwg61bpcy6uv3" path="res://The Amazing Art Folder/table1 duke.png" id="10_ntcbd"]
+[ext_resource type="Texture2D" uid="uid://dynhqydehk1ve" path="res://The Amazing Art and Sound Folder/jumpTiles(jumpTileUp) _0001.png" id="9_ibjn2"]
+[ext_resource type="Texture2D" uid="uid://0es5efbo4548" path="res://The Amazing Art and Sound Folder/eye.png" id="10_aew1q"]
+[ext_resource type="Texture2D" uid="uid://dwg61bpcy6uv3" path="res://The Amazing Art and Sound Folder/table1 duke.png" id="10_ntcbd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
 size = Vector2(50, 50)
@@ -138,7 +138,6 @@ shape = SubResource("RectangleShape2D_q1sf4")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1204252702]
 physics_interpolation_mode = 1
-top_level = true
 position = Vector2(83, 202)
 editor_draw_limits = true
 

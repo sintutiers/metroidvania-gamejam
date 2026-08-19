@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bf83rou4binbl"
+path="res://.godot/imported/deathSound.mp3-203f2469d698f3f25ba234b7b3984a6e.mp3str"
+
+[deps]
+
+source_file="res://The Amazing Art and Sound Folder/deathSound.mp3"
+dest_files=["res://.godot/imported/deathSound.mp3-203f2469d698f3f25ba234b7b3984a6e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
