@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://dynhqydehk1ve" path="res://The Amazing Art and Sound Folder/jumpTiles(jumpTileUp) _0001.png" id="9_ibjn2"]
 [ext_resource type="Texture2D" uid="uid://0es5efbo4548" path="res://The Amazing Art and Sound Folder/eye.png" id="10_aew1q"]
 [ext_resource type="Texture2D" uid="uid://dwg61bpcy6uv3" path="res://The Amazing Art and Sound Folder/table1 duke.png" id="10_ntcbd"]
+[ext_resource type="Texture2D" uid="uid://b7o7rfw407om6" path="res://The Amazing Art and Sound Folder/erin_bordersprites.png" id="12_3xwlj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
 size = Vector2(50, 50)
@@ -51,6 +52,9 @@ animations = [{
 "name": &"default",
 "speed": 1.0
 }]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q1sf4"]
+atlas = ExtResource("12_3xwlj")
 
 [node name="DeanMainTest" type="Node2D" unique_id=1756909701]
 
@@ -138,6 +142,7 @@ shape = SubResource("RectangleShape2D_q1sf4")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1204252702]
 physics_interpolation_mode = 1
+top_level = true
 position = Vector2(83, 202)
 editor_draw_limits = true
 
@@ -190,3 +195,11 @@ autoplay = "default"
 frame_progress = 0.026022155
 
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=1639397260]
+repeat_size = Vector2(32, 256)
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=463110223]
+texture = SubResource("AtlasTexture_q1sf4")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Parallax2D" unique_id=1590720738]
+position = Vector2(225, 0)
+texture = SubResource("AtlasTexture_q1sf4")
