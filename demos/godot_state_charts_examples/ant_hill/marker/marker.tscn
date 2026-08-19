@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://dy5xrmjffewnk"]
+
+[ext_resource type="Texture2D" uid="uid://b3k7i5rrn5hhl" path="res://demos/godot_state_charts_examples/ant_hill/marker/circle_white.svg" id="1_2vg4s"]
+[ext_resource type="Script" uid="uid://dikixfhsqssxf" path="res://demos/godot_state_charts_examples/ant_hill/marker/marker.gd" id="2_2b6iy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0xsut"]
+
+[node name="Node2D" type="Node2D" unique_id=373436124]
+script = ExtResource("2_2b6iy")
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=2127330982]
+texture_filter = 1
+rotation = 1.5708
+texture = ExtResource("1_2vg4s")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=941589243]
+metadata/owner = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=411947795]
+shape = SubResource("CircleShape2D_0xsut")
