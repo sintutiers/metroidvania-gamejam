@@ -97,8 +97,6 @@ func _on_ready() -> void:
 	crouch_state.state_entered.connect(_on_crouch_entered)
 	crouch_state.state_physics_processing.connect(_on_crouch_physics)
 	crouch_state.state_exited.connect(_on_crouch_exited)
-	if launch_component:
-		track(launch_component.landed, _on_launch_landed)
 
 
 func _on_setup() -> void:
@@ -107,6 +105,8 @@ func _on_setup() -> void:
 	launch_component = get_component(LaunchComponent, false) as LaunchComponent
 	if collision_shape:
 		_standing_shape_position = collision_shape.position
+	if launch_component:
+		track(launch_component.landed, _on_launch_landed)
 
 
 func _on_wall_slide_entered() -> void:

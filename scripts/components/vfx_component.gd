@@ -27,8 +27,8 @@ enum RunDustMode {
 @export var wall_dust_offset: Vector2 = Vector2.ZERO
 
 var entity: Node2D
-var _run_dust_instance: CPUParticles2D
-var _wall_dust_instance: CPUParticles2D
+var _run_dust: CPUParticles2D
+var _wall_dust: CPUParticles2D
 var _footstep_timer: float = 0.0
 var _is_running_motion: bool = false
 
@@ -49,6 +49,7 @@ func _on_setup() -> void:
 	var movement := get_component(MovementBase, false) as MovementBase
 	if movement:
 		track(movement.ground_motion_changed, _on_ground_motion_changed)
+
 	var sideways := movement as SidewaysMovementComponent
 	if sideways:
 		track(sideways.jumped, _on_jumped)
@@ -58,16 +59,17 @@ func _on_setup() -> void:
 		track(sideways.dashed, _on_dashed)
 		track(sideways.wall_slid, _on_wall_slid)
 		track(sideways.fell_from_wall, _on_wall_dust_end)
+
 	if run_dust_scene and run_dust_mode == RunDustMode.CONTINUOUS:
-		_run_dust_instance = _spawn_persistent(run_dust_scene, run_dust_offset)
+		_run_dust = _spawn_persistent(run_dust_scene, run_dust_offset)
 	if wall_dust_scene:
-		_wall_dust_instance = _spawn_persistent(wall_dust_scene, wall_dust_offset)
+		_wall_dust = _spawn_persistent(wall_dust_scene, wall_dust_offset)
 
 
 func _on_ground_motion_changed(motion: StringName) -> void:
 	_is_running_motion = motion == &"run" or motion == &"walk"
-	if _run_dust_instance:
-		_run_dust_instance.emitting = _is_running_motion
+	if _run_dust:
+		_run_dust.emitting = _is_running_motion
 	if not _is_running_motion:
 		_footstep_timer = 0.0
 
@@ -82,8 +84,8 @@ func _on_extra_jumped(_jump_number: int) -> void:
 
 func _on_landed(_motion: StringName) -> void:
 	_spawn_one_shot(land_dust, land_dust_offset)
-	if _wall_dust_instance:
-		_wall_dust_instance.emitting = false
+	if _wall_dust:
+		_wall_dust.emitting = false
 
 
 func _on_dashed() -> void:
@@ -91,13 +93,13 @@ func _on_dashed() -> void:
 
 
 func _on_wall_slid() -> void:
-	if _wall_dust_instance:
-		_wall_dust_instance.emitting = true
+	if _wall_dust:
+		_wall_dust.emitting = true
 
 
 func _on_wall_dust_end() -> void:
-	if _wall_dust_instance:
-		_wall_dust_instance.emitting = false
+	if _wall_dust:
+		_wall_dust.emitting = false
 
 
 func _spawn_one_shot(scene: PackedScene, offset: Vector2 = Vector2.ZERO) -> void:
@@ -105,7 +107,7 @@ func _spawn_one_shot(scene: PackedScene, offset: Vector2 = Vector2.ZERO) -> void
 		return
 	var instance := scene.instantiate() as Node2D
 	if not instance:
-		push_error("VFXComponent: root not Node2D.")
+		push_error("VFXComponent: expected Node2D root")
 		return
 	get_tree().current_scene.add_child(instance)
 	instance.global_position = entity.global_position + offset
@@ -114,13 +116,16 @@ func _spawn_one_shot(scene: PackedScene, offset: Vector2 = Vector2.ZERO) -> void
 func _spawn_persistent(scene: PackedScene, offset: Vector2 = Vector2.ZERO) -> CPUParticles2D:
 	var instance := scene.instantiate() as Node2D
 	if not instance:
-		push_error("VFXComponent: root not Node2D.")
+		push_error("VFXComponent: expected Node2D root")
 		return null
+
 	entity.add_child(instance)
 	instance.position = offset
+
 	var particles := instance.find_child("*", false, false) as CPUParticles2D
 	if not particles:
-		push_error("VFXComponent: no CPUParticles2D child.")
+		push_error("VFXComponent: missing CPUParticles2D child")
 		return null
+
 	particles.emitting = false
 	return particles
