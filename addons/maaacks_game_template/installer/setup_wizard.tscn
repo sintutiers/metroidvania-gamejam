@@ -11,6 +11,7 @@ visible = true
 ok_button_text = "Done"
 dialog_autowrap = true
 script = ExtResource("1_jck5m")
+check_version_scene_path = "res://addons/maaacks_game_template/installer/check_plugin_version.tscn"
 input_prompts_directory_path = "res://assets/kenney_input-prompts/"
 issues_url = "https://github.com/Maaack/Godot-Game-Template/issues"
 
@@ -77,23 +78,6 @@ layout_mode = 2
 disabled = true
 text = "Run"
 
-[node name="UpdatePathsLabel" type="Label" parent="VBoxContainer/StepsContainer" unique_id=641573803]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Update Project Paths *"
-
-[node name="UpdatePathsCheckBox" type="CheckBox" parent="VBoxContainer/StepsContainer" unique_id=818510729]
-unique_name_in_owner = true
-layout_mode = 2
-disabled = true
-
-[node name="UpdatePathsButton" type="Button" parent="VBoxContainer/StepsContainer" unique_id=601414355]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-disabled = true
-text = "Run"
-
 [node name="DeleteLabel" type="Label" parent="VBoxContainer/StepsContainer" unique_id=1855034900]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -105,6 +89,23 @@ layout_mode = 2
 disabled = true
 
 [node name="DeleteButton" type="Button" parent="VBoxContainer/StepsContainer" unique_id=391293741]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+disabled = true
+text = "Run"
+
+[node name="UpdatePathsLabel" type="Label" parent="VBoxContainer/StepsContainer" unique_id=641573803]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Update Autoload Paths *"
+
+[node name="UpdatePathsCheckBox" type="CheckBox" parent="VBoxContainer/StepsContainer" unique_id=818510729]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+
+[node name="UpdatePathsButton" type="Button" parent="VBoxContainer/StepsContainer" unique_id=601414355]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2

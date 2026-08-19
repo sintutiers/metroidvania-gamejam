@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bn7rk8ynv4i8s"]
+[gd_scene format=3 uid="uid://bvxleselrw2fp"]
 
 [ext_resource type="Script" path="res://scenes/credits/scrollable_credits.gd" id="1_jnbjt"]
 [ext_resource type="PackedScene" path="res://scenes/credits/credits_label.tscn" id="2_35kdw"]

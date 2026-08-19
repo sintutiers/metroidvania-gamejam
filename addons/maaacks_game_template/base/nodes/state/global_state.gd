@@ -27,8 +27,6 @@ static func _load_current_state() -> void:
 		current = GlobalStateData.new()
 
 static func open() -> void:
-	if current is GlobalStateData:
-		return
 	_load_current_state()
 	_log_opened()
 	_log_version()
@@ -39,15 +37,14 @@ static func save() -> void:
 		ResourceSaver.save(current, SAVE_STATE_PATH)
 
 static func has_state(state_key : String) -> bool:
-	open()
+	if current is not GlobalStateData: return false
 	return current.has_state(state_key)
 
 static func get_or_create_state(state_key : String, state_type_path : String) -> Resource:
-	open()
+	if current is not GlobalStateData: return
 	return current.get_or_create_state(state_key, state_type_path)
 
 static func reset() -> void:
-	if current is not GlobalStateData:
-		return
+	if current is not GlobalStateData: return
 	current.states.clear()
 	save()

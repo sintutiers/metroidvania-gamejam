@@ -3,16 +3,17 @@
 [ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="1_caqox"]
 [ext_resource type="PackedScene" uid="uid://07mfr2h0v760" path="res://scenes/game/player.tscn" id="2_y1rhm"]
 [ext_resource type="Texture2D" uid="uid://b1hhqiedxtx81" path="res://The Amazing Art Folder/entity1_grief.png" id="3_yakda"]
-[ext_resource type="Script" uid="uid://busd3yfk5p1mx" path="res://addons/godot-rapier2d/custom_nodes/rapier_static_body_2d.gd" id="4_7uja2"]
 [ext_resource type="Texture2D" uid="uid://sbysu1agubiy" path="res://The Amazing Art Folder/erinnewpath.png" id="5_tqpjq"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="6_o3iea"]
 [ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="7_2xufa"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="8_5nru6"]
 [ext_resource type="Script" uid="uid://br8ja4246nfyg" path="res://scripts/jumpad.gd" id="9_h3gf6"]
+[ext_resource type="Texture2D" uid="uid://dynhqydehk1ve" path="res://The Amazing Art Folder/jumpTiles(jumpTileUp) _0001.png" id="9_ibjn2"]
 [ext_resource type="Texture2D" uid="uid://0es5efbo4548" path="res://The Amazing Art Folder/eye.png" id="10_aew1q"]
+[ext_resource type="Texture2D" uid="uid://dwg61bpcy6uv3" path="res://The Amazing Art Folder/table1 duke.png" id="10_ntcbd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
-size = Vector2(96, 96)
+size = Vector2(50, 50)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q1sf4"]
 size = Vector2(2000, 20)
@@ -91,6 +92,7 @@ texture = ExtResource("3_yakda")
 position = Vector2(231, 274)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D4" unique_id=1706646764]
+position = Vector2(0, 5)
 shape = SubResource("RectangleShape2D_nd4ja")
 
 [node name="Erinnewpath" type="Sprite2D" parent="StaticBody2D4" unique_id=729220784]
@@ -105,39 +107,40 @@ shape = SubResource("RectangleShape2D_nd4ja")
 [node name="Erinnewpath" type="Sprite2D" parent="StaticBody2D2" unique_id=1860124635]
 texture = ExtResource("3_yakda")
 
-[node name="RapierStaticBody2D" type="StaticBody2D" parent="." unique_id=75244554]
+[node name="StaticBody2D5" type="StaticBody2D" parent="." unique_id=1954912367]
 position = Vector2(96, 412)
 disable_mode = 1
-script = ExtResource("4_7uja2")
-metadata/_custom_type_script = "uid://busd3yfk5p1mx"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RapierStaticBody2D" unique_id=282538046]
-shape = SubResource("RectangleShape2D_nd4ja")
-
-[node name="Erinnewpath" type="Sprite2D" parent="RapierStaticBody2D" unique_id=229806752]
+[node name="Erinnewpath" type="Sprite2D" parent="StaticBody2D5" unique_id=229806752]
+scale = Vector2(0.548, 0.548)
 texture = ExtResource("5_tqpjq")
 
-[node name="RapierStaticBody2D2" type="StaticBody2D" parent="." unique_id=851472778]
-script = ExtResource("4_7uja2")
-metadata/_custom_type_script = "uid://busd3yfk5p1mx"
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D5" unique_id=282538046]
+shape = SubResource("RectangleShape2D_nd4ja")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RapierStaticBody2D2" unique_id=636172064]
+[node name="StaticBody2D6" type="StaticBody2D" parent="." unique_id=1961082242]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D6" unique_id=636172064]
 position = Vector2(619, 639)
 shape = SubResource("RectangleShape2D_q1sf4")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="RapierStaticBody2D2" unique_id=267463628]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D6" unique_id=267463628]
 position = Vector2(0, 259)
 shape = SubResource("RectangleShape2D_1roue")
 
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="RapierStaticBody2D2" unique_id=1677667027]
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D6" unique_id=1677667027]
 position = Vector2(1174, 270)
 shape = SubResource("RectangleShape2D_tnr8i")
 
-[node name="CollisionShape2D4" type="CollisionShape2D" parent="RapierStaticBody2D2" unique_id=1310883855]
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="StaticBody2D6" unique_id=1310883855]
 position = Vector2(569, 3)
 shape = SubResource("RectangleShape2D_q1sf4")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1204252702]
+physics_interpolation_mode = 1
+top_level = true
+position = Vector2(83, 202)
+editor_draw_limits = true
 
 [node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1802143010]
 process_priority = 300
@@ -152,6 +155,7 @@ script = ExtResource("7_2xufa")
 follow_mode = 1
 follow_target = NodePath("../Player")
 tween_resource = SubResource("Resource_5ix0u")
+draw_limits = true
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
 
 [node name="launch" type="Area2D" parent="." unique_id=141474343]
@@ -161,10 +165,20 @@ script = ExtResource("9_h3gf6")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="launch" unique_id=458524574]
 shape = SubResource("RectangleShape2D_lfwmx")
 
+[node name="JumpTiles(jumpTileUp)0001" type="Sprite2D" parent="launch" unique_id=761304634]
+position = Vector2(2.0980835e-05, 0)
+scale = Vector2(7.846151, 1)
+texture = ExtResource("9_ibjn2")
+
 [node name="launch2" type="Area2D" parent="." unique_id=761252793]
 position = Vector2(800, 600)
 script = ExtResource("9_h3gf6")
 require_input = true
+
+[node name="Table1Duke" type="Sprite2D" parent="launch2" unique_id=1891764442]
+position = Vector2(2.4999943, 0)
+scale = Vector2(3.961539, 1)
+texture = ExtResource("10_ntcbd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="launch2" unique_id=920775912]
 shape = SubResource("RectangleShape2D_lfwmx")
@@ -175,3 +189,5 @@ scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_q1sf4")
 autoplay = "default"
 frame_progress = 0.026022155
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1639397260]
