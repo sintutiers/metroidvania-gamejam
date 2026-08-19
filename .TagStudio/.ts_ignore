@@ -31,11 +31,14 @@
 README
 
 /addons/
+/addons
+addons
 /demo/
 /Extensions/
 /godot_state_charts_examples/
 /SampleProject/
 .git/
+
 
 
 
