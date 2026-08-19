@@ -69,10 +69,11 @@ enabled=PackedStringArray("res://addons/GDQuest_GDScript_formatter/plugin.cfg", 
 [file_customization]
 
 folder_colors={
-"res://SampleProject/": "gray",
+"res://SampleProject/": "red",
 "res://addons/": "gray",
-"res://demo/": "gray",
-"res://godot_state_charts_examples/": "gray"
+"res://demos/": "gray",
+"res://demos/debug menu example/": "gray",
+"res://demos/godot_state_charts_examples/": "gray"
 }
 
 [filesystem]
