@@ -2,8 +2,8 @@
 class_name SidewaysMovementComponent
 extends MovementBase
 
-signal jumped
-signal double_jumped
+signal jumped(jump_number: int)
+signal wall_jumped
 signal extra_jumped(jump_number: int)
 signal landed(motion: StringName)
 signal wall_slid
@@ -33,11 +33,14 @@ signal dash_ended
 @export_group("Wall")
 @export var wall_slide_speed: float = 100.0
 @export var wall_jump_enabled: bool = true
+@export var wall_jump_push_speed: float = 300.0
+@export var wall_jump_input_lock_time: float = 0.1
 
 @export_group("Dash")
 @export var dash_speed: float = 800.0
 @export var dash_duration: float = 0.2
 @export var dash_cooldown: float = 0.5
+@export var max_dashes: int = 1
 @export var crouch_collision_scale: float = 0.5
 @export var crouch_shape_y_offset: float = 8.0
 
@@ -60,9 +63,11 @@ var _jumps_used: int = 0
 var _current_motion: StringName = &"idle"
 var _dash_timer: float = 0.0
 var _dash_cooldown_timer: float = 0.0
+var _dashes_used: int = 0
 var _standing_shape_position: Vector2
 var _dash_direction: float = 1.0
 var _is_running: bool = false
+var _wall_jump_lock_timer: float = 0.0
 
 @onready var body: CharacterBody2D = get_parent() as CharacterBody2D
 @onready var state_chart: StateChart = %StateChart
@@ -78,6 +83,8 @@ func _physics_process(delta: float) -> void:
 	_is_running = Input.is_action_pressed("run")
 	if _dash_cooldown_timer > 0.0:
 		_dash_cooldown_timer -= delta
+	if _wall_jump_lock_timer > 0.0:
+		_wall_jump_lock_timer -= delta
 
 
 func _on_ready() -> void:
@@ -115,6 +122,8 @@ func _apply_horizontal(
 	is_running: bool,
 	speed_multiplier: float = 1.0,
 ) -> void:
+	if _wall_jump_lock_timer > 0.0:
+		return
 	if input_dir == 0.0:
 		body.velocity.x = move_toward(body.velocity.x, 0.0, move_friction * delta)
 		if _was_moving and is_zero_approx(body.velocity.x):
@@ -152,7 +161,7 @@ func _update_current_motion(on_ground: bool, input_dir: float, is_running: bool)
 		ground_motion_changed.emit(motion)
 
 
-func _try_jump(is_running: bool) -> bool:
+func _try_jump(is_running: bool, is_wall_jump: bool = false) -> bool:
 	var can_jump: bool = _coyote_timer > 0.0 or _jumps_used < max_jumps
 	if _jump_buffer_timer <= 0.0 or not can_jump:
 		return false
@@ -161,24 +170,28 @@ func _try_jump(is_running: bool) -> bool:
 	var rise_gravity: float = jump_gravity if jump_gravity > 0.0 else base_gravity
 	body.velocity.y = -sqrt(2.0 * rise_gravity * height)
 
-	var speed_ratio: float = clampf(absf(body.velocity.x) / run_speed, 0.0, 1.0)
-	body.velocity.x *= lerpf(1.0, speed_based_jump_distance_mult, speed_ratio)
+	if is_wall_jump:
+		body.velocity.x = body.get_wall_normal().x * wall_jump_push_speed
+		_wall_jump_lock_timer = wall_jump_input_lock_time
+	else:
+		var speed_ratio: float = clampf(absf(body.velocity.x) / run_speed, 0.0, 1.0)
+		body.velocity.x *= lerpf(1.0, speed_based_jump_distance_mult, speed_ratio)
 
 	_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
 	_jumps_used += 1
 
-	if _jumps_used == 1:
-		jumped.emit()
-	elif _jumps_used == 2:
-		double_jumped.emit()
+	if is_wall_jump:
+		wall_jumped.emit()
+	elif _jumps_used <= 2:
+		jumped.emit(_jumps_used)
 	else:
 		extra_jumped.emit(_jumps_used)
 	return true
 
 
 func _try_dash() -> bool:
-	if _dash_cooldown_timer > 0.0:
+	if _dash_cooldown_timer > 0.0 or _dashes_used >= max_dashes:
 		return false
 	return Input.is_action_just_pressed("dash")
 
@@ -188,6 +201,15 @@ func _update_jump_buffer(delta: float) -> void:
 		_jump_buffer_timer = jump_buffer_time
 	else:
 		_jump_buffer_timer -= delta
+
+
+func _land(reset_jumps: bool = false) -> void:
+	_dashes_used = 0
+	if reset_jumps:
+		_jumps_used = 0
+	landed.emit(_current_motion)
+	state_chart.send_event(&"land")
+	ground_motion_changed.emit(_current_motion)
 
 
 func _on_ground_physics(delta: float) -> void:
@@ -248,10 +270,8 @@ func _on_air_physics(delta: float) -> void:
 	_update_current_motion(false, input_dir, false)
 
 	if not was_grounded and body.is_on_floor():
-		landed.emit(_current_motion)
+		_land(true)
 		_jumps_used = 0
-		state_chart.send_event(&"land")
-		ground_motion_changed.emit(_current_motion)
 		return
 
 	if body.is_on_wall_only() and input_dir != 0.0:
@@ -266,7 +286,7 @@ func _on_wall_slide_physics(delta: float) -> void:
 	wall_slid.emit()
 	_update_jump_buffer(delta)
 
-	if wall_jump_enabled and _try_jump(false):
+	if wall_jump_enabled and _try_jump(false, true):
 		state_chart.send_event(&"jump")
 		return
 
@@ -277,9 +297,7 @@ func _on_wall_slide_physics(delta: float) -> void:
 	body.move_and_slide()
 
 	if not was_grounded and body.is_on_floor():
-		landed.emit(_current_motion)
-		state_chart.send_event(&"land")
-		ground_motion_changed.emit(_current_motion)
+		_land()
 		return
 
 	if not body.is_on_wall():
@@ -290,6 +308,7 @@ func _on_wall_slide_physics(delta: float) -> void:
 func _on_dash_entered() -> void:
 	_dash_timer = dash_duration
 	_dash_cooldown_timer = dash_cooldown
+	_dashes_used += 1
 	_dash_direction = facing_component.facing.x if not is_zero_approx(facing_component.facing.x) else 1.0
 	dashed.emit()
 
@@ -304,9 +323,7 @@ func _on_dash_physics(delta: float) -> void:
 
 	if body.is_on_floor():
 		_update_current_motion(true, Input.get_axis("move_left", "move_right"), _is_running)
-		landed.emit(_current_motion)
-		state_chart.send_event(&"land")
-		ground_motion_changed.emit(_current_motion)
+		_land()
 	else:
 		dash_ended.emit()
 		state_chart.send_event(&"fall")
@@ -344,9 +361,6 @@ func _on_crouch_exited() -> void:
 
 
 func _on_launch_landed() -> void:
-	_jumps_used = 0
 	_coyote_timer = coyote_time
 	_update_current_motion(true, Input.get_axis("move_left", "move_right"), _is_running)
-	landed.emit(_current_motion)
-	state_chart.send_event(&"land")
-	ground_motion_changed.emit(_current_motion)
+	_land(true)

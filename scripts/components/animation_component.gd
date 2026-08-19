@@ -20,11 +20,11 @@ func _on_setup() -> void:
 	var sideways := movement as SidewaysMovementComponent
 	if sideways:
 		track(sideways.jumped, _on_jumped)
-		track(sideways.double_jumped, _on_double_jumped)
+		track(sideways.wall_jumped, _on_wall_jumped)
 		track(sideways.extra_jumped, _on_extra_jumped)
 		track(sideways.landed, _on_landed)
 		track(sideways.wall_slid, _on_wall_slid)
-		track(sideways.fell_from_wall, _on_double_jumped)
+		track(sideways.fell_from_wall, _on_airspin)
 		track(sideways.dashed, _on_dashed)
 		track(sideways.dash_ended, _on_dash_ended)
 	var launch := get_component(LaunchComponent, false) as LaunchComponent
@@ -48,12 +48,17 @@ func _on_ground_motion_changed(motion: StringName) -> void:
 	sprite.play(motion)
 
 
-func _on_jumped() -> void:
+func _on_jumped(jump_number: int) -> void:
+	_is_airborne = true
+	sprite.play(&"jump" if jump_number == 1 else &"airspin")
+
+
+func _on_wall_jumped() -> void:
 	_is_airborne = true
 	sprite.play(&"jump")
 
 
-func _on_double_jumped() -> void:
+func _on_airspin() -> void:
 	_is_airborne = true
 	sprite.play(&"airspin")
 
