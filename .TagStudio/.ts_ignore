@@ -33,11 +33,25 @@ README
 /addons/
 /addons
 addons
+
 /demo/
+/demo
+demo/
+
 /Extensions/
+/Extensions
+Extensions/
+
 /godot_state_charts_examples/
+/godot_state_charts_examples
+godot_state_charts_examples/
+
+/SampleProject
+SampleProject/
 /SampleProject/
+
 .git/
+
 
 
 
