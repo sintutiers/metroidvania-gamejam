@@ -25,6 +25,8 @@
 [ext_resource type="Script" uid="uid://ccv1q2cdjiacc" path="res://scripts/components/launch_component.gd" id="11_mr2x2"]
 [ext_resource type="Script" uid="uid://c04nw515cb8mx" path="res://scripts/components/vfx_component.gd" id="19_1rckg"]
 [ext_resource type="PackedScene" uid="uid://cnfeymuwv6c4q" path="res://VFX and stuff/JumpDust.tscn" id="20_vrrwq"]
+[ext_resource type="Script" uid="uid://by6vw7j34edj4" path="res://scripts/attack_component.gd" id="22_fmmik"]
+[ext_resource type="Script" uid="uid://dxdwf5svx01jq" path="res://scripts/aim_component.gd" id="23_vbjuv"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_j148u"]
 atlas = ExtResource("1_ey0fj")
@@ -704,6 +706,10 @@ animations = [{
 
 [node name="Player" type="CharacterBody2D" unique_id=933192025]
 
+[node name="Muzzle" type="Node2D" parent="." unique_id=2025839135]
+unique_name_in_owner = true
+position = Vector2(26, -8)
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=282735918]
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_q1sf4")
@@ -753,6 +759,14 @@ metadata/_custom_type_script = "uid://c04nw515cb8mx"
 [node name="AudioComponent" type="Node" parent="." unique_id=663669822]
 script = ExtResource("7_0eoyi")
 metadata/_custom_type_script = "uid://cfxp2t1o4nm1s"
+
+[node name="AttackComponent" type="Node" parent="." unique_id=60511310]
+script = ExtResource("22_fmmik")
+metadata/_custom_type_script = "uid://by6vw7j34edj4"
+
+[node name="AimComponent" type="Node" parent="." unique_id=400043272]
+script = ExtResource("23_vbjuv")
+metadata/_custom_type_script = "uid://dxdwf5svx01jq"
 
 [node name="StateChart" type="Node" parent="." unique_id=1592911677]
 unique_name_in_owner = true
