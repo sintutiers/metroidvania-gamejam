@@ -29,14 +29,15 @@
 *.md
 
 README
+Combos.zip
 
 /addons/
 /addons
 addons
 
-/demo/
-/demo
-demo/
+/demos/
+/demos
+demos/
 
 /Extensions/
 /Extensions
@@ -51,6 +52,8 @@ SampleProject/
 /SampleProject/
 
 .git/
+
+
 
 
 
