@@ -35,6 +35,7 @@ SoundManager="*uid://6q1wagejt60k"
 StartUp="*uid://cno5ujal5t3kf"
 AppConfig="*uid://cjke6crjg14a0"
 DialogueManager="*uid://c3rodes2l3gxb"
+DebugMenu="*uid://cggqb75a8w8r"
 
 [debug]
 
@@ -156,7 +157,9 @@ disable_update_check=false
 
 [plugin_updater]
 
-plugins={}
+plugins={
+"res://addons/plugin_updater/": "https://github.com/Maaack/Godot-Plugin-Updater"
+}
 
 [project_time_traker]
 

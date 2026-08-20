@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="WeaponResource" format=3 uid="uid://3fylc7kv7beo"]
+
+[ext_resource type="Resource" uid="uid://b6wlxyetujrfi" path="res://misc shit for dean/basic_bullet.tres" id="1_a3tq1"]
+[ext_resource type="Script" uid="uid://d2ovqlwx3isma" path="res://scripts/weapon_resource.gd" id="1_g11wx"]
+
+[resource]
+script = ExtResource("1_g11wx")
+behavior = ExtResource("1_a3tq1")
+metadata/_custom_type_script = "uid://d2ovqlwx3isma"

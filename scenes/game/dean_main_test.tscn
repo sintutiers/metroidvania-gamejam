@@ -195,7 +195,7 @@ autoplay = "default"
 frame_progress = 0.026022155
 
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=1639397260]
-repeat_size = Vector2(32, 256)
+repeat_size = Vector2(256, 256)
 
 [node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=463110223]
 texture = SubResource("AtlasTexture_q1sf4")
