@@ -829,7 +829,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"shoot",
-"speed": 25.0
+"speed": 35.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -858,7 +858,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"shoot_running",
-"speed": 25.0
+"speed": 35.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -911,8 +911,8 @@ animations = [{
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=282735918]
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_q1sf4")
-animation = &"shoot_running"
-frame_progress = 0.35481796
+animation = &"shoot"
+frame_progress = 0.8281338
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=359072486]
 shape = SubResource("CapsuleShape2D_1uit0")
