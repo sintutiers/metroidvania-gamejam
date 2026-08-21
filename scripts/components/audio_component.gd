@@ -10,7 +10,7 @@ var _is_walking: bool = false
 var _footstep_timer: float = 0.0
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if not _is_walking:
 		return
 	_footstep_timer -= delta
@@ -22,13 +22,13 @@ func _process(delta: float) -> void:
 func play_footstep() -> void:
 	if footstep_sounds.is_empty():
 		return
-	var _player: AudioStreamPlayer = SoundManager.play_sound(footstep_sounds.pick_random())
+	SoundManager.play_sound(footstep_sounds.pick_random())
 
 
 func play_fire() -> void:
 	if not fire_sound:
 		return
-	var _player: AudioStreamPlayer = SoundManager.play_sound(fire_sound)
+	SoundManager.play_sound(fire_sound)
 
 
 func _on_setup() -> void:
