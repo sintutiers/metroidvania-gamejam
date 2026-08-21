@@ -49,17 +49,13 @@ func _on_setup() -> void:
 	var movement := get_component(MovementBase, false) as MovementBase
 	if movement:
 		track(movement.ground_motion_changed, _on_ground_motion_changed)
-
-	var sideways := movement as SidewaysMovementComponent
-	if sideways:
-		track(sideways.jumped, _on_jumped)
-		track(sideways.wall_jumped, _on_jumped)
-		track(sideways.extra_jumped, _on_extra_jumped)
-		track(sideways.landed, _on_landed)
-		track(sideways.dashed, _on_dashed)
-		track(sideways.wall_slid, _on_wall_slid)
-		track(sideways.fell_from_wall, _on_wall_dust_end)
-
+		track(movement.jumped, _on_jumped)
+		track(movement.wall_jumped, _on_jumped)
+		track(movement.extra_jumped, _on_extra_jumped)
+		track(movement.landed, _on_landed)
+		track(movement.dashed, _on_dashed)
+		track(movement.wall_slid, _on_wall_slid)
+		track(movement.fell_from_wall, _on_wall_dust_end)
 	if run_dust_scene and run_dust_mode == RunDustMode.CONTINUOUS:
 		_run_dust = _spawn_persistent(run_dust_scene, run_dust_offset)
 	if wall_dust_scene:

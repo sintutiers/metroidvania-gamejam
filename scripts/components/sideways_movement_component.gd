@@ -2,15 +2,6 @@
 class_name SidewaysMovementComponent
 extends MovementBase
 
-signal jumped(jump_number: int)
-signal wall_jumped
-signal extra_jumped(jump_number: int)
-signal landed(motion: StringName)
-signal wall_slid
-signal fell_from_wall
-signal dashed
-signal dash_ended
-
 @export_group("Movement")
 @export var move_speed: float = 200.0
 @export var run_speed: float = 400.0
@@ -54,13 +45,14 @@ signal dash_ended
 
 var facing_component: FacingComponent
 var collision_shape: CollisionShape2D
+var input_component: InputComponent
 
 var launch_component: LaunchComponent
 var _was_moving: bool = false
 var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
 var _jumps_used: int = 0
-var _current_motion: StringName = &"idle"
+var _current_motion: StringName = Motions.IDLE
 var _dash_timer: float = 0.0
 var _dash_cooldown_timer: float = 0.0
 var _dashes_used: int = 0
@@ -80,7 +72,7 @@ var _wall_jump_lock_timer: float = 0.0
 
 
 func _physics_process(delta: float) -> void:
-	_is_running = Input.is_action_pressed("run")
+	_is_running = input_component.run_held()
 	if _dash_cooldown_timer > 0.0:
 		_dash_cooldown_timer -= delta
 	if _wall_jump_lock_timer > 0.0:
@@ -103,6 +95,7 @@ func _on_setup() -> void:
 	facing_component = get_component(FacingComponent) as FacingComponent
 	collision_shape = get_component(CollisionShape2D, false) as CollisionShape2D
 	launch_component = get_component(LaunchComponent, false) as LaunchComponent
+	input_component = get_component(InputComponent) as InputComponent
 	if collision_shape:
 		_standing_shape_position = collision_shape.position
 	if launch_component:
@@ -146,13 +139,13 @@ func _apply_horizontal(
 func _update_current_motion(on_ground: bool, input_dir: float, is_running: bool) -> void:
 	var motion: StringName
 	if input_dir != 0.0 and body.is_on_wall():
-		motion = &"push"
+		motion = Motions.PUSH
 	elif is_running:
-		motion = &"run"
+		motion = Motions.RUN
 	elif input_dir != 0.0:
-		motion = &"walk"
+		motion = Motions.WALK
 	else:
-		motion = &"idle"
+		motion = Motions.IDLE
 
 	if motion == _current_motion:
 		return
@@ -193,11 +186,11 @@ func _try_jump(is_running: bool, is_wall_jump: bool = false) -> bool:
 func _try_dash() -> bool:
 	if _dash_cooldown_timer > 0.0 or _dashes_used >= max_dashes:
 		return false
-	return Input.is_action_just_pressed("dash")
+	return input_component.dash_just_pressed()
 
 
 func _update_jump_buffer(delta: float) -> void:
-	if Input.is_action_just_pressed("jump"):
+	if input_component.jump_just_pressed():
 		_jump_buffer_timer = jump_buffer_time
 	else:
 		_jump_buffer_timer -= delta
@@ -208,39 +201,39 @@ func _land(reset_jumps: bool = false) -> void:
 	if reset_jumps:
 		_jumps_used = 0
 	landed.emit(_current_motion)
-	state_chart.send_event(&"land")
+	state_chart.send_event(StateEvents.LAND)
 	ground_motion_changed.emit(_current_motion)
 
 
 func _on_ground_physics(delta: float) -> void:
-	var input_dir: float = Input.get_axis("move_left", "move_right")
+	var input_dir: float = input_component.move_axis()
 
 	_coyote_timer = coyote_time
 	_update_jump_buffer(delta)
 
 	if _try_dash():
-		state_chart.send_event(&"dash")
+		state_chart.send_event(StateEvents.DASH)
 		return
 
-	if Input.is_action_pressed("crouch"):
-		state_chart.send_event(&"crouch")
+	if input_component.crouch_held():
+		state_chart.send_event(StateEvents.CROUCH)
 		return
 
 	_apply_horizontal(delta, input_dir, _is_running)
 
 	if _try_jump(_is_running):
-		state_chart.send_event(&"jump")
+		state_chart.send_event(StateEvents.JUMP)
 		return
 
 	body.move_and_slide()
 	_update_current_motion(true, input_dir, _is_running)
 	if not body.is_on_floor():
-		state_chart.send_event(&"fall")
+		state_chart.send_event(StateEvents.FALL)
 
 
 func _on_air_physics(delta: float) -> void:
 	if _try_dash():
-		state_chart.send_event(&"dash")
+		state_chart.send_event(StateEvents.DASH)
 		return
 
 	var gravity: float = (
@@ -258,10 +251,10 @@ func _on_air_physics(delta: float) -> void:
 	_coyote_timer -= delta
 	_update_jump_buffer(delta)
 
-	if Input.is_action_just_released("jump") and body.velocity.y < 0.0:
+	if input_component.jump_just_released() and body.velocity.y < 0.0:
 		body.velocity.y *= jump_cut_mult
 
-	var input_dir: float = Input.get_axis("move_left", "move_right")
+	var input_dir: float = input_component.move_axis()
 	_apply_horizontal(delta, input_dir, false)
 	_try_jump(false)
 
@@ -275,7 +268,7 @@ func _on_air_physics(delta: float) -> void:
 		return
 
 	if body.is_on_wall_only() and input_dir != 0.0:
-		state_chart.send_event(&"wall_slide")
+		state_chart.send_event(StateEvents.WALL_SLIDE)
 
 
 func _on_wall_slide_physics(delta: float) -> void:
@@ -287,10 +280,10 @@ func _on_wall_slide_physics(delta: float) -> void:
 	_update_jump_buffer(delta)
 
 	if wall_jump_enabled and _try_jump(false, true):
-		state_chart.send_event(&"jump")
+		state_chart.send_event(StateEvents.JUMP)
 		return
 
-	var input_dir: float = Input.get_axis("move_left", "move_right")
+	var input_dir: float = input_component.move_axis()
 	_apply_horizontal(delta, input_dir, false)
 
 	var was_grounded: bool = body.is_on_floor()
@@ -301,7 +294,7 @@ func _on_wall_slide_physics(delta: float) -> void:
 		return
 
 	if not body.is_on_wall():
-		state_chart.send_event(&"fall")
+		state_chart.send_event(StateEvents.FALL)
 		fell_from_wall.emit()
 
 
@@ -322,11 +315,11 @@ func _on_dash_physics(delta: float) -> void:
 		return
 
 	if body.is_on_floor():
-		_update_current_motion(true, Input.get_axis("move_left", "move_right"), _is_running)
+		_update_current_motion(true, input_component.move_axis(), _is_running)
 		_land()
 	else:
 		dash_ended.emit()
-		state_chart.send_event(&"fall")
+		state_chart.send_event(StateEvents.FALL)
 
 
 func _on_crouch_entered() -> void:
@@ -337,20 +330,20 @@ func _on_crouch_entered() -> void:
 
 
 func _on_crouch_physics(delta: float) -> void:
-	var input_dir: float = Input.get_axis("move_left", "move_right")
+	var input_dir: float = input_component.move_axis()
 	_apply_horizontal(delta, input_dir, false, crouch_speed_mult)
 	body.move_and_slide()
 
-	var motion: StringName = &"crouch_walk" if input_dir != 0.0 else &"crouch_idle"
+	var motion: StringName = Motions.CROUCH_WALK if input_dir != 0.0 else Motions.CROUCH_IDLE
 	if motion != _current_motion:
 		_current_motion = motion
 		ground_motion_changed.emit(motion)
 
 	if not body.is_on_floor():
-		state_chart.send_event(&"fall")
+		state_chart.send_event(StateEvents.FALL)
 		return
-	if not Input.is_action_pressed("crouch"):
-		state_chart.send_event(&"crouch_end")
+	if not input_component.crouch_held():
+		state_chart.send_event(StateEvents.CROUCH_END)
 
 
 func _on_crouch_exited() -> void:
@@ -362,5 +355,5 @@ func _on_crouch_exited() -> void:
 
 func _on_launch_landed() -> void:
 	_coyote_timer = coyote_time
-	_update_current_motion(true, Input.get_axis("move_left", "move_right"), _is_running)
+	_update_current_motion(true, input_component.move_axis(), _is_running)
 	_land(true)

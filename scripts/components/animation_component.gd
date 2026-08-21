@@ -19,28 +19,22 @@ func _on_setup() -> void:
 	var movement := get_component(MovementBase, false) as MovementBase
 	if movement:
 		track(movement.ground_motion_changed, _on_ground_motion_changed)
-
-	var sideways := movement as SidewaysMovementComponent
-	if sideways:
-		track(sideways.jumped, _on_jumped)
-		track(sideways.wall_jumped, _on_wall_jumped)
-		track(sideways.extra_jumped, _on_extra_jumped)
-		track(sideways.landed, _on_landed)
-		track(sideways.wall_slid, _on_wall_slid)
-		track(sideways.fell_from_wall, _on_airspin)
-		track(sideways.dashed, _on_dashed)
-		track(sideways.dash_ended, _on_dash_ended)
-
+		track(movement.jumped, _on_jumped)
+		track(movement.wall_jumped, _on_wall_jumped)
+		track(movement.extra_jumped, _on_extra_jumped)
+		track(movement.landed, _on_landed)
+		track(movement.wall_slid, _on_wall_slid)
+		track(movement.fell_from_wall, _on_airspin)
+		track(movement.dashed, _on_dashed)
+		track(movement.dash_ended, _on_dash_ended)
 	var launch := get_component(LaunchComponent, false) as LaunchComponent
 	if launch:
 		track(launch.fell, _on_launched)
-
 	var attack := get_component(AttackComponent, false) as AttackComponent
 	if attack:
 		track(attack.fired, _on_fired)
 		track(attack.aim_started, _on_aim_started)
 		track(attack.aim_ended, _on_aim_ended)
-
 	var facing := get_component(FacingComponent, false) as FacingComponent
 	if facing:
 		track(facing.flipped, _on_flipped)

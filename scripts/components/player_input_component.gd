@@ -1,0 +1,38 @@
+class_name PlayerInputComponent
+extends InputComponent
+
+
+func move_axis() -> float:
+	return Input.get_axis("move_left", "move_right")
+
+
+func run_held() -> bool:
+	return Input.is_action_pressed("run")
+
+
+func jump_just_pressed() -> bool:
+	return Input.is_action_just_pressed("jump")
+
+
+func jump_just_released() -> bool:
+	return Input.is_action_just_released("jump")
+
+
+func crouch_held() -> bool:
+	return Input.is_action_pressed("crouch")
+
+
+func dash_just_pressed() -> bool:
+	return Input.is_action_just_pressed("dash")
+
+
+func fire_held() -> bool:
+	return Input.is_action_pressed("fire")
+
+
+func is_interact_event(event: InputEvent) -> bool:
+	return event.is_action_pressed("ui_select")
+
+
+func is_launch_accept_event(event: InputEvent) -> bool:
+	return event.is_action_pressed("ui_accept")

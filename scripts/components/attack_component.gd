@@ -8,6 +8,7 @@ signal aim_ended
 
 @export var weapon: WeaponResource
 
+var input_component: InputComponent
 var _fire_cooldown: float = 0.0
 var _was_aiming: bool = false
 
@@ -17,17 +18,19 @@ var _was_aiming: bool = false
 func _physics_process(delta: float) -> void:
 	if _fire_cooldown > 0.0:
 		_fire_cooldown -= delta
-
-	var holding_fire: bool = Input.is_action_pressed("fire")
+	var holding_fire: bool = input_component.fire_held()
 	if holding_fire:
 		_try_fire()
-
 	var is_aiming: bool = holding_fire and _fire_cooldown > 0.0
 	if is_aiming and not _was_aiming:
 		aim_started.emit()
 	elif not is_aiming and _was_aiming:
 		aim_ended.emit()
 	_was_aiming = is_aiming
+
+
+func _on_setup() -> void:
+	input_component = get_component(InputComponent) as InputComponent
 
 
 func _try_fire() -> void:

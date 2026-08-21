@@ -5,13 +5,14 @@ extends Component
 @export var interact_radius: float = 32.0
 
 var interact_area: Area2D
+var input_component: InputComponent
 
 @onready var body: CharacterBody2D = get_parent() as CharacterBody2D
 @onready var state_chart: StateChart = %StateChart
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_select"):
+	if input_component.is_interact_event(event):
 		interact()
 
 
@@ -29,7 +30,7 @@ func interact() -> void:
 	if not closest:
 		return
 	closest.trigger(interact_area)
-	state_chart.send_event(&"interact")
+	state_chart.send_event(StateEvents.INTERACT)
 	if closest.holds_interact_lock:
 		closest.interaction_finished.connect(_end_interact, CONNECT_ONE_SHOT)
 	else:
@@ -38,7 +39,8 @@ func interact() -> void:
 
 func _on_setup() -> void:
 	interact_area = get_component(Area2D, false) as Area2D
+	input_component = get_component(InputComponent) as InputComponent
 
 
 func _end_interact() -> void:
-	state_chart.send_event(&"interact_end")
+	state_chart.send_event(StateEvents.INTERACT_END)

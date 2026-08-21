@@ -28,10 +28,11 @@
 [ext_resource type="Texture2D" uid="uid://ir82d107vogr" path="res://The Amazing Art and Sound Folder/Player Running Shooting 48x48.png" id="12_3vrwl"]
 [ext_resource type="Script" uid="uid://c04nw515cb8mx" path="res://scripts/components/vfx_component.gd" id="19_1rckg"]
 [ext_resource type="PackedScene" uid="uid://cnfeymuwv6c4q" path="res://misc shit for dean/JumpDust.tscn" id="20_vrrwq"]
-[ext_resource type="Script" uid="uid://by6vw7j34edj4" path="res://scripts/attack_component.gd" id="22_fmmik"]
+[ext_resource type="Script" uid="uid://by6vw7j34edj4" path="res://scripts/components/attack_component.gd" id="22_fmmik"]
 [ext_resource type="Texture2D" uid="uid://cexcf7xpv684h" path="res://The Amazing Art and Sound Folder/lamp_on.png" id="22_wx2rq"]
-[ext_resource type="Script" uid="uid://dxdwf5svx01jq" path="res://scripts/aim_component.gd" id="23_vbjuv"]
+[ext_resource type="Script" uid="uid://dxdwf5svx01jq" path="res://scripts/components/aim_component.gd" id="23_vbjuv"]
 [ext_resource type="Resource" uid="uid://3fylc7kv7beo" path="res://misc shit for dean/basic_weapon.tres" id="23_wx2rq"]
+[ext_resource type="Script" uid="uid://c0q0rfmy8x2gh" path="res://scripts/components/player_input_component.gd" id="33_wgy36"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rnkgc"]
 atlas = ExtResource("1_74cnq")
@@ -911,8 +912,7 @@ animations = [{
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=282735918]
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_q1sf4")
-animation = &"shoot"
-frame_progress = 0.8281338
+animation = &"run"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=359072486]
 shape = SubResource("CapsuleShape2D_1uit0")
@@ -979,6 +979,10 @@ metadata/_custom_type_script = "uid://dxdwf5svx01jq"
 script = ExtResource("22_fmmik")
 weapon = ExtResource("23_wx2rq")
 metadata/_custom_type_script = "uid://by6vw7j34edj4"
+
+[node name="PlayerInputComponent" type="Node" parent="Gun" unique_id=1636194210]
+script = ExtResource("33_wgy36")
+metadata/_custom_type_script = "uid://c0q0rfmy8x2gh"
 
 [node name="StateChart" type="Node" parent="." unique_id=1592911677]
 unique_name_in_owner = true
@@ -1134,3 +1138,7 @@ to = NodePath("../Launch")
 event = &"launch"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="PlayerInputComponent" type="Node" parent="." unique_id=1637155963]
+script = ExtResource("33_wgy36")
+metadata/_custom_type_script = "uid://c0q0rfmy8x2gh"
