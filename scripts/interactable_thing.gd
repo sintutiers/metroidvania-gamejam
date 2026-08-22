@@ -5,9 +5,12 @@ extends Node2D
 signal interacted(by: Area2D)
 signal interaction_finished
 
-@export var animate_on_interact: bool = false
-@export var holds_interact_lock: bool = false
-@export var sprite: AnimatedSprite2D
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var animate_on_interact: bool = false
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var holds_interact_lock: bool = false
+@export_custom(PROPERTY_HINT_NODE_PATH_TO_EDITED_NODE, "AnimatedSprite2D")
+var sprite: AnimatedSprite2D
 
 
 func _ready() -> void:

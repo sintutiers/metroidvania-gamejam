@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://dwg61bpcy6uv3" path="res://The Amazing Art and Sound Folder/table1 duke.png" id="10_ntcbd"]
 [ext_resource type="Texture2D" uid="uid://b7o7rfw407om6" path="res://The Amazing Art and Sound Folder/erin_bordersprites.png" id="12_3xwlj"]
 [ext_resource type="Texture2D" uid="uid://bs6wqopeuwodf" path="res://The Amazing Art and Sound Folder/secret_entity.png" id="13_klppx"]
+[ext_resource type="Script" uid="uid://84okuoju0wev" path="res://scenes/game/levels/gate.gd" id="13_ueimi"]
 [ext_resource type="Script" uid="uid://c642xwttxatjc" path="res://scripts/components/locked_gate_component.gd" id="14_s33yo"]
 [ext_resource type="Script" uid="uid://df3asxwplixpa" path="res://scripts/gate_requirement.gd" id="15_gxxra"]
 [ext_resource type="Script" uid="uid://cktqjl066w82y" path="res://scripts/object_collected_requirement.gd" id="16_q4whl"]
@@ -143,21 +144,21 @@ texture = ExtResource("5_tqpjq")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D5" unique_id=282538046]
 shape = SubResource("RectangleShape2D_nd4ja")
 
-[node name="StaticBody2D6" type="StaticBody2D" parent="." unique_id=1961082242]
+[node name="walls" type="StaticBody2D" parent="." unique_id=1961082242]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D6" unique_id=636172064]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="walls" unique_id=636172064]
 position = Vector2(619, 639)
 shape = SubResource("RectangleShape2D_q1sf4")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D6" unique_id=267463628]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="walls" unique_id=267463628]
 position = Vector2(0, 259)
 shape = SubResource("RectangleShape2D_1roue")
 
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D6" unique_id=1677667027]
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="walls" unique_id=1677667027]
 position = Vector2(1174, 270)
 shape = SubResource("RectangleShape2D_tnr8i")
 
-[node name="CollisionShape2D4" type="CollisionShape2D" parent="StaticBody2D6" unique_id=1310883855]
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="walls" unique_id=1310883855]
 position = Vector2(569, 3)
 shape = SubResource("RectangleShape2D_q1sf4")
 
@@ -227,14 +228,15 @@ texture = SubResource("AtlasTexture_q1sf4")
 
 [node name="gate test" type="StaticBody2D" parent="." unique_id=1512242068]
 position = Vector2(692, 483)
+script = ExtResource("13_ueimi")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="gate test" unique_id=1932025692]
-shape = SubResource("RectangleShape2D_j6erd")
-
-[node name="Sprite2D" type="Sprite2D" parent="gate test/CollisionShape2D" unique_id=67342960]
+[node name="Sprite2D" type="Sprite2D" parent="gate test" unique_id=67342960]
 position = Vector2(-3, -13)
 scale = Vector2(1.091, 6)
 texture = ExtResource("13_klppx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="gate test" unique_id=1932025692]
+shape = SubResource("RectangleShape2D_j6erd")
 
 [node name="LockedGateComponent" type="Node" parent="gate test" unique_id=1194142569]
 script = ExtResource("14_s33yo")
@@ -253,13 +255,14 @@ metadata/_custom_type_script = "uid://dq5r7n4mxqqoa"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="gate test/Area2D" unique_id=1013184444]
 shape = SubResource("RectangleShape2D_wjmfi")
 
-[node name="colectableshit" type="Node2D" parent="." unique_id=437612271 node_paths=PackedStringArray("sprite")]
+[node name="colectableshit" type="Node2D" parent="." unique_id=437612271]
 position = Vector2(387, 211)
 script = ExtResource("17_ueimi")
 pickup_mode = 1
 object_id = &"test"
 show_marker_on_map = false
-sprite = NodePath("../AnimatedSprite2D")
+sprite = Object(AnimatedSprite2D,"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"oversampling_with_scale":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(642, 310),"rotation":0.0,"scale":Vector2(2, 2),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_q1sf4"),"animation":&"default","autoplay":"default","frame":0,"frame_progress":0.026022155,"speed_scale":1.0,"centered":true,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
+
 
 [node name="Area2D" type="Area2D" parent="colectableshit" unique_id=367648136]
 

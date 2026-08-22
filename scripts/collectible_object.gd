@@ -8,6 +8,7 @@ enum PickupMode {
 	ON_OVERLAP,
 }
 
+#const is_importer_node := true
 @export var pickup_mode: PickupMode = PickupMode.ON_INTERACT
 @export var object_id: StringName
 @export var show_marker_on_map: bool = true
