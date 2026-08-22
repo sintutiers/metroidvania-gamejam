@@ -8,29 +8,39 @@ extends MovementBase
 var _was_moving: bool = false
 var _locked: bool = false
 
+var input_component: InputComponent
+var facing_component: FacingComponent
+
 @onready var body: CharacterBody2D = get_parent() as CharacterBody2D
 @onready var move_state: StateChartState = %Move
-@onready var facing_component: FacingComponent = get_component(FacingComponent)
 
 
 func _ready() -> void:
-	var _err: int = move_state.state_physics_processing.connect(_on_move_physics)
+	super._ready()
+	track(move_state.state_physics_processing, _on_move_physics)
 
 	if locks_during_interact:
-		var interact_component: InteractComponent = get_component(InteractComponent, false)
+		var interact_component := get_component(InteractComponent, false) as InteractComponent
 		if interact_component:
-			interact_component.interact_started.connect(
-				func():
+			track(
+				interact_component.interact_started,
+				func() -> void:
 					_locked = true,
 			)
-			interact_component.interact_ended.connect(
-				func():
+			track(
+				interact_component.interact_ended,
+				func() -> void:
 					_locked = false,
 			)
 
 
+func _on_setup() -> void:
+	facing_component = get_component(FacingComponent) as FacingComponent
+	input_component = get_component(InputComponent) as InputComponent
+
+
 func _on_move_physics(_delta: float) -> void:
-	var input_dir: Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	var input_dir: Vector2 = input_component.get_movement_vector()
 
 	if _locked or input_dir.is_zero_approx():
 		body.velocity = Vector2.ZERO
@@ -44,4 +54,4 @@ func _on_move_physics(_delta: float) -> void:
 			moved.emit(facing_component.facing)
 		_was_moving = true
 
-	var _slide_result: bool = body.move_and_slide()
+	body.move_and_slide(

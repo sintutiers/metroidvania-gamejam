@@ -85,15 +85,15 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_ready() -> void:
-	ground_state.state_physics_processing.connect(_on_ground_physics)
-	air_state.state_physics_processing.connect(_on_air_physics)
-	wall_slide_state.state_physics_processing.connect(_on_wall_slide_physics)
-	wall_slide_state.state_entered.connect(_on_wall_slide_entered)
-	dash_state.state_entered.connect(_on_dash_entered)
-	dash_state.state_physics_processing.connect(_on_dash_physics)
-	crouch_state.state_entered.connect(_on_crouch_entered)
-	crouch_state.state_physics_processing.connect(_on_crouch_physics)
-	crouch_state.state_exited.connect(_on_crouch_exited)
+	track(ground_state.state_physics_processing, _on_ground_physics)
+	track(air_state.state_physics_processing, _on_air_physics)
+	track(wall_slide_state.state_physics_processing, _on_wall_slide_physics)
+	track(wall_slide_state.state_entered, _on_wall_slide_entered)
+	track(dash_state.state_entered, _on_dash_entered)
+	track(dash_state.state_physics_processing, _on_dash_physics)
+	track(crouch_state.state_entered, _on_crouch_entered)
+	track(crouch_state.state_physics_processing, _on_crouch_physics)
+	track(crouch_state.state_exited, _on_crouch_exited)
 
 
 func _on_setup() -> void:

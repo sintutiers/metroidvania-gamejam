@@ -2,6 +2,15 @@ class_name PlayerInputComponent
 extends InputComponent
 
 
+func get_movement_vector() -> Vector2:
+	return Input.get_vector("move_left", "move_right", "move_up", "move_down")
+
+
+func get_aim_world_position() -> Vector2:
+	var mouse_pos := get_viewport().get_mouse_position()
+	return get_viewport().get_canvas_transform().affine_inverse() * mouse_pos
+
+
 func move_axis() -> float:
 	return Input.get_axis("move_left", "move_right")
 

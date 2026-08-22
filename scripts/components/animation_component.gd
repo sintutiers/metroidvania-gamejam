@@ -13,7 +13,7 @@ var _is_aiming: bool = false
 
 
 func _on_ready() -> void:
-	sprite.animation_finished.connect(_on_animation_finished)
+	track(sprite.animation_finished, _on_animation_finished)
 
 
 func _on_setup() -> void:
@@ -61,47 +61,47 @@ func _on_ground_motion_changed(motion: StringName) -> void:
 func _on_jumped(jump_number: int) -> void:
 	_is_airborne = true
 	_is_tumbling = jump_number != 1
-	sprite.play(&"jump" if jump_number == 1 else &"airspin")
+	sprite.play(Animations.JUMP if jump_number == 1 else Animations.AIRSPIN)
 
 
 func _on_wall_jumped() -> void:
 	_is_airborne = true
 	_is_tumbling = false
-	sprite.play(&"jump")
+	sprite.play(Animations.JUMP)
 
 
 func _on_airspin() -> void:
 	_is_airborne = true
 	_is_tumbling = true
-	sprite.play(&"airspin")
+	sprite.play(Animations.AIRSPIN)
 
 
 func _on_extra_jumped(_jump_number: int) -> void:
 	_is_airborne = true
 	_is_tumbling = true
-	sprite.play(&"airspin")
+	sprite.play(Animations.AIRSPIN)
 
 
 func _on_wall_slid() -> void:
 	_is_airborne = true
 	_is_tumbling = false
-	if sprite.animation != &"wall_slide":
-		sprite.play(&"wall_slide")
+	if sprite.animation != Animations.WALL_SLIDE:
+		sprite.play(Animations.WALL_SLIDE)
 
 
 func _on_dashed() -> void:
 	_is_airborne = true
 	_is_tumbling = false
-	sprite.play(&"dash")
+	sprite.play(Animations.DASH)
 
 
 func _on_dash_ended() -> void:
-	sprite.play(&"fall")
+	sprite.play(Animations.FALL)
 
 
 func _on_launched() -> void:
 	_is_airborne = true
-	sprite.play(&"airspin")
+	sprite.play(Animations.AIRSPIN)
 
 
 func _on_landed(motion: StringName) -> void:
@@ -109,21 +109,21 @@ func _on_landed(motion: StringName) -> void:
 	_is_landing = true
 	_is_tumbling = false
 	_pending_ground_motion = motion
-	sprite.play(&"fall")
+	sprite.play(Animations.FALL)
 
 
 func _on_fired() -> void:
 	if _is_airborne:
 		return
 	var is_moving: bool = _current_motion == Motions.WALK or _current_motion == Motions.RUN
-	sprite.play(&"shoot_running" if is_moving else &"shoot")
+	sprite.play(Animations.SHOOT_RUNNING if is_moving else Animations.SHOOT)
 
 
 func _on_aim_started() -> void:
 	_is_aiming = true
 	if _is_airborne:
 		return
-	sprite.play(&"aim")
+	sprite.play(Animations.AIM)
 
 
 func _on_aim_ended() -> void:
@@ -137,11 +137,11 @@ func _on_started_falling() -> void:
 	if _is_aiming or _is_tumbling:
 		return
 	_is_airborne = true
-	sprite.play(&"falling")
+	sprite.play(Animations.FALLING)
 
 
 func _on_animation_finished() -> void:
-	if sprite.animation != &"fall":
+	if sprite.animation != Animations.FALL:
 		return
 	_is_landing = false
 	sprite.play(_pending_ground_motion)

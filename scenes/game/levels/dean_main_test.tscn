@@ -240,6 +240,7 @@ texture = ExtResource("13_klppx")
 script = ExtResource("14_s33yo")
 requirements = Array[ExtResource("15_gxxra")]([SubResource("Resource_q1sf4")])
 require_all = false
+unlock_mode = 2
 metadata/_custom_type_script = "uid://c642xwttxatjc"
 metadata/object_id = &"dean_main_test/gate test/LockedGateComponent"
 

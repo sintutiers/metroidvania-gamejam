@@ -32,13 +32,12 @@ func _on_setup() -> void:
 		else:
 			push_warning("LockedGateComponent: ON_OVERLAP set but no Area2D found.")
 
-	for req: GateRequirement in requirements:
-		var collectible := req as ObjectCollectedRequirement
-		if collectible and not collectible.source_path.is_empty():
-			var source := get_node_or_null(collectible.source_path) as CollectibleObject
-			if source:
-				source.collected.connect(_on_requirement_source_collected)
-	_check_unlocked()
+	# Only automatic gates react to requirement changes and check immediately.
+	if unlock_mode == UnlockTrigger.AUTOMATIC:
+		for req: GateRequirement in requirements:
+			req.setup(self)
+			track(req.requirement_changed, _check_unlocked)
+		_check_unlocked()
 
 
 func _on_interacted(_by: Area2D) -> void:
@@ -49,11 +48,6 @@ func _on_body_entered(body: Node2D) -> void:
 	if not body.is_in_group(&"player"):
 		return
 	_check_unlocked()
-
-
-func _on_requirement_source_collected() -> void:
-	if unlock_mode == UnlockTrigger.AUTOMATIC:
-		_check_unlocked()
 
 
 func _check_unlocked() -> void:

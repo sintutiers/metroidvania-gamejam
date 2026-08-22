@@ -22,7 +22,7 @@ var _pad_active: bool = false
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _pad_active and event.is_action_pressed("ui_accept"):
+	if _pad_active and input_component.is_launch_accept_event(event):
 		launch(_pad_direction, _pad_speed, _pad_distance)
 
 
@@ -53,8 +53,8 @@ func _on_setup() -> void:
 
 
 func _on_ready() -> void:
-	launch_state.state_physics_processing.connect(_on_launch_physics)
-	launch_state.state_entered.connect(fell.emit)
+	track(launch_state.state_physics_processing, _on_launch_physics)
+	track(launch_state.state_entered, fell.emit)
 
 
 func _on_launch_physics(delta: float) -> void:
