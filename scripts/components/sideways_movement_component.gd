@@ -1,6 +1,6 @@
-# sideways_movement_component.gd
+# scripts/components/sideways_movement_component.gd
 class_name SidewaysMovementComponent
-extends MovementBase
+extends PlatformerMovementBase
 
 @export_group("Movement")
 @export_range(0.0, 1000.0, 10.0, ETP.PROPERTY)
@@ -26,7 +26,7 @@ var jump_buffer_time: float = 0.1
 @export_range(1, 10, 1, ETP.PROPERTY)
 var default_max_jumps: int = 2
 @export_custom(ETP.NONE, ETP.PROPERTY)
-var jump_ability_id: String = "extra_jumps"
+var jump_ability_id: String = String(AbilityIds.EXTRA_JUMPS)
 @export_range(0.0, 1.0, 0.05, ETP.PROPERTY)
 var jump_cut_multiplier: float = 0.5
 @export_range(0.0, 3.0, 0.05, ETP.PROPERTY)

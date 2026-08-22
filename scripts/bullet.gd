@@ -1,3 +1,4 @@
+# scripts/bullet.gd
 class_name Bullet
 extends Area2D
 
@@ -26,4 +27,7 @@ func _on_body_entered(body: Node) -> void:
 
 
 func _hit(target: Node) -> void:
+	var health := Component.find_component(target, Health, false) as Health
+	if health:
+		health.damage(damage)
 	queue_free()

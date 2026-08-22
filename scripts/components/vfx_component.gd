@@ -59,7 +59,7 @@ func _physics_process(delta: float) -> void:
 
 func _on_setup() -> void:
 	entity = get_parent() as Node2D
-	var movement := get_component(MovementBase, false) as MovementBase
+	var movement := get_component(PlatformerMovementBase, false) as PlatformerMovementBase
 	if movement:
 		track(movement.ground_motion_changed, _on_ground_motion_changed)
 		track(movement.jumped, _on_jumped)
