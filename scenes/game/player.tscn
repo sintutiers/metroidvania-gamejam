@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://1erjp2vl6wxu" path="res://The Amazing Art and Sound Folder/Player Running Aiming 48x48.png" id="1_74cnq"]
 [ext_resource type="Texture2D" uid="uid://xdbi5t1lalex" path="res://The Amazing Art and Sound Folder/player land 48x48.png" id="1_e605p"]
 [ext_resource type="Texture2D" uid="uid://muax2a0rttlp" path="res://The Amazing Art and Sound Folder/player air spin 48x48.png" id="1_ey0fj"]
-[ext_resource type="Script" uid="uid://bet8hyt331yfp" path="res://scenes/game/scripts/player.gd" id="1_rpvn3"]
+[ext_resource type="Script" uid="uid://bet8hyt331yfp" path="res://scripts/player.gd" id="1_rpvn3"]
 [ext_resource type="Texture2D" uid="uid://cfccxu51pcduf" path="res://The Amazing Art and Sound Folder/PlayerWalk 48x48.png" id="2_8egkn"]
 [ext_resource type="Script" uid="uid://clhg7apuc3ldq" path="res://scripts/components/facing_component.gd" id="2_68xwl"]
 [ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="2_nybob"]
