@@ -13,6 +13,8 @@ signal interaction_finished
 func _ready() -> void:
 	add_to_group(&"interactable")
 	if animate_on_interact:
+		if not sprite:
+			sprite = _find_sprite()
 		if sprite:
 			sprite.pause()
 		else:
@@ -27,3 +29,10 @@ func trigger(by: Area2D) -> void:
 
 func finish_interaction() -> void:
 	interaction_finished.emit()
+
+
+func _find_sprite() -> AnimatedSprite2D:
+	for child: Node in get_children():
+		if child is AnimatedSprite2D:
+			return child
+	return null

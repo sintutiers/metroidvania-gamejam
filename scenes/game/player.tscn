@@ -34,7 +34,9 @@
 [ext_resource type="Script" uid="uid://dxdwf5svx01jq" path="res://scripts/components/aim_component.gd" id="23_vbjuv"]
 [ext_resource type="Resource" uid="uid://3fylc7kv7beo" path="res://misc shit for dean/basic_weapon.tres" id="23_wx2rq"]
 [ext_resource type="Script" uid="uid://c0q0rfmy8x2gh" path="res://scripts/components/player_input_component.gd" id="33_wgy36"]
-[ext_resource type="Script" uid="uid://cdosj5tpukr08" path="res://scripts/components/health_component.gd" id="34_cqjlk"]
+[ext_resource type="Script" uid="uid://dr8bvnfebp76" path="res://addons/health_hitbox_hurtbox/health/health.gd" id="36_pft2h"]
+[ext_resource type="Script" uid="uid://cts8qlslbl7nn" path="res://scripts/dean_hurt_box_2d.gd" id="37_pft2h"]
+[ext_resource type="Script" uid="uid://d33a1bxcxnqk4" path="res://scripts/components/ability_component.gd" id="38_rpvn3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rnkgc"]
 atlas = ExtResource("1_74cnq")
@@ -1003,6 +1005,9 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1uit0"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q1sf4"]
+size = Vector2(14, 22)
+
 [node name="Player" type="CharacterBody2D" unique_id=933192025]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=282735918]
@@ -1016,7 +1021,35 @@ shape = SubResource("CapsuleShape2D_1uit0")
 
 [node name="SidewaysMovementComponent" type="Node" parent="." unique_id=870414210]
 script = ExtResource("7_t8yk2")
+move_speed = null
+run_speed = null
+move_acceleration = null
+turn_acceleration = null
+move_friction = null
+jump_height = null
+jump_gravity = null
+coyote_time = null
+jump_buffer_time = null
+base_max_jumps = null
+jump_ability_id = null
+max_fall_speed = null
+fall_gravity_offset = null
+apex_hang_threshold = null
+wall_slide_speed = null
 wall_jump_enabled = false
+wall_jump_push_speed = null
+wall_jump_input_lock_time = null
+dash_speed = null
+dash_duration = null
+dash_cooldown = null
+max_dashes = null
+crouch_collision_scale = null
+crouch_shape_y_offset = null
+jump_cut_mult = null
+running_jump_height_mult = null
+speed_based_jump_distance_mult = null
+apex_hang_gravity_mult = null
+crouch_speed_mult = null
 metadata/_custom_type_script = "uid://beajnp3irp7ln"
 
 [node name="FacingComponent" type="Node" parent="." unique_id=291864630]
@@ -1059,10 +1092,6 @@ metadata/_custom_type_script = "uid://cfxp2t1o4nm1s"
 [node name="PlayerInputComponent" type="Node" parent="." unique_id=1637155963]
 script = ExtResource("33_wgy36")
 metadata/_custom_type_script = "uid://c0q0rfmy8x2gh"
-
-[node name="HealthComponent" type="Node" parent="." unique_id=2003463793]
-script = ExtResource("34_cqjlk")
-metadata/_custom_type_script = "uid://cdosj5tpukr08"
 
 [node name="Gun" type="Node2D" parent="." unique_id=1189904842]
 
@@ -1243,3 +1272,20 @@ to = NodePath("../Launch")
 event = &"launch"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="Health" type="Node" parent="." unique_id=1459347903]
+script = ExtResource("36_pft2h")
+metadata/_custom_type_script = "uid://dr8bvnfebp76"
+
+[node name="DeanHurtBox2D" type="Area2D" parent="." unique_id=1545965142]
+script = ExtResource("37_pft2h")
+metadata/_custom_type_script = "uid://cts8qlslbl7nn"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeanHurtBox2D" unique_id=1157520114]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_q1sf4")
+debug_color = Color(1, 0, 0, 0.41960785)
+
+[node name="AbilityComponent" type="Node" parent="." unique_id=1690305800]
+script = ExtResource("38_rpvn3")
+metadata/_custom_type_script = "uid://d33a1bxcxnqk4"

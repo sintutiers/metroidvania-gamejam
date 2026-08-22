@@ -12,6 +12,13 @@
 [ext_resource type="Texture2D" uid="uid://0es5efbo4548" path="res://The Amazing Art and Sound Folder/eye.png" id="10_aew1q"]
 [ext_resource type="Texture2D" uid="uid://dwg61bpcy6uv3" path="res://The Amazing Art and Sound Folder/table1 duke.png" id="10_ntcbd"]
 [ext_resource type="Texture2D" uid="uid://b7o7rfw407om6" path="res://The Amazing Art and Sound Folder/erin_bordersprites.png" id="12_3xwlj"]
+[ext_resource type="Texture2D" uid="uid://bs6wqopeuwodf" path="res://The Amazing Art and Sound Folder/secret_entity.png" id="13_klppx"]
+[ext_resource type="Script" uid="uid://c642xwttxatjc" path="res://scripts/components/locked_gate_component.gd" id="14_s33yo"]
+[ext_resource type="Script" uid="uid://df3asxwplixpa" path="res://scripts/gate_requirement.gd" id="15_gxxra"]
+[ext_resource type="Script" uid="uid://cktqjl066w82y" path="res://scripts/object_collected_requirement.gd" id="16_q4whl"]
+[ext_resource type="Script" uid="uid://dq5r7n4mxqqoa" path="res://scripts/interactable_thing.gd" id="17_q4whl"]
+[ext_resource type="Script" uid="uid://dk3niudvdqw4d" path="res://scripts/collectible_object.gd" id="17_ueimi"]
+[ext_resource type="Texture2D" uid="uid://crmih01m3g7fj" path="res://The Amazing Art and Sound Folder/obmil_entity.png" id="18_ot4ag"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
 size = Vector2(50, 50)
@@ -55,6 +62,20 @@ animations = [{
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_q1sf4"]
 atlas = ExtResource("12_3xwlj")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j6erd"]
+size = Vector2(20, 400)
+
+[sub_resource type="Resource" id="Resource_q1sf4"]
+script = ExtResource("16_q4whl")
+object_id = &"test"
+source_path = NodePath("../../colectableshit")
+metadata/_custom_type_script = "uid://cktqjl066w82y"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wjmfi"]
+size = Vector2(40, 430)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_q1sf4"]
 
 [node name="DeanMainTest" type="Node2D" unique_id=1756909701]
 
@@ -203,3 +224,47 @@ texture = SubResource("AtlasTexture_q1sf4")
 [node name="Sprite2D2" type="Sprite2D" parent="Parallax2D" unique_id=1590720738]
 position = Vector2(225, 0)
 texture = SubResource("AtlasTexture_q1sf4")
+
+[node name="gate test" type="StaticBody2D" parent="." unique_id=1512242068]
+position = Vector2(692, 483)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="gate test" unique_id=1932025692]
+shape = SubResource("RectangleShape2D_j6erd")
+
+[node name="Sprite2D" type="Sprite2D" parent="gate test/CollisionShape2D" unique_id=67342960]
+position = Vector2(-3, -13)
+scale = Vector2(1.091, 6)
+texture = ExtResource("13_klppx")
+
+[node name="LockedGateComponent" type="Node" parent="gate test" unique_id=1194142569]
+script = ExtResource("14_s33yo")
+requirements = Array[ExtResource("15_gxxra")]([SubResource("Resource_q1sf4")])
+require_all = false
+metadata/_custom_type_script = "uid://c642xwttxatjc"
+metadata/object_id = &"dean_main_test/gate test/LockedGateComponent"
+
+[node name="InteractableThing" type="Node2D" parent="gate test" unique_id=1131522710]
+script = ExtResource("17_q4whl")
+metadata/_custom_type_script = "uid://dq5r7n4mxqqoa"
+
+[node name="Area2D" type="Area2D" parent="gate test" unique_id=744711966]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="gate test/Area2D" unique_id=1013184444]
+shape = SubResource("RectangleShape2D_wjmfi")
+
+[node name="colectableshit" type="Node2D" parent="." unique_id=437612271 node_paths=PackedStringArray("sprite")]
+position = Vector2(387, 211)
+script = ExtResource("17_ueimi")
+pickup_mode = 1
+object_id = &"test"
+show_marker_on_map = false
+sprite = NodePath("../AnimatedSprite2D")
+
+[node name="Area2D" type="Area2D" parent="colectableshit" unique_id=367648136]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="colectableshit/Area2D" unique_id=570981217]
+shape = SubResource("CircleShape2D_q1sf4")
+
+[node name="Sprite2D" type="Sprite2D" parent="colectableshit" unique_id=504413036]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("18_ot4ag")

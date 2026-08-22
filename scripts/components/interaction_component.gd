@@ -6,12 +6,15 @@ extends Component
 
 var interact_area: Area2D
 var input_component: InputComponent
+var state_chart: StateChart
+var interact_component: InteractComponent
 
 @onready var body: CharacterBody2D = get_parent() as CharacterBody2D
-@onready var state_chart: StateChart = %StateChart
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if interact_component and interact_component.is_locked:
+		return
 	if input_component.is_interact_event(event):
 		interact()
 
@@ -30,7 +33,8 @@ func interact() -> void:
 	if not closest:
 		return
 	closest.trigger(interact_area)
-	state_chart.send_event(StateEvents.INTERACT)
+	if state_chart:
+		state_chart.send_event(StateEvents.INTERACT)
 	if closest.holds_interact_lock:
 		closest.interaction_finished.connect(_end_interact, CONNECT_ONE_SHOT)
 	else:
@@ -40,7 +44,10 @@ func interact() -> void:
 func _on_setup() -> void:
 	interact_area = get_component(Area2D, false) as Area2D
 	input_component = get_component(InputComponent) as InputComponent
+	state_chart = get_component(StateChart, false) as StateChart
+	interact_component = get_component(InteractComponent, false) as InteractComponent
 
 
 func _end_interact() -> void:
-	state_chart.send_event(StateEvents.INTERACT_END)
+	if state_chart:
+		state_chart.send_event(StateEvents.INTERACT_END)

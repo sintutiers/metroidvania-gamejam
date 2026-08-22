@@ -36,3 +36,7 @@ func is_interact_event(event: InputEvent) -> bool:
 
 func is_launch_accept_event(event: InputEvent) -> bool:
 	return event.is_action_pressed("ui_accept")
+
+
+func _on_ready() -> void:
+	get_parent().add_to_group(&"player")
