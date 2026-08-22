@@ -10,7 +10,7 @@ extends MovementBase
 @export var move_friction: float = 1200.0
 
 @export_group("Jump")
-@export var jump_height: float = 64.0
+@export var jump_height: float = 80.0
 @export var max_jumps: int = 2
 @export var jump_gravity: float = 0.0
 @export var coyote_time: float = 0.1
@@ -60,6 +60,7 @@ var _standing_shape_position: Vector2
 var _dash_direction: float = 1.0
 var _is_running: bool = false
 var _wall_jump_lock_timer: float = 0.0
+var _was_falling: bool = false
 
 @onready var body: CharacterBody2D = get_parent() as CharacterBody2D
 @onready var state_chart: StateChart = %StateChart
@@ -104,6 +105,7 @@ func _on_setup() -> void:
 
 func _on_wall_slide_entered() -> void:
 	_jump_buffer_timer = 0.0
+	_was_falling = false
 	if wall_jump_enabled:
 		_jumps_used = 0
 		_coyote_timer = coyote_time
@@ -173,6 +175,7 @@ func _try_jump(is_running: bool, is_wall_jump: bool = false) -> bool:
 	_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
 	_jumps_used += 1
+	_was_falling = false
 
 	if is_wall_jump:
 		wall_jumped.emit()
@@ -198,6 +201,7 @@ func _update_jump_buffer(delta: float) -> void:
 
 func _land(reset_jumps: bool = false) -> void:
 	_dashes_used = 0
+	_was_falling = false
 	if reset_jumps:
 		_jumps_used = 0
 	landed.emit(_current_motion)
@@ -247,6 +251,12 @@ func _on_air_physics(delta: float) -> void:
 
 	if body.is_on_ceiling() and body.velocity.y < 0.0:
 		body.velocity.y = 0.0
+
+	if body.velocity.y > 0.0 and not _was_falling:
+		_was_falling = true
+		started_falling.emit()
+	elif body.velocity.y <= 0.0:
+		_was_falling = false
 
 	_coyote_timer -= delta
 	_update_jump_buffer(delta)
@@ -302,6 +312,7 @@ func _on_dash_entered() -> void:
 	_dash_timer = dash_duration
 	_dash_cooldown_timer = dash_cooldown
 	_dashes_used += 1
+	_was_falling = false
 	_dash_direction = facing_component.facing.x if not is_zero_approx(facing_component.facing.x) else 1.0
 	dashed.emit()
 

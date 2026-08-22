@@ -240,6 +240,18 @@ region = Rect2(288, 0, 48, 48)
 atlas = ExtResource("1_e605p")
 region = Rect2(336, 0, 48, 48)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_18204"]
+atlas = ExtResource("3_cyajl")
+region = Rect2(144, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p2ca5"]
+atlas = ExtResource("3_cyajl")
+region = Rect2(192, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yltab"]
+atlas = ExtResource("3_cyajl")
+region = Rect2(240, 0, 48, 48)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_8egkn"]
 atlas = ExtResource("1_0eoyi")
 region = Rect2(0, 0, 48, 48)
@@ -291,18 +303,6 @@ region = Rect2(48, 0, 48, 48)
 [sub_resource type="AtlasTexture" id="AtlasTexture_g8nad"]
 atlas = ExtResource("3_cyajl")
 region = Rect2(96, 0, 48, 48)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fpvr6"]
-atlas = ExtResource("3_cyajl")
-region = Rect2(144, 0, 48, 48)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dhrtq"]
-atlas = ExtResource("3_cyajl")
-region = Rect2(192, 0, 48, 48)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_a6jc5"]
-atlas = ExtResource("3_cyajl")
-region = Rect2(240, 0, 48, 48)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v7uls"]
 atlas = ExtResource("4_cyajl")
@@ -723,7 +723,21 @@ animations = [{
 }],
 "loop": 0,
 "name": &"fall",
-"speed": 15.0
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_18204")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p2ca5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yltab")
+}],
+"loop": 1,
+"name": &"falling",
+"speed": 7.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -769,15 +783,6 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_g8nad")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fpvr6")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dhrtq")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_a6jc5")
 }],
 "loop": 1,
 "name": &"jump",
@@ -979,7 +984,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"walk",
-"speed": 5.0
+"speed": 7.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -1003,7 +1008,7 @@ animations = [{
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=282735918]
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_q1sf4")
-animation = &"run"
+animation = &"dash"
 autoplay = "airspin"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=359072486]

@@ -12,3 +12,4 @@ signal wall_slid
 signal fell_from_wall
 signal dashed
 signal dash_ended
+signal started_falling
