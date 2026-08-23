@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bwoos7q5nwdi5"]
 
 [ext_resource type="Script" uid="uid://btgvo27tngq4o" path="res://SampleProject/Scripts/Game.gd" id="1_5jirj"]
-[ext_resource type="PackedScene" uid="uid://bkcsjsk2ciff" path="res://addons/maaacks_game_template/base/nodes/music_players/background_music_player.tscn" id="1_kp23o"]
 [ext_resource type="Script" uid="uid://dt3de17w1gtf6" path="res://scenes/game/scripts/game_timer.gd" id="2_5jirj"]
 [ext_resource type="Script" uid="uid://cyh0d64pfygbl" path="res://addons/maaacks_game_template/base/nodes/utilities/pause_menu_controller.gd" id="3_vaxfo"]
 [ext_resource type="PackedScene" uid="uid://dnbjkpn4vuy5e" path="res://scenes/windows/pause_menu_layer.tscn" id="4_ftsea"]
@@ -160,8 +159,6 @@ func _input(event: InputEvent) -> void:
 [node name="Game" type="Node" unique_id=1262092417]
 script = ExtResource("1_5jirj")
 starting_map = "uid://dr6xn055xr50i"
-
-[node name="BackgroundMusicPlayer" parent="." unique_id=986713811 instance=ExtResource("1_kp23o")]
 
 [node name="GameTimer" type="Node" parent="." unique_id=116840261]
 script = ExtResource("2_5jirj")

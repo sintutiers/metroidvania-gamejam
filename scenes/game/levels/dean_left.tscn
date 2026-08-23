@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b4rmoqo0vtwm5"]
 
 [ext_resource type="Texture2D" uid="uid://dh2pjnx1h4p35" path="res://The Amazing Art and Sound Folder/Section2art_Erin/backsky.png" id="1_8b6n8"]
+[ext_resource type="AudioStream" uid="uid://3d3avd2db6k5" path="res://The Amazing Art and Sound Folder/worldMusic2.mp3" id="2_owl58"]
 [ext_resource type="Texture2D" uid="uid://cimdsrnvuqkyr" path="res://The Amazing Art and Sound Folder/Section2art_Erin/mountain2.png" id="2_sohcg"]
 [ext_resource type="Texture2D" uid="uid://dwmmy4hdgs536" path="res://The Amazing Art and Sound Folder/Section2art_Erin/hills3.png" id="3_owl58"]
 [ext_resource type="Texture2D" uid="uid://dd7kk4e8dnmhs" path="res://The Amazing Art and Sound Folder/Section2art_Erin/perspective4.png" id="4_56i3r"]
@@ -8,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="6_r3pn2"]
 [ext_resource type="Texture2D" uid="uid://b137yv5sjkkx7" path="res://The Amazing Art and Sound Folder/Section2art_Erin/frontpath6.png" id="6_rmi45"]
 [ext_resource type="Texture2D" uid="uid://b1hhqiedxtx81" path="res://The Amazing Art and Sound Folder/entity1_grief.png" id="7_rmi45"]
+[ext_resource type="PackedScene" uid="uid://bkcsjsk2ciff" path="res://addons/maaacks_game_template/base/nodes/music_players/background_music_player.tscn" id="7_sohcg"]
 [ext_resource type="Texture2D" uid="uid://sbysu1agubiy" path="res://The Amazing Art and Sound Folder/erinnewpath.png" id="8_nyntl"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="9_c3xa0"]
 [ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="10_bmn5b"]
@@ -79,6 +81,9 @@ animations = [{
 radius = 32.0
 
 [node name="DeanMainTest" type="Node2D" unique_id=1756909701]
+
+[node name="BackgroundMusicPlayer" parent="." unique_id=1446051342 instance=ExtResource("7_sohcg")]
+stream = ExtResource("2_owl58")
 
 [node name="paralax" type="CanvasLayer" parent="." unique_id=231199125]
 layer = -1
