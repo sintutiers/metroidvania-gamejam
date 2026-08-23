@@ -94,7 +94,7 @@ follow_viewport_enabled = true
 [node name="Parallax2D" type="Parallax2D" parent="paralax" unique_id=1639397260]
 scroll_scale = Vector2(0.1, 1)
 repeat_size = Vector2(4800, 2480)
-repeat_times = 2
+repeat_times = 3
 
 [node name="Backcolor" type="Sprite2D" parent="paralax/Parallax2D" unique_id=749985605]
 texture = ExtResource("1_ofsjo")
@@ -103,7 +103,7 @@ centered = false
 [node name="Parallax2D2" type="Parallax2D" parent="paralax" unique_id=1974774224]
 scroll_scale = Vector2(0.2, 0.9)
 repeat_size = Vector2(4800, 0)
-repeat_times = 2
+repeat_times = 3
 
 [node name="Back2Sky" type="Sprite2D" parent="paralax/Parallax2D2" unique_id=997844201]
 texture = ExtResource("2_scqs1")
@@ -112,7 +112,7 @@ centered = false
 [node name="Parallax2D3" type="Parallax2D" parent="paralax" unique_id=785570408]
 scroll_scale = Vector2(0.3, 0.9)
 repeat_size = Vector2(4800, 0)
-repeat_times = 2
+repeat_times = 3
 
 [node name="Cityscape3" type="Sprite2D" parent="paralax/Parallax2D3" unique_id=771577278]
 texture = ExtResource("3_driqh")
@@ -121,7 +121,7 @@ centered = false
 [node name="Parallax2D4" type="Parallax2D" parent="paralax" unique_id=645641048]
 scroll_scale = Vector2(0.5, 0.9)
 repeat_size = Vector2(4800, 0)
-repeat_times = 2
+repeat_times = 3
 
 [node name="Cloud2Cityscape" type="Sprite2D" parent="paralax/Parallax2D4" unique_id=248320121]
 texture = ExtResource("4_7nu4i")
@@ -130,7 +130,7 @@ centered = false
 [node name="Parallax2D5" type="Parallax2D" parent="paralax" unique_id=1961962587]
 scroll_scale = Vector2(0.7, 0.9)
 repeat_size = Vector2(4800, 0)
-repeat_times = 2
+repeat_times = 3
 
 [node name="Frontcity" type="Sprite2D" parent="paralax/Parallax2D5" unique_id=1605795486]
 texture = ExtResource("5_s027v")
@@ -139,7 +139,7 @@ centered = false
 [node name="Parallax2D6" type="Parallax2D" parent="paralax" unique_id=1498767750]
 scroll_scale = Vector2(0.7, 0.9)
 repeat_size = Vector2(4800, 0)
-repeat_times = 2
+repeat_times = 3
 
 [node name="Sidewalk" type="Sprite2D" parent="paralax/Parallax2D6" unique_id=1521670434]
 texture = ExtResource("21_ot4ag")

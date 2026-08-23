@@ -143,12 +143,10 @@ texture = ExtResource("5_3npwj")
 centered = false
 
 [node name="Parallax2D6" type="Parallax2D" parent="paralax" unique_id=451295441]
-visible = false
 repeat_size = Vector2(4800, 0)
 repeat_times = 2
 
 [node name="Frontpathcave3" type="Sprite2D" parent="paralax/Parallax2D6" unique_id=1772349153]
-visible = false
 texture = ExtResource("6_qub21")
 centered = false
 
