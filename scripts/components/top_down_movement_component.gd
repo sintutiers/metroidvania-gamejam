@@ -5,11 +5,10 @@ extends MovementBase
 @export var move_speed: float = 100.0
 @export var locks_during_interact: bool = true
 
-var _was_moving: bool = false
-var _locked: bool = false
-
 var input_component: InputComponent
 var facing_component: FacingComponent
+var _was_moving: bool = false
+var _locked: bool = false
 
 @onready var body: CharacterBody2D = get_parent() as CharacterBody2D
 @onready var move_state: StateChartState = %Move
@@ -54,4 +53,4 @@ func _on_move_physics(_delta: float) -> void:
 			moved.emit(facing_component.facing)
 		_was_moving = true
 
-	body.move_and_slide(
+	body.move_and_slide()
