@@ -31,21 +31,15 @@ SceneLoader="*uid://cbwmrnp0af35y"
 ProjectMusicController="*uid://r5t485lr3p7t"
 ProjectUISoundController="*uid://cc37235kj4384"
 PhantomCameraManager="*uid://duq6jhf6unyis"
-SoundManager="*uid://6q1wagejt60k"
 StartUp="*uid://cno5ujal5t3kf"
 AppConfig="*uid://cjke6crjg14a0"
 DialogueManager="*uid://c3rodes2l3gxb"
 MetsysBootstrap="*uid://bcjurqrb7j47f"
+DebugMenu="*uid://cggqb75a8w8r"
+SoundManager="*uid://6q1wagejt60k"
 
 [debug]
 
-gdscript/warnings/unassigned_variable=0
-gdscript/warnings/unassigned_variable_op_assign=0
-gdscript/warnings/unused_variable=0
-gdscript/warnings/unused_local_constant=0
-gdscript/warnings/unused_private_class_variable=0
-gdscript/warnings/unused_parameter=0
-gdscript/warnings/integer_division=0
 gdscript/warnings/narrowing_conversion=0
 
 [display]
