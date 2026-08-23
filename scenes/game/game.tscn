@@ -159,7 +159,7 @@ func _input(event: InputEvent) -> void:
 
 [node name="Game" type="Node" unique_id=1262092417]
 script = ExtResource("1_5jirj")
-starting_map = "uid://cv55nv1c2sbiq"
+starting_map = "uid://dr6xn055xr50i"
 
 [node name="BackgroundMusicPlayer" parent="." unique_id=986713811 instance=ExtResource("1_kp23o")]
 
@@ -178,7 +178,7 @@ level_loading_screen = NodePath("../LevelLoadingScreen")
 [node name="LevelManager" type="Node" parent="." unique_id=1350972375 node_paths=PackedStringArray("level_loader", "scene_lister")]
 script = ExtResource("6_3xj4h")
 level_loader = NodePath("../LevelLoader")
-starting_level_path = "uid://bnvitm5yyy5nv"
+starting_level_path = "uid://dr6xn055xr50i"
 scene_lister = NodePath("SceneLister")
 game_won_scene = ExtResource("7_5v6r0")
 level_lost_scene = ExtResource("8_uyinl")

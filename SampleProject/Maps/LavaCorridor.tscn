@@ -5,6 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://2pmbr0eamtud" path="res://SampleProject/Sprites/Lava.png" id="3_8xchv"]
 [ext_resource type="PackedScene" uid="uid://c8j6i3fx8p758" path="res://SampleProject/Objects/Collectible.tscn" id="4_qtkhd"]
 [ext_resource type="PackedScene" uid="uid://cuo3rbw43trj4" path="res://SampleProject/Objects/Pipe.tscn" id="5_7l6gd"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="6_o5vxu"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="7_vrxa6"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="8_yxpxe"]
 
 [sub_resource type="GDScript" id="GDScript_2b1c4"]
 script/source = "extends Node2D
@@ -65,6 +68,9 @@ _data = {
 &"RESET": SubResource("Animation_u17jm")
 }
 
+[sub_resource type="Resource" id="Resource_78adu"]
+script = ExtResource("8_yxpxe")
+
 [node name="Map" type="Node2D" unique_id=28799038]
 
 [node name="TileMap" type="Node2D" parent="." unique_id=1545301271]
@@ -111,5 +117,19 @@ metadata/object_id = &"lava_orb"
 [node name="Pipe" parent="." unique_id=90781430 instance=ExtResource("5_7l6gd")]
 position = Vector2(0, 312)
 points = PackedVector2Array(0, 0, 216, 0, 216, 96)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1736664410]
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1036462367]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("6_o5vxu")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=2034757029]
+top_level = true
+script = ExtResource("7_vrxa6")
+follow_mode = 2
+tween_resource = SubResource("Resource_78adu")
 
 [connection signal="body_entered" from="LavaPool/Lava" to="LavaPool" method="lava_enter"]

@@ -17,6 +17,7 @@ script = ExtResource("7_vxmpj")
 [node name="Map" type="Node2D" unique_id=403972411]
 
 [node name="TileMap" type="Node2D" parent="." unique_id=1905298203]
+scale = Vector2(1.12, 1.12)
 
 [node name="Foreground" type="TileMapLayer" parent="TileMap" unique_id=1507375893]
 use_parent_material = true

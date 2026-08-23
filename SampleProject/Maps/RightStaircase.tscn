@@ -3,6 +3,9 @@
 [ext_resource type="TileSet" uid="uid://bwpcg2opya34n" path="res://SampleProject/Resources/Tileset.tres" id="1_1mtk5"]
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="2_y78dk"]
 [ext_resource type="PackedScene" uid="uid://d0hyimq1tkfa2" path="res://SampleProject/Objects/MapItem.tscn" id="3_j1w80"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_yq07n"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="5_wskkb"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="6_7ao32"]
 
 [sub_resource type="GDScript" id="GDScript_ft7fx"]
 resource_name = "Secret"
@@ -28,9 +31,13 @@ func on_body_entered(body: Node2D) -> void:
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j3y4p"]
 size = Vector2(88, 80)
 
+[sub_resource type="Resource" id="Resource_pfp7a"]
+script = ExtResource("6_7ao32")
+
 [node name="Map" type="Node2D" unique_id=1008994864]
 
 [node name="TileMap" type="Node2D" parent="." unique_id=600571295]
+scale = Vector2(1.12, 1.12)
 
 [node name="Foreground" type="TileMapLayer" parent="TileMap" unique_id=441428357]
 use_parent_material = true
@@ -63,5 +70,19 @@ shape = SubResource("RectangleShape2D_j3y4p")
 
 [node name="MapItem" parent="." unique_id=545922034 instance=ExtResource("3_j1w80")]
 position = Vector2(336, 360)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=2074258172]
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1863781952]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("4_yq07n")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=138590658]
+top_level = true
+script = ExtResource("5_wskkb")
+follow_mode = 2
+tween_resource = SubResource("Resource_pfp7a")
 
 [connection signal="body_entered" from="Secret" to="Secret" method="on_body_entered"]

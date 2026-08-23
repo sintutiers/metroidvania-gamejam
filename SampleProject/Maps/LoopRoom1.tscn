@@ -4,12 +4,18 @@
 [ext_resource type="TileSet" uid="uid://bwpcg2opya34n" path="res://SampleProject/Resources/Tileset.tres" id="2_haetb"]
 [ext_resource type="Script" uid="uid://b7ocxe212putd" path="res://SampleProject/Scripts/LoopScript.gd" id="3_nbwjy"]
 [ext_resource type="PackedScene" uid="uid://c8j6i3fx8p758" path="res://SampleProject/Objects/Collectible.tscn" id="4_vw2xq"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="5_tqi87"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="6_si5km"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="7_8s315"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_56li3"]
 size = Vector2(32, 96)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vw2xq"]
 size = Vector2(20, 96)
+
+[sub_resource type="Resource" id="Resource_lrw1n"]
+script = ExtResource("7_8s315")
 
 [node name="Map" type="Node2D" unique_id=760973673]
 
@@ -68,6 +74,20 @@ shape = SubResource("RectangleShape2D_vw2xq")
 [node name="Collectible" parent="." unique_id=2144538014 instance=ExtResource("4_vw2xq")]
 position = Vector2(120, 112)
 metadata/object_id = &"LoopRoom1/./Collectible"
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=350675851]
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1614439325]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("5_tqi87")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=581242701]
+top_level = true
+script = ExtResource("6_si5km")
+follow_mode = 2
+tween_resource = SubResource("Resource_lrw1n")
 
 [connection signal="body_entered" from="Loop1" to="Loop1" method="_on_body_entered"]
 [connection signal="body_exited" from="Loop1" to="Loop1" method="_on_body_exited"]

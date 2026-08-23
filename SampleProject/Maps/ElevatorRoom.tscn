@@ -5,6 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://cuo3rbw43trj4" path="res://SampleProject/Objects/Pipe.tscn" id="3_y7k5c"]
 [ext_resource type="PackedScene" uid="uid://bex32x8t30k4n" path="res://SampleProject/Objects/Elevator.tscn" id="4_xc2rt"]
 [ext_resource type="Script" uid="uid://0u1nlyd1ld6o" path="res://SampleProject/Scripts/SavePoint.gd" id="5_5xt7j"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="6_6gygk"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="7_tunqp"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="8_sqwcm"]
 
 [sub_resource type="GDScript" id="GDScript_7vkwe"]
 script/source = "extends Line2D
@@ -19,6 +22,9 @@ func _ready() -> void:
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_171gj"]
 radius = 32.0
+
+[sub_resource type="Resource" id="Resource_45lqm"]
+script = ExtResource("8_sqwcm")
 
 [node name="Map" type="Node2D" unique_id=1983457023]
 
@@ -69,3 +75,17 @@ theme_override_font_sizes/font_size = 40
 text = "S"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1633229120]
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=902733418]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("6_6gygk")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=1331403670]
+top_level = true
+script = ExtResource("7_tunqp")
+follow_mode = 2
+tween_resource = SubResource("Resource_45lqm")
