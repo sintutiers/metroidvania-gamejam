@@ -10,9 +10,15 @@ var respawn_heal_amount: int = 0
 var heal_on_respawn: bool = true
 
 var is_respawning: bool = false
+var reset_position: Vector2
+
 var _health: Health
 
 @onready var body: CharacterBody2D = get_parent() as CharacterBody2D
+
+
+func mark_room_entry_point() -> void:
+	reset_position = body.global_position
 
 
 func fall_and_respawn(respawn_position: Vector2) -> void:
@@ -37,4 +43,4 @@ func _on_setup() -> void:
 
 
 func _on_died(_entity: Node) -> void:
-	fall_and_respawn(body.global_position)
+	fall_and_respawn(reset_position if reset_position else body.global_position)

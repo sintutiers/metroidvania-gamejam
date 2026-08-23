@@ -42,38 +42,6 @@ func _try_fire() -> void:
 	weapon.behavior.fire(self, muzzle)
 	fired.emit()
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/ability_component.gd =====
-class_name AbilityComponent
-extends Component
-
-signal ability_granted(id: StringName, new_level: int)
-
-@export var starting_levels: Dictionary[StringName, int] = { }
-
-var _levels: Dictionary[StringName, int] = { }
-
-
-func get_level(id: StringName) -> int:
-	return _levels.get(id, 0)
-
-
-func has_ability(id: StringName) -> bool:
-	return get_level(id) > 0
-
-
-func grant(id: StringName, amount: int = 1) -> void:
-	_levels[id] = get_level(id) + amount
-	ability_granted.emit(id, _levels[id])
-
-
-func set_level(id: StringName, level: int) -> void:
-	_levels[id] = level
-	ability_granted.emit(id, level)
-
-
-func _on_setup() -> void:
-	_levels = starting_levels.duplicate()
-
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/input_component.gd =====
 class_name InputComponent
 extends Component
@@ -174,65 +142,6 @@ func is_launch_accept_event(event: InputEvent) -> bool:
 
 func _on_ready() -> void:
 	get_parent().add_to_group(&"player")
-
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/top_down_movement_component.gd =====
-# top_down_movement_component.gd
-class_name TopDownMovementComponent
-extends MovementBase
-
-@export var move_speed: float = 100.0
-@export var locks_during_interact: bool = true
-
-var _was_moving: bool = false
-var _locked: bool = false
-
-var input_component: InputComponent
-var facing_component: FacingComponent
-
-@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
-@onready var move_state: StateChartState = %Move
-
-
-func _ready() -> void:
-	super._ready()
-	track(move_state.state_physics_processing, _on_move_physics)
-
-	if locks_during_interact:
-		var interact_component := get_component(InteractComponent, false) as InteractComponent
-		if interact_component:
-			track(
-				interact_component.interact_started,
-				func() -> void:
-					_locked = true,
-			)
-			track(
-				interact_component.interact_ended,
-				func() -> void:
-					_locked = false,
-			)
-
-
-func _on_setup() -> void:
-	facing_component = get_component(FacingComponent) as FacingComponent
-	input_component = get_component(InputComponent) as InputComponent
-
-
-func _on_move_physics(_delta: float) -> void:
-	var input_dir: Vector2 = input_component.get_movement_vector()
-
-	if _locked or input_dir.is_zero_approx():
-		body.velocity = Vector2.ZERO
-		if _was_moving:
-			stopped.emit()
-		_was_moving = false
-	else:
-		body.velocity = input_dir * move_speed
-		var changed: bool = facing_component.update(input_dir)
-		if not _was_moving or changed:
-			moved.emit(facing_component.facing)
-		_was_moving = true
-
-	body.move_and_slide(
 
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/interact_component.gd =====
 #interact_component.gd
@@ -376,10 +285,196 @@ func _on_setup() -> void:
 func _on_ready() -> void:
 	aim_angle = gun.rotation
 
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/interaction_component.gd =====
+# interaction_component.gd
+class_name InteractionComponent
+extends Component
+
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var interact_radius: float = 32.0
+
+var interact_area: Area2D
+var input_component: InputComponent
+var state_chart: StateChart
+var interact_component: InteractComponent
+
+@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if interact_component and interact_component.is_locked:
+		return
+	if input_component.is_interact_event(event):
+		interact()
+
+
+func interact() -> void:
+	var closest: InteractableThing = null
+	var closest_dist_sq: float = INF
+	var player_pos: Vector2 = body.global_position
+	for interactable: InteractableThing in get_tree().get_nodes_in_group(&"interactable"):
+		var dist_sq: float = player_pos.distance_squared_to(interactable.global_position)
+		if dist_sq > interact_radius * interact_radius:
+			continue
+		if dist_sq < closest_dist_sq:
+			closest_dist_sq = dist_sq
+			closest = interactable
+	if not closest:
+		return
+	closest.trigger(interact_area)
+	if state_chart:
+		state_chart.send_event(StateEvents.INTERACT)
+	if closest.holds_interact_lock:
+		closest.interaction_finished.connect(_end_interact, CONNECT_ONE_SHOT)
+	else:
+		_end_interact()
+
+
+func _on_setup() -> void:
+	interact_area = get_component(Area2D, false) as Area2D
+	input_component = get_component(InputComponent) as InputComponent
+	state_chart = get_component(StateChart, false) as StateChart
+	interact_component = get_component(InteractComponent, false) as InteractComponent
+
+
+func _end_interact() -> void:
+	if state_chart:
+		state_chart.send_event(StateEvents.INTERACT_END)
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/audio_component.gd =====
+# audio_component.gd
+class_name AudioComponent
+extends Component
+
+@export var footstep_sounds: Array[AudioStream] = []
+
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var fire_sound: AudioStream
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var footstep_interval: float = 0.35
+
+var _is_walking: bool = false
+var _footstep_timer: float = 0.0
+
+
+func _physics_process(delta: float) -> void:
+	if not _is_walking:
+		return
+	_footstep_timer -= delta
+	if _footstep_timer <= 0.0:
+		_footstep_timer = footstep_interval
+		play_footstep()
+
+
+func play_footstep() -> void:
+	if footstep_sounds.is_empty():
+		return
+	SoundManager.play_sound(footstep_sounds.pick_random())
+
+
+func play_fire() -> void:
+	if not fire_sound:
+		return
+	SoundManager.play_sound(fire_sound)
+
+
+func _on_setup() -> void:
+	var movement := get_component(MovementBase, false) as MovementBase
+	if movement:
+		track(movement.moved, _on_moved)
+		track(movement.stopped, _on_stopped)
+
+
+func _on_moved(_direction: Vector2) -> void:
+	_is_walking = true
+
+
+func _on_stopped() -> void:
+	_is_walking = false
+	_footstep_timer = 0.0
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/locked_gate_component.gd =====
+class_name LockedGateComponent
+extends Component
+
+enum UnlockTrigger {
+	AUTOMATIC,
+	ON_INTERACT,
+	ON_OVERLAP,
+}
+
+@export var requirements: Array[GateRequirement] = []
+
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var require_all: bool = true
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var stays_as_walkthrough: bool = false
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var unlock_mode: UnlockTrigger = UnlockTrigger.AUTOMATIC
+
+var _collision_shape: CollisionShape2D
+var _interactable: InteractableThing
+var _overlap_area: Area2D
+var _unlocked: bool = false
+
+
+func _on_setup() -> void:
+	_collision_shape = get_component(CollisionShape2D, false) as CollisionShape2D
+
+	if unlock_mode == UnlockTrigger.ON_INTERACT:
+		_interactable = get_component(InteractableThing, false) as InteractableThing
+		if _interactable:
+			track(_interactable.interacted, _on_interacted)
+	elif unlock_mode == UnlockTrigger.ON_OVERLAP:
+		_overlap_area = get_component(Area2D, false) as Area2D
+		if _overlap_area:
+			track(_overlap_area.body_entered, _on_body_entered)
+		else:
+			push_warning("LockedGateComponent: ON_OVERLAP set but no Area2D found.")
+
+	# Only automatic gates react to requirement changes and check immediately.
+	if unlock_mode == UnlockTrigger.AUTOMATIC:
+		for req: GateRequirement in requirements:
+			req.setup(self)
+			track(req.requirement_changed, _check_unlocked)
+		_check_unlocked()
+
+
+func _on_interacted(_by: Area2D) -> void:
+	_check_unlocked()
+
+
+func _on_body_entered(body: Node2D) -> void:
+	if not body.is_in_group(&"player"):
+		return
+	_check_unlocked()
+
+
+func _check_unlocked() -> void:
+	if _unlocked or requirements.is_empty():
+		return
+	var player := get_tree().get_first_node_in_group(&"player")
+	if not player:
+		return
+	var met: bool = require_all
+	for req: GateRequirement in requirements:
+		var r: bool = req.is_met(player)
+		met = (met and r) if require_all else (met or r)
+	if met:
+		_unlock()
+
+
+func _unlock() -> void:
+	_unlocked = true
+	if _collision_shape:
+		_collision_shape.set_deferred("disabled", true)
+	if not stays_as_walkthrough:
+		get_parent().queue_free()
+
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/sideways_movement_component.gd =====
-# sideways_movement_component.gd
+# scripts/components/sideways_movement_component.gd
 class_name SidewaysMovementComponent
-extends MovementBase
+extends PlatformerMovementBase
 
 @export_group("Movement")
 @export_range(0.0, 1000.0, 10.0, ETP.PROPERTY)
@@ -405,7 +500,7 @@ var jump_buffer_time: float = 0.1
 @export_range(1, 10, 1, ETP.PROPERTY)
 var default_max_jumps: int = 2
 @export_custom(ETP.NONE, ETP.PROPERTY)
-var jump_ability_id: String = "extra_jumps"
+var jump_ability_id: String = String(AbilityIds.EXTRA_JUMPS)
 @export_range(0.0, 1.0, 0.05, ETP.PROPERTY)
 var jump_cut_multiplier: float = 0.5
 @export_range(0.0, 3.0, 0.05, ETP.PROPERTY)
@@ -791,156 +886,6 @@ func _max_jumps() -> int:
 	)
 	return default_max_jumps + bonus
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/interaction_component.gd =====
-# interaction_component.gd
-class_name InteractionComponent
-extends Component
-
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var interact_radius: float = 32.0
-
-var interact_area: Area2D
-var input_component: InputComponent
-var state_chart: StateChart
-var interact_component: InteractComponent
-
-@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if interact_component and interact_component.is_locked:
-		return
-	if input_component.is_interact_event(event):
-		interact()
-
-
-func interact() -> void:
-	var closest: InteractableThing = null
-	var closest_dist_sq: float = INF
-	var player_pos: Vector2 = body.global_position
-	for interactable: InteractableThing in get_tree().get_nodes_in_group(&"interactable"):
-		var dist_sq: float = player_pos.distance_squared_to(interactable.global_position)
-		if dist_sq > interact_radius * interact_radius:
-			continue
-		if dist_sq < closest_dist_sq:
-			closest_dist_sq = dist_sq
-			closest = interactable
-	if not closest:
-		return
-	closest.trigger(interact_area)
-	if state_chart:
-		state_chart.send_event(StateEvents.INTERACT)
-	if closest.holds_interact_lock:
-		closest.interaction_finished.connect(_end_interact, CONNECT_ONE_SHOT)
-	else:
-		_end_interact()
-
-
-func _on_setup() -> void:
-	interact_area = get_component(Area2D, false) as Area2D
-	input_component = get_component(InputComponent) as InputComponent
-	state_chart = get_component(StateChart, false) as StateChart
-	interact_component = get_component(InteractComponent, false) as InteractComponent
-
-
-func _end_interact() -> void:
-	if state_chart:
-		state_chart.send_event(StateEvents.INTERACT_END)
-
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/respawn_component.gd =====
-# respawn_component.gd
-class_name RespawnComponent
-extends Component
-
-signal respawned
-
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var respawn_heal_amount: int = 0
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var heal_on_respawn: bool = true
-
-var is_respawning: bool = false
-var _health: Health
-
-@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
-
-
-func fall_and_respawn(respawn_position: Vector2) -> void:
-	if is_respawning:
-		return
-	is_respawning = true
-	body.velocity = Vector2.ZERO
-	body.global_position = respawn_position
-	is_respawning = false
-	respawned.emit()
-	if heal_on_respawn and _health:
-		if respawn_heal_amount <= 0:
-			_health.fill()
-		else:
-			_health.heal(respawn_heal_amount)
-
-
-func _on_setup() -> void:
-	_health = get_component(Health, false) as Health
-	if _health:
-		track(_health.died, _on_died)
-
-
-func _on_died(_entity: Node) -> void:
-	fall_and_respawn(body.global_position)
-
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/audio_component.gd =====
-# audio_component.gd
-class_name AudioComponent
-extends Component
-
-@export var footstep_sounds: Array[AudioStream] = []
-
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var fire_sound: AudioStream
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var footstep_interval: float = 0.35
-
-var _is_walking: bool = false
-var _footstep_timer: float = 0.0
-
-
-func _physics_process(delta: float) -> void:
-	if not _is_walking:
-		return
-	_footstep_timer -= delta
-	if _footstep_timer <= 0.0:
-		_footstep_timer = footstep_interval
-		play_footstep()
-
-
-func play_footstep() -> void:
-	if footstep_sounds.is_empty():
-		return
-	SoundManager.play_sound(footstep_sounds.pick_random())
-
-
-func play_fire() -> void:
-	if not fire_sound:
-		return
-	SoundManager.play_sound(fire_sound)
-
-
-func _on_setup() -> void:
-	var movement := get_component(MovementBase, false) as MovementBase
-	if movement:
-		track(movement.moved, _on_moved)
-		track(movement.stopped, _on_stopped)
-
-
-func _on_moved(_direction: Vector2) -> void:
-	_is_walking = true
-
-
-func _on_stopped() -> void:
-	_is_walking = false
-	_footstep_timer = 0.0
-
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/vfx_component.gd =====
 # vfx_component.gd
 class_name VFXComponent
@@ -1003,7 +948,7 @@ func _physics_process(delta: float) -> void:
 
 func _on_setup() -> void:
 	entity = get_parent() as Node2D
-	var movement := get_component(MovementBase, false) as MovementBase
+	var movement := get_component(PlatformerMovementBase, false) as PlatformerMovementBase
 	if movement:
 		track(movement.ground_motion_changed, _on_ground_motion_changed)
 		track(movement.jumped, _on_jumped)
@@ -1083,84 +1028,6 @@ func _spawn_persistent(scene: PackedScene, offset: Vector2 = Vector2.ZERO) -> CP
 	particles.emitting = false
 	return particles
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/locked_gate_component.gd =====
-class_name LockedGateComponent
-extends Component
-
-enum UnlockTrigger {
-	AUTOMATIC,
-	ON_INTERACT,
-	ON_OVERLAP,
-}
-
-@export var requirements: Array[GateRequirement] = []
-
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var require_all: bool = true
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var stays_as_walkthrough: bool = false
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var unlock_mode: UnlockTrigger = UnlockTrigger.AUTOMATIC
-
-var _collision_shape: CollisionShape2D
-var _interactable: InteractableThing
-var _overlap_area: Area2D
-var _unlocked: bool = false
-
-
-func _on_setup() -> void:
-	_collision_shape = get_component(CollisionShape2D, false) as CollisionShape2D
-
-	if unlock_mode == UnlockTrigger.ON_INTERACT:
-		_interactable = get_component(InteractableThing, false) as InteractableThing
-		if _interactable:
-			track(_interactable.interacted, _on_interacted)
-	elif unlock_mode == UnlockTrigger.ON_OVERLAP:
-		_overlap_area = get_component(Area2D, false) as Area2D
-		if _overlap_area:
-			track(_overlap_area.body_entered, _on_body_entered)
-		else:
-			push_warning("LockedGateComponent: ON_OVERLAP set but no Area2D found.")
-
-	# Only automatic gates react to requirement changes and check immediately.
-	if unlock_mode == UnlockTrigger.AUTOMATIC:
-		for req: GateRequirement in requirements:
-			req.setup(self)
-			track(req.requirement_changed, _check_unlocked)
-		_check_unlocked()
-
-
-func _on_interacted(_by: Area2D) -> void:
-	_check_unlocked()
-
-
-func _on_body_entered(body: Node2D) -> void:
-	if not body.is_in_group(&"player"):
-		return
-	_check_unlocked()
-
-
-func _check_unlocked() -> void:
-	if _unlocked or requirements.is_empty():
-		return
-	var player := get_tree().get_first_node_in_group(&"player")
-	if not player:
-		return
-	var met: bool = require_all
-	for req: GateRequirement in requirements:
-		var r: bool = req.is_met(player)
-		met = (met and r) if require_all else (met or r)
-	if met:
-		_unlock()
-
-
-func _unlock() -> void:
-	_unlocked = true
-	if _collision_shape:
-		_collision_shape.set_deferred("disabled", true)
-	if not stays_as_walkthrough:
-		get_parent().queue_free()
-
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/animation_component.gd =====
 # animation_component.gd
 class_name AnimationComponent
@@ -1185,7 +1052,7 @@ func _on_ready() -> void:
 
 
 func _on_setup() -> void:
-	var movement := get_component(MovementBase, false) as MovementBase
+	var movement := get_component(PlatformerMovementBase, false) as PlatformerMovementBase
 	if movement:
 		track(movement.ground_motion_changed, _on_ground_motion_changed)
 		track(movement.jumped, _on_jumped)
@@ -1322,6 +1189,64 @@ func _on_flipped(new_facing_x: float) -> void:
 	_flip_tween = create_tween()
 	_flip_tween.tween_property(sprite, "scale:x", target_scale_x, flip_duration)
 
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/top_down_movement_component.gd =====
+# top_down_movement_component.gd
+class_name TopDownMovementComponent
+extends MovementBase
+
+@export var move_speed: float = 100.0
+@export var locks_during_interact: bool = true
+
+var input_component: InputComponent
+var facing_component: FacingComponent
+var _was_moving: bool = false
+var _locked: bool = false
+
+@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
+@onready var move_state: StateChartState = %Move
+
+
+func _ready() -> void:
+	super._ready()
+	track(move_state.state_physics_processing, _on_move_physics)
+
+	if locks_during_interact:
+		var interact_component := get_component(InteractComponent, false) as InteractComponent
+		if interact_component:
+			track(
+				interact_component.interact_started,
+				func() -> void:
+					_locked = true,
+			)
+			track(
+				interact_component.interact_ended,
+				func() -> void:
+					_locked = false,
+			)
+
+
+func _on_setup() -> void:
+	facing_component = get_component(FacingComponent) as FacingComponent
+	input_component = get_component(InputComponent) as InputComponent
+
+
+func _on_move_physics(_delta: float) -> void:
+	var input_dir: Vector2 = input_component.get_movement_vector()
+
+	if _locked or input_dir.is_zero_approx():
+		body.velocity = Vector2.ZERO
+		if _was_moving:
+			stopped.emit()
+		_was_moving = false
+	else:
+		body.velocity = input_dir * move_speed
+		var changed: bool = facing_component.update(input_dir)
+		if not _was_moving or changed:
+			moved.emit(facing_component.facing)
+		_was_moving = true
+
+	body.move_and_slide()
+
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/facing_component.gd =====
 # facing_component.gd
 class_name FacingComponent
@@ -1329,28 +1254,113 @@ extends Component
 
 signal flipped(new_facing_x: float)
 
-var facing: Vector2 = Vector2.DOWN
+@export var default_facing_right: bool = true
+
+var facing: Vector2
 
 
 func update(direction: Vector2) -> bool:
 	if direction.is_zero_approx():
 		return false
-
 	var new_facing := facing
 	if not is_zero_approx(direction.x):
 		new_facing.x = signf(direction.x)
 	if not is_zero_approx(direction.y):
 		new_facing.y = signf(direction.y)
-
-	if (
-		not is_zero_approx(new_facing.x) and not is_zero_approx(facing.x)
-		and signf(new_facing.x) != signf(facing.x)
-	):
+	if (not is_zero_approx(new_facing.x) and signf(new_facing.x) != signf(facing.x)):
 		flipped.emit(new_facing.x)
-
 	var changed: bool = new_facing != facing
 	facing = new_facing
 	return changed
+
+
+func _on_setup() -> void:
+	facing = Vector2(1.0 if default_facing_right else -1.0, -1.0)
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/ability_component.gd =====
+# scripts/components/ability_component.gd
+class_name AbilityComponent
+extends Component
+
+signal ability_granted(id: StringName, new_level: int)
+
+@export var starting_levels: Dictionary[StringName, int] = { }
+
+var _levels: Dictionary[StringName, int] = { }
+
+
+func get_level(id: StringName) -> int:
+	return _levels.get(id, 0)
+
+
+func has_ability(id: StringName) -> bool:
+	return get_level(id) > 0
+
+
+func grant(id: StringName, amount: int = 1) -> void:
+	_levels[id] = get_level(id) + amount
+	ability_granted.emit(id, _levels[id])
+
+
+func set_level(id: StringName, level: int) -> void:
+	_levels[id] = level
+	ability_granted.emit(id, level)
+
+
+func get_all_levels() -> Dictionary[StringName, int]:
+	return _levels.duplicate()
+
+
+func _on_setup() -> void:
+	_levels = starting_levels.duplicate()
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/respawn_component.gd =====
+# respawn_component.gd
+class_name RespawnComponent
+extends Component
+
+signal respawned
+
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var respawn_heal_amount: int = 0
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var heal_on_respawn: bool = true
+
+var is_respawning: bool = false
+var reset_position: Vector2
+
+var _health: Health
+
+@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
+
+
+func mark_room_entry_point() -> void:
+	reset_position = body.global_position
+
+
+func fall_and_respawn(respawn_position: Vector2) -> void:
+	if is_respawning:
+		return
+	is_respawning = true
+	body.velocity = Vector2.ZERO
+	body.global_position = respawn_position
+	is_respawning = false
+	respawned.emit()
+	if heal_on_respawn and _health:
+		if respawn_heal_amount <= 0:
+			_health.fill()
+		else:
+			_health.heal(respawn_heal_amount)
+
+
+func _on_setup() -> void:
+	_health = get_component(Health, false) as Health
+	if _health:
+		track(_health.died, _on_died)
+
+
+func _on_died(_entity: Node) -> void:
+	fall_and_respawn(reset_position if reset_position else body.global_position)
 
 ===== /home/void/repositories/metroidvania-gamejam/scripts/jumpad.gd =====
 class_name Launchpad
@@ -1383,23 +1393,6 @@ func _on_body_exited(_body: Node2D) -> void:
 	if _target:
 		_target.clear_pad()
 	_target = null
-
-===== /home/void/repositories/metroidvania-gamejam/scripts/level_and_state_manager.gd =====
-extends LevelManager
-
-func set_current_level_path(value : String) -> void:
-	super.set_current_level_path(value)
-	GameState.set_current_level_path(value)
-
-func set_checkpoint_level_path(value : String) -> void:
-	super.set_checkpoint_level_path(value)
-	GameState.set_checkpoint_level_path(value)
-
-func get_checkpoint_level_path() -> String:
-	var state_level_path := GameState.get_checkpoint_level_path()
-	if not state_level_path.is_empty():
-		return state_level_path
-	return super.get_checkpoint_level_path()
 
 ===== /home/void/repositories/metroidvania-gamejam/scripts/level_state.gd =====
 class_name LevelState
@@ -1493,102 +1486,6 @@ func _ready() -> void:
 		health = Component.find_component(get_parent(), Health, true) as Health
 	super()
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/game_state.gd =====
-class_name GameState
-extends Resource
-
-const STATE_NAME: String = "GameState"
-const FILE_PATH = "res://scripts/game_state.gd"
-
-@export var level_states: Dictionary = { }
-@export var current_level_path: String
-@export var checkpoint_level_path: String
-@export var total_games_played: int
-@export var play_time: int
-@export var total_time: int
-
-
-static func get_level_state(level_state_key: String) -> LevelState:
-	if not has_game_state():
-		return
-	var game_state := get_or_create_state()
-	if level_state_key.is_empty():
-		return
-	if level_state_key in game_state.level_states:
-		return game_state.level_states[level_state_key]
-	else:
-		var new_level_state := LevelState.new()
-		game_state.level_states[level_state_key] = new_level_state
-		GlobalState.save()
-		return new_level_state
-
-
-static func has_game_state() -> bool:
-	return GlobalState.has_state(STATE_NAME)
-
-
-static func get_or_create_state() -> GameState:
-	return GlobalState.get_or_create_state(STATE_NAME, FILE_PATH)
-
-
-static func get_current_level_path() -> String:
-	if not has_game_state():
-		return ""
-	var game_state := get_or_create_state()
-	return game_state.current_level_path
-
-
-static func get_checkpoint_level_path() -> String:
-	if not has_game_state():
-		return ""
-	var game_state := get_or_create_state()
-	return game_state.checkpoint_level_path
-
-
-static func get_levels_reached() -> int:
-	if not has_game_state():
-		return 0
-	var game_state := get_or_create_state()
-	return game_state.level_states.size()
-
-
-static func set_checkpoint_level_path(level_path: String) -> void:
-	var game_state := get_or_create_state()
-	game_state.checkpoint_level_path = level_path
-	get_level_state(level_path)
-	GlobalState.save()
-
-
-static func set_current_level_path(level_path: String) -> void:
-	var game_state := get_or_create_state()
-	game_state.current_level_path = level_path
-	GlobalState.save()
-
-
-static func start_game() -> void:
-	var game_state := get_or_create_state()
-	game_state.total_games_played += 1
-	GlobalState.save()
-	if not MetSys.save_data:
-		MetSys.reset_state()
-		MetSys.set_save_data()
-
-
-static func continue_game() -> void:
-	var game_state := get_or_create_state()
-	game_state.current_level_path = game_state.checkpoint_level_path
-	GlobalState.save()
-
-
-static func reset() -> void:
-	var game_state := get_or_create_state()
-	game_state.level_states = { }
-	game_state.current_level_path = ""
-	game_state.checkpoint_level_path = ""
-	game_state.play_time = 0
-	game_state.total_time = 0
-	GlobalState.save()
-
 ===== /home/void/repositories/metroidvania-gamejam/scripts/metsys_bootstrap.gd =====
 extends Node
 
@@ -1597,25 +1494,6 @@ func _ready() -> void:
 	if not MetSys.save_data:
 		MetSys.reset_state()
 		MetSys.set_save_data()
-
-===== /home/void/repositories/metroidvania-gamejam/scripts/movement_base.gd =====
-class_name MovementBase
-extends Component
-
-signal moved(direction: Vector2)
-signal stopped
-signal ground_motion_changed(motion: StringName)
-signal jumped(jump_number: int)
-signal wall_jumped
-signal extra_jumped(jump_number: int)
-signal landed(motion: StringName)
-signal wall_slid
-signal fell_from_wall
-signal dashed
-signal dash_ended
-signal started_falling
-
-var is_uninterruptible: bool = false
 
 ===== /home/void/repositories/metroidvania-gamejam/scripts/component.gd =====
 class_name Component
@@ -1834,13 +1712,22 @@ func _on_interacted(_by: Area2D) -> void:
 	if vanishes_when_collected:
 		queue_free()
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/player.gd =====
-class_name Character
-extends CharacterBody2D
+===== /home/void/repositories/metroidvania-gamejam/scripts/one_shot_particles.gd =====
+# one_shot_particles.gd
+extends Node2D
 
-const is_importer_node := true
+
+func _ready() -> void:
+	var particles := find_child("*", false, false) as CPUParticles2D
+	if not particles:
+		push_error("one_shot_particles: missing CPUParticles2D child")
+		return
+	particles.one_shot = true
+	particles.emitting = true
+	particles.finished.connect(queue_free)
 
 ===== /home/void/repositories/metroidvania-gamejam/scripts/bullet.gd =====
+# scripts/bullet.gd
 class_name Bullet
 extends Area2D
 
@@ -1869,18 +1756,540 @@ func _on_body_entered(body: Node) -> void:
 
 
 func _hit(target: Node) -> void:
+	var health := Component.find_component(target, Health, false) as Health
+	if health:
+		health.damage(damage)
 	queue_free()
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/one_shot_particles.gd =====
-# one_shot_particles.gd
-extends Node2D
+===== /home/void/repositories/metroidvania-gamejam/scripts/ability_ids.gd =====
+# scripts/ability_ids.gd
+class_name AbilityIds
+extends RefCounted
+
+const EXTRA_JUMPS: StringName = &"extra_jumps"
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/movement_base.gd =====
+# scripts/movement_base.gd
+class_name MovementBase
+extends Component
+
+signal moved(direction: Vector2)
+signal stopped
+signal ground_motion_changed(motion: StringName)
+
+var is_uninterruptible: bool = false
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/platformer_movement_base.gd =====
+# scripts/platformer_movement_base.gd
+class_name PlatformerMovementBase
+extends MovementBase
+
+signal jumped(jump_number: int)
+signal wall_jumped
+signal extra_jumped(jump_number: int)
+signal landed(motion: StringName)
+signal wall_slid
+signal fell_from_wall
+signal dashed
+signal dash_ended
+signal started_falling
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/game_state.gd =====
+# scripts/game_state.gd
+class_name GameState
+extends Resource
+
+const STATE_NAME: String = "GameState"
+const FILE_PATH = "res://scripts/game_state.gd"
+
+@export var level_states: Dictionary = { }
+@export var current_level_path: String
+@export var checkpoint_level_path: String
+@export var total_games_played: int
+@export var play_time: int
+@export var total_time: int
+
+# temporary home for MetSys-related save data, until/unless we adopt MetSys's own SaveManager
+@export var collectibles: int
+@export var generated_rooms: Array[Vector3i] = []
+@export var events: Array[String] = []
+@export var ability_levels: Dictionary = { }
+
+
+static func get_level_state(level_state_key: String) -> LevelState:
+	if not has_game_state():
+		return
+	var game_state := get_or_create_state()
+	if level_state_key.is_empty():
+		return
+	if level_state_key in game_state.level_states:
+		return game_state.level_states[level_state_key]
+	else:
+		var new_level_state := LevelState.new()
+		game_state.level_states[level_state_key] = new_level_state
+		GlobalState.save()
+		return new_level_state
+
+
+static func has_game_state() -> bool:
+	return GlobalState.has_state(STATE_NAME)
+
+
+static func get_or_create_state() -> GameState:
+	return GlobalState.get_or_create_state(STATE_NAME, FILE_PATH)
+
+
+static func get_current_level_path() -> String:
+	if not has_game_state():
+		return ""
+	var game_state := get_or_create_state()
+	return game_state.current_level_path
+
+
+static func get_checkpoint_level_path() -> String:
+	if not has_game_state():
+		return ""
+	var game_state := get_or_create_state()
+	return game_state.checkpoint_level_path
+
+
+static func get_levels_reached() -> int:
+	if not has_game_state():
+		return 0
+	var game_state := get_or_create_state()
+	return game_state.level_states.size()
+
+
+static func set_checkpoint_level_path(level_path: String) -> void:
+	var game_state := get_or_create_state()
+	game_state.checkpoint_level_path = level_path
+	get_level_state(level_path)
+	GlobalState.save()
+
+
+static func set_current_level_path(level_path: String) -> void:
+	var game_state := get_or_create_state()
+	game_state.current_level_path = level_path
+	GlobalState.save()
+
+
+static func start_game() -> void:
+	var game_state := get_or_create_state()
+	game_state.total_games_played += 1
+	GlobalState.save()
+	if not MetSys.save_data:
+		MetSys.reset_state()
+		MetSys.set_save_data()
+
+
+static func continue_game() -> void:
+	var game_state := get_or_create_state()
+	game_state.current_level_path = game_state.checkpoint_level_path
+	GlobalState.save()
+
+
+static func reset() -> void:
+	var game_state := get_or_create_state()
+	game_state.level_states = { }
+	game_state.current_level_path = ""
+	game_state.checkpoint_level_path = ""
+	game_state.play_time = 0
+	game_state.total_time = 0
+	game_state.collectibles = 0
+	game_state.generated_rooms = []
+	game_state.events = []
+	game_state.ability_levels = { }
+	GlobalState.save()
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/level_and_state_manager.gd =====
+extends LevelManager
 
 
 func _ready() -> void:
-	var particles := find_child("*", false, false) as CPUParticles2D
-	if not particles:
-		push_error("one_shot_particles: missing CPUParticles2D child")
+	pass
+
+
+func set_current_level_path(value: String) -> void:
+	super.set_current_level_path(value)
+	GameState.set_current_level_path(value)
+
+
+func set_checkpoint_level_path(value: String) -> void:
+	super.set_checkpoint_level_path(value)
+	GameState.set_checkpoint_level_path(value)
+
+
+func get_checkpoint_level_path() -> String:
+	return GameState.get_checkpoint_level_path()
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/player.gd =====
+class_name Character
+extends CharacterBody2D
+
+const is_importer_node := true
+
+var event: bool = false
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/room_camera.gd =====
+@tool
+extends PhantomCamera2D
+
+
+func _ready() -> void:
+	if Engine.is_editor_hint():
 		return
-	particles.one_shot = true
-	particles.emitting = true
-	particles.finished.connect(queue_free)
+	var player := get_tree().get_first_node_in_group(&"player")
+	if player:
+		follow_target = player
+
+===== /home/void/repositories/metroidvania-gamejam/SampleProject/CustomRunnerIntegration/Config.gd =====
+extends CustomRunner
+
+## The shortcut that will trigger the plugin.
+func _init() -> void:
+	SHORTCUT = KEY_F7
+
+## If true, pressing the shortcut will invoke CustomRunner for that scene.
+func _can_play_scene(scene: Node) -> bool:
+	# Check if the current scene is a MetSys room scene.
+	var room_instance := scene.get_node_or_null(^"RoomInstance")
+	if room_instance:
+		var scene_uid := ResourceUID.path_to_uid(room_instance.scene_file_path)
+		if scene_uid == "uid://bsg0351mx3b4u":
+			return true
+	return false
+
+## Add variables that will be passed to the game.
+## Variable "scene", containing currently opened scene's path, is added automatically.
+func _gather_variables(scene: Node):
+	add_variable("mouse_pos", scene.get_local_mouse_position())
+	# The room name as referenced by MetSys.
+	add_variable("room", ResourceUID.path_to_uid(scene.scene_file_path))
+
+## Return the path of the "game" scene of your project (i.e. main gameplay scene).
+## If you return empty string, the current scene will play instead.
+func _get_game_scene(for_scene: Node) -> String:
+	return "res://SampleProject/CustomRunnerIntegration/CustomStart.tscn"
+
+===== /home/void/repositories/metroidvania-gamejam/SampleProject/Scripts/CustomElements.gd =====
+# Example script for drawing custom elements. Interesting part is how to use the arguments provided for callbas.
+@tool
+extends MetroidvaniaSystem.CustomElementManager
+
+func _init() -> void:
+	# Metroid-esque elevator shaft.
+	register_element("elevator", draw_elevator)
+	# Some text that displays on the map.
+	register_element("label", draw_label)
+
+func draw_elevator(canvas_item: RID, coords: Vector3i, pos: Vector2, size: Vector2, data: String):
+	# For elevator to display, both top and bottom cell must be discovered.
+	if not MetSys.is_cell_discovered(coords + Vector3i(0, -1, 0)) and not MetSys.is_cell_discovered(coords + Vector3i(0, size.y, 0)):
+		return
+	
+	var elevator_texture := preload("res://SampleProject/Sprites/Elevator.png")
+	# Draw the texture using the element's rect and default border color as modulate.
+	elevator_texture.draw_rect(canvas_item, Rect2(
+		pos + Vector2(MetSys.CELL_SIZE.x * 0.5 - elevator_texture.get_width() * 0.5, 0),
+		Vector2(elevator_texture.get_width(), size.y)), true, MetSys.settings.theme.default_border_color)
+
+func draw_label(canvas_item: RID, coords: Vector3i, pos: Vector2, size: Vector2, data: String):
+	# The label is only visible if it's cell is discovered.
+	if not MetSys.is_cell_discovered(coords):
+		return
+	# Draw the string.
+	var font := ThemeDB.get_default_theme().default_font
+	font.draw_string(canvas_item,
+		pos + Vector2(-1, -0.5) * MetSys.CELL_SIZE, data, HORIZONTAL_ALIGNMENT_CENTER, MetSys.CELL_SIZE.x * 3)
+
+===== /home/void/repositories/metroidvania-gamejam/SampleProject/Scripts/LoopScript.gd =====
+# Overrides room transitions to create confusing maps. Takes effect when player is inside the area. It has to be placed in the middle of room transition.
+extends Area2D
+
+## Target room for the loop.
+@export_file("room_link") var loop_target
+## How much the player should be moved after looping. You can't rely on automatic repositioning from transitions, this has to be set manually.
+@export var loop_shift: Vector2
+## Use Teleport when the loop goes out of map and Replace when it connects to another room.
+@export_enum("Teleport", "Replace") var loop_mode: int
+
+## Hack. See [method on_room_changed].
+static var block_loop: bool
+## If [code]true[/code], the room transition will be overridden.
+var loop_active: bool
+
+func _ready() -> void:
+	if loop_mode == 0:
+		MetSys.cell_changed.connect(on_cell_changed.unbind(1))
+	else:
+		MetSys.room_changed.connect(on_room_changed.unbind(1))
+
+func _on_body_entered(body: Node2D) -> void:
+	if body.is_in_group(&"player"):
+		loop_active = true
+		if loop_mode == 1:
+			# Game's loop property makes it load a different room than normally.
+			Game.get_singleton().loop = loop_target
+
+func _on_body_exited(body: Node2D) -> void:
+	if body.is_in_group(&"player"):
+		loop_active = false
+		if loop_mode == 1 and not Game.get_singleton().map_changing:
+			Game.get_singleton().loop = ""
+
+func on_cell_changed():
+	if loop_active and not block_loop:
+		loop_active = false
+		
+		if loop_target != MetSys.get_current_room_id():
+			# Load the target map.
+			Game.get_singleton().load_room(loop_target)
+		# Move the player to intended position.
+		Game.get_singleton().player.position += loop_shift
+		# Ugly workaround for physics bug that causes area to detect at wrong position.
+		block_loop = true
+		get_tree().create_timer(0.05).timeout.connect(get_script().set.bind(&"block_loop", false))
+
+func on_room_changed():
+	if loop_active and not block_loop:
+		loop_active = false
+		# Prevents automatically shifting the player.
+		MetSys.current_room.queue_free()
+		MetSys.current_room = null
+		
+		Game.get_singleton().player.position += loop_shift
+		# Ugly workaround for physics bug that causes area to detect at wrong position.
+		block_loop = true
+		get_tree().create_timer(0.05).timeout.connect(get_script().set.bind(&"block_loop", false))
+
+===== /home/void/repositories/metroidvania-gamejam/SampleProject/Scripts/Player.gd =====
+# This script is based on the default CharacterBody2D template. Not much interesting happening here.
+extends CharacterBody2D
+
+const SPEED_MIN = 300.0
+const SPEED_MAX = 400.0
+const ACCEL = 50.0
+const JUMP_VELOCITY = -450.0
+const MAX_FALL_SPEED = 900.0
+const COYOTE_TIME: float = .1
+const SHORT_HOP: float = .5
+
+var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
+var animation: String
+
+var reset_position: Vector2
+# Indicates that the player has an event happening and can't be controlled.
+var event: bool
+
+var abilities: Array[StringName]
+var double_jump: bool
+var prev_on_floor: bool
+var airtime: float = 0
+var speed: float = SPEED_MIN
+
+func _ready() -> void:
+	on_enter()
+
+func _physics_process(delta: float) -> void:
+	if event:
+		return
+	
+	if not is_on_floor():
+		velocity.y = min(velocity.y + gravity * delta, MAX_FALL_SPEED)
+		airtime += delta
+	elif not prev_on_floor and &"double_jump" in abilities:
+		# Some simple double jump implementation.
+		double_jump = true
+		airtime = 0
+	
+	var on_floor_ct: bool = is_on_floor() or airtime < COYOTE_TIME
+	if Input.is_action_just_pressed("ui_accept") and (on_floor_ct or double_jump):
+		if not on_floor_ct:
+			double_jump = false
+		
+		if Input.is_action_pressed("ui_down"):
+			position.y += 8
+		else:
+			velocity.y = JUMP_VELOCITY
+	
+	if Input.is_action_just_released("ui_accept"):
+		if not is_on_floor() and velocity.y < 0:
+			velocity.y = min(0, velocity.y - JUMP_VELOCITY * SHORT_HOP)
+			
+	
+	if is_on_wall():
+		speed = SPEED_MIN
+	
+	var direction := Input.get_axis("ui_left", "ui_right")
+	if direction:
+		speed = min(SPEED_MAX, speed + ACCEL * delta)
+		velocity.x = direction * speed
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED_MIN)
+		speed = SPEED_MIN
+
+	prev_on_floor = is_on_floor()
+	move_and_slide()
+	
+	var new_animation = &"Idle"
+	if velocity.y < 0:
+		new_animation = &"Jump"
+	elif velocity.y >= 0 and not is_on_floor():
+		new_animation = &"Fall"
+	elif absf(velocity.x) > 1:
+		new_animation = &"Run"
+	
+	if new_animation != animation:
+		animation = new_animation
+		$AnimationPlayer.play(new_animation)
+	
+	if velocity.x > 1:
+		$Sprite2D.flip_h = false
+	elif velocity.x < -1:
+		$Sprite2D.flip_h = true
+
+func kill():
+	# Player dies, reset the position to the entrance.
+	position = reset_position
+	Game.get_singleton().load_room(MetSys.get_current_room_id())
+
+func on_enter():
+	# Position for kill system. Assigned when entering new room (see Game.gd).
+	reset_position = position
+
+===== /home/void/repositories/metroidvania-gamejam/SampleProject/Scripts/Portal.gd =====
+# A portal object that transports to another world layer.
+extends Area2D
+# The target map after entering the portal.
+@export_file("room_link") var target_map: String
+
+func _on_body_entered(body: Node2D) -> void:
+	# If player entered and isn't doing an event (event in this case is entering the portal).
+	if body.is_in_group(&"player") and not body.event:
+		body.event = true
+		body.velocity = Vector2()
+		# Tween the player position into the portal.
+		var tween := create_tween()
+		tween.tween_property(body, ^"position", position, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_SINE)
+		await tween.finished
+		# After tween finished, change the map.
+		Game.get_singleton().load_room(target_map)
+		# A trick to reset player's event variable when it's safe to do so (i.e. after some frames).
+		get_tree().create_timer(0.2).timeout.connect(body.set.bind(&"event", false))
+		# Delta vector feature again.
+		Game.get_singleton().reset_map_starting_coords()
+		
+
+===== /home/void/repositories/metroidvania-gamejam/SampleProject/Scripts/SavePoint.gd =====
+# A save point object. Colliding with it saves the game.
+extends Area2D
+
+@onready var start_time := Time.get_ticks_msec()
+
+func _ready() -> void:
+	body_entered.connect(on_body_entered)
+
+# Player enter save point. Note that in a legit code this should check whether body is really a player.
+func on_body_entered(body: Node2D) -> void:
+	if Time.get_ticks_msec() - start_time < 1000:
+		return # Small hack to prevent saving at the game start.
+	# Make Game save the data.
+	Game.get_singleton().save_game()
+	# Starting coords for the delta vector feature.
+	Game.get_singleton().reset_map_starting_coords()
+
+func _draw() -> void:
+	# Draws the circle.
+	$CollisionShape2D.shape.draw(get_canvas_item(), Color.BLUE)
+
+===== /home/void/repositories/metroidvania-gamejam/SampleProject/Scripts/Game.gd =====
+class_name Game
+extends "res://addons/MetroidvaniaSystem/Template/Scripts/MetSysGame.gd"
+
+const SaveManager = preload("res://addons/MetroidvaniaSystem/Template/Scripts/SaveManager.gd")
+
+var ability_component: AbilityComponent
+var respawn_component: RespawnComponent
+var health: Health
+@export_file("room_link") var starting_map: String
+var collectibles: int:
+	set(count):
+		collectibles = count
+		%CollectibleCount.text = "%d/7" % count
+var generated_rooms: Array[Vector3i]
+var events: Array[String]
+var custom_run: bool
+var loop: String
+
+
+static func get_singleton() -> Game:
+	return (Game as Script).get_meta(&"singleton") as Game
+
+
+func _ready() -> void:
+	get_script().set_meta(&"singleton", self)
+	print(ResourceUID.get_id_path(ResourceUID.text_to_id("uid://cv55nv1c2sbiq")))
+	MetSys.reset_state()
+	set_player($Player)
+	ability_component = Component.find_component(player, AbilityComponent) as AbilityComponent
+	respawn_component = Component.find_component(player, RespawnComponent, false) as RespawnComponent
+	health = Component.find_component(player, Health, false) as Health
+	MetSys.set_save_data()
+	if GameState.has_game_state():
+		var game_state := GameState.get_or_create_state()
+		collectibles = game_state.collectibles
+		generated_rooms.assign(game_state.generated_rooms)
+		events.assign(game_state.events)
+		for id: String in game_state.ability_levels:
+			ability_component.set_level(StringName(id), game_state.ability_levels[id])
+		if not custom_run and not game_state.checkpoint_level_path.is_empty():
+			if ResourceUID.has_id(ResourceUID.text_to_id(game_state.checkpoint_level_path)):
+				starting_map = game_state.checkpoint_level_path
+			else:
+				push_warning(
+					"Stale checkpoint UID, falling back to starting_map: %s"
+					% game_state.checkpoint_level_path
+				)
+	room_loaded.connect(init_room, CONNECT_DEFERRED)
+	load_room(starting_map)
+	var start := map.get_node_or_null(^"SavePoint")
+	if start and not custom_run:
+		player.position = start.position
+	add_module("RoomTransitions.gd")
+	await get_tree().physics_frame
+	reset_map_starting_coords.call_deferred()
+	%Minimap.set_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 8)
+
+
+func _input(event: InputEvent) -> void:
+	var k := event as InputEventKey
+	if k and k.pressed and k.keycode == KEY_F2:
+		get_tree().reload_current_scene()
+
+
+func save_game() -> void:
+	var game_state := GameState.get_or_create_state()
+	game_state.collectibles = collectibles
+	game_state.generated_rooms = generated_rooms
+	game_state.events = events
+	game_state.current_level_path = MetSys.get_current_room_id()
+	var levels_out: Dictionary = { }
+	for id: StringName in ability_component.get_all_levels():
+		levels_out[String(id)] = ability_component.get_level(id)
+	game_state.ability_levels = levels_out
+	GlobalState.save()
+
+
+func reset_map_starting_coords() -> void:
+	$UI/MapWindow.reset_starting_coords()
+
+
+func init_room() -> void:
+	if respawn_component:
+		respawn_component.mark_room_entry_point()
+	if MetSys.last_player_position.x == Vector2i.MAX.x:
+		MetSys.set_player_position(player.position)
+	var room_instance: MetroidvaniaSystem.RoomInstance = MetSys.get_current_room_instance()
+	var room_camera := room_instance.get_node_or_null(^"PhantomCamera2D") as PhantomCamera2D
+	if room_camera:
+		room_camera.follow_target = player

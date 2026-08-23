@@ -1,3 +1,4 @@
+# scripts/game_state.gd
 class_name GameState
 extends Resource
 
@@ -10,6 +11,12 @@ const FILE_PATH = "res://scripts/game_state.gd"
 @export var total_games_played: int
 @export var play_time: int
 @export var total_time: int
+
+# temporary home for MetSys-related save data, until/unless we adopt MetSys's own SaveManager
+@export var collectibles: int
+@export var generated_rooms: Array[Vector3i] = []
+@export var events: Array[String] = []
+@export var ability_levels: Dictionary = { }
 
 
 static func get_level_state(level_state_key: String) -> LevelState:
@@ -91,4 +98,8 @@ static func reset() -> void:
 	game_state.checkpoint_level_path = ""
 	game_state.play_time = 0
 	game_state.total_time = 0
+	game_state.collectibles = 0
+	game_state.generated_rooms = []
+	game_state.events = []
+	game_state.ability_levels = { }
 	GlobalState.save()

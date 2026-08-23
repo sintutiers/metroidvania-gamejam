@@ -1,3 +1,4 @@
+# scripts/components/ability_component.gd
 class_name AbilityComponent
 extends Component
 
@@ -24,6 +25,10 @@ func grant(id: StringName, amount: int = 1) -> void:
 func set_level(id: StringName, level: int) -> void:
 	_levels[id] = level
 	ability_granted.emit(id, level)
+
+
+func get_all_levels() -> Dictionary[StringName, int]:
+	return _levels.duplicate()
 
 
 func _on_setup() -> void:
