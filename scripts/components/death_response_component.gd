@@ -1,9 +1,12 @@
-# respawn_component.gd
-class_name RespawnComponent
+class_name DeathResponseComponent
 extends Component
 
 signal respawned
 
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var free_on_death: bool = false
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var respawn_on_death: bool = false
 @export_custom(ETP.NONE, ETP.PROPERTY)
 var respawn_heal_amount: int = 0
 @export_custom(ETP.NONE, ETP.PROPERTY)
@@ -43,4 +46,7 @@ func _on_setup() -> void:
 
 
 func _on_died(_entity: Node) -> void:
-	fall_and_respawn(reset_position if reset_position else body.global_position)
+	if free_on_death:
+		get_parent().queue_free()
+	elif respawn_on_death:
+		fall_and_respawn(reset_position if reset_position else body.global_position)

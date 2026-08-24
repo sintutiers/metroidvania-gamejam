@@ -16,7 +16,6 @@
 [ext_resource type="Script" uid="uid://kb1gt4lu1sxw" path="res://scripts/components/interact_component.gd" id="3_m5ugi"]
 [ext_resource type="Script" uid="uid://dmxnpj5ebi7nn" path="res://scripts/components/interaction_component.gd" id="4_3vq1g"]
 [ext_resource type="Texture2D" uid="uid://ba1a7t51pli8g" path="res://The Amazing Art and Sound Folder/player push 48x48.png" id="4_cyajl"]
-[ext_resource type="Script" uid="uid://b81q8i2kndqdf" path="res://scripts/components/respawn_component.gd" id="4_t8yk2"]
 [ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="4_wwvfn"]
 [ext_resource type="Texture2D" uid="uid://c244em85bo5tt" path="res://The Amazing Art and Sound Folder/player run 48x48.png" id="5_fh65b"]
 [ext_resource type="Script" uid="uid://b0bul4sdikiw3" path="res://scripts/components/animation_component.gd" id="6_dsw4c"]
@@ -38,6 +37,7 @@
 [ext_resource type="Script" uid="uid://dr8bvnfebp76" path="res://addons/health_hitbox_hurtbox/health/health.gd" id="36_pft2h"]
 [ext_resource type="Script" uid="uid://cts8qlslbl7nn" path="res://scripts/dean_hurt_box_2d.gd" id="37_pft2h"]
 [ext_resource type="Script" uid="uid://d33a1bxcxnqk4" path="res://scripts/components/ability_component.gd" id="38_rpvn3"]
+[ext_resource type="Script" uid="uid://do5fchdp4aaev" path="res://scripts/components/death_response_component.gd" id="38_v7uls"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rnkgc"]
 atlas = ExtResource("1_74cnq")
@@ -1048,10 +1048,6 @@ metadata/_custom_type_script = "uid://beajnp3irp7ln"
 script = ExtResource("4_3vq1g")
 metadata/_custom_type_script = "uid://dmxnpj5ebi7nn"
 
-[node name="RespawnComponent" type="Node" parent="." unique_id=368859843]
-script = ExtResource("4_t8yk2")
-metadata/_custom_type_script = "uid://b81q8i2kndqdf"
-
 [node name="VFXComponent" type="Node" parent="." unique_id=1047895015]
 script = ExtResource("19_1rckg")
 jump_dust = ExtResource("20_vrrwq")
@@ -1264,3 +1260,7 @@ to = NodePath("../Launch")
 event = &"launch"
 delay_in_seconds = "0.0"
 metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="DeathResponseComponent" type="Node" parent="." unique_id=1518984277]
+script = ExtResource("38_v7uls")
+metadata/_custom_type_script = "uid://do5fchdp4aaev"
