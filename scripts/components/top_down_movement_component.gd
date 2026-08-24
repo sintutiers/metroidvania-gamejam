@@ -14,9 +14,13 @@ var _locked: bool = false
 @onready var move_state: StateChartState = %Move
 
 
-func _ready() -> void:
-	super._ready()
+func _on_ready() -> void:
 	track(move_state.state_physics_processing, _on_move_physics)
+
+
+func _on_setup() -> void:
+	facing_component = get_component(FacingComponent) as FacingComponent
+	input_component = get_component(InputComponent) as InputComponent
 
 	if locks_during_interact:
 		var interact_component := get_component(InteractComponent, false) as InteractComponent
@@ -31,11 +35,6 @@ func _ready() -> void:
 				func() -> void:
 					_locked = false,
 			)
-
-
-func _on_setup() -> void:
-	facing_component = get_component(FacingComponent) as FacingComponent
-	input_component = get_component(InputComponent) as InputComponent
 
 
 func _on_move_physics(_delta: float) -> void:

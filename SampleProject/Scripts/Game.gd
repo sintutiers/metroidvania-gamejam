@@ -4,7 +4,7 @@ extends "res://addons/MetroidvaniaSystem/Template/Scripts/MetSysGame.gd"
 const SaveManager = preload("res://addons/MetroidvaniaSystem/Template/Scripts/SaveManager.gd")
 
 var ability_component: AbilityComponent
-var respawn_component: RespawnComponent
+var death_response_component: DeathResponseComponent
 var health: Health
 @export_file("room_link") var starting_map: String
 var collectibles: int:
@@ -27,7 +27,7 @@ func _ready() -> void:
 	MetSys.reset_state()
 	set_player($Player)
 	ability_component = Component.find_component(player, AbilityComponent) as AbilityComponent
-	respawn_component = Component.find_component(player, RespawnComponent, false) as RespawnComponent
+	death_response_component = Component.find_component(player, DeathResponseComponent, false) as DeathResponseComponent
 	health = Component.find_component(player, Health, false) as Health
 	MetSys.set_save_data()
 	if GameState.has_game_state():
@@ -80,8 +80,8 @@ func reset_map_starting_coords() -> void:
 
 
 func init_room() -> void:
-	if respawn_component:
-		respawn_component.mark_room_entry_point()
+	if death_response_component:
+		death_response_component.mark_room_entry_point()
 	if MetSys.last_player_position.x == Vector2i.MAX.x:
 		MetSys.set_player_position(player.position)
 	var room_instance: MetroidvaniaSystem.RoomInstance = MetSys.get_current_room_instance()

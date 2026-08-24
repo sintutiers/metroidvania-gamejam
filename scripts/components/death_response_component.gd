@@ -14,6 +14,7 @@ var heal_on_respawn: bool = true
 
 var is_respawning: bool = false
 var reset_position: Vector2
+var _has_reset_position: bool = false
 
 var _health: Health
 
@@ -22,6 +23,7 @@ var _health: Health
 
 func mark_room_entry_point() -> void:
 	reset_position = body.global_position
+	_has_reset_position = true
 
 
 func fall_and_respawn(respawn_position: Vector2) -> void:
@@ -49,4 +51,4 @@ func _on_died(_entity: Node) -> void:
 	if free_on_death:
 		get_parent().queue_free()
 	elif respawn_on_death:
-		fall_and_respawn(reset_position if reset_position else body.global_position)
+		fall_and_respawn(reset_position if _has_reset_position else body.global_position)
