@@ -40,6 +40,10 @@ SoundManager="*uid://6q1wagejt60k"
 
 [debug]
 
+gdscript/warnings/directory_rules={
+"res://SampleProject": 0,
+"res://addons": 0
+}
 gdscript/warnings/narrowing_conversion=0
 
 [display]

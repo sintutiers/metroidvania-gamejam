@@ -38,41 +38,6 @@ const AIM: StringName = &"aim"
 const SHOOT: StringName = &"shoot"
 const SHOOT_RUNNING: StringName = &"shoot_running"
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/bullet.gd =====
-# scripts/bullet.gd
-class_name Bullet
-extends Area2D
-
-@export var speed: float = 600.0
-@export var lifetime: float = 3.0
-
-var damage: float = 10.0
-
-
-func _ready() -> void:
-	area_entered.connect(_on_area_entered)
-	body_entered.connect(_on_body_entered)
-	get_tree().create_timer(lifetime).timeout.connect(queue_free)
-
-
-func _physics_process(delta: float) -> void:
-	position += transform.x * speed * delta
-
-
-func _on_area_entered(area: Area2D) -> void:
-	_hit(area)
-
-
-func _on_body_entered(body: Node) -> void:
-	_hit(body)
-
-
-func _hit(target: Node) -> void:
-	var health := Component.find_component(target, Health, false) as Health
-	if health:
-		health.damage(damage)
-	queue_free()
-
 ===== /home/void/repositories/metroidvania-gamejam/scripts/collectible_object.gd =====
 class_name CollectibleObject
 extends InteractableThing
@@ -1562,6 +1527,53 @@ func _on_died(_entity: Node) -> void:
 	elif respawn_on_death:
 		fall_and_respawn(reset_position if _has_reset_position else body.global_position)
 
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/invincibility_component.gd =====
+class_name InvincibilityComponent
+extends Component
+
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var duration: float = 0.5
+
+var is_invincible: bool = false
+
+var _timer: float = 0.0
+var _health: Health
+
+
+func _physics_process(delta: float) -> void:
+	if not is_invincible:
+		return
+	_timer -= delta
+	if _timer <= 0.0:
+		_end_invincibility()
+
+
+func _on_setup() -> void:
+	_health = get_component(Health, false) as Health
+	if _health:
+		track(_health.damaged, _on_damaged)
+
+
+func _on_damaged(
+	_entity: Node,
+	_type: HealthActionType.Enum,
+	_amount: int,
+	_incrementer: int,
+	_multiplier: float,
+	applied: int,
+) -> void:
+	if applied <= 0 or duration <= 0.0:
+		return
+	is_invincible = true
+	_health.damageable = false
+	_timer = duration
+
+
+func _end_invincibility() -> void:
+	is_invincible = false
+	if _health:
+		_health.damageable = true
+
 ===== /home/void/repositories/metroidvania-gamejam/scripts/dean_hurt_box_2d.gd =====
 class_name DeanHurtBox2D
 extends BasicHurtBox2D
@@ -1885,26 +1897,6 @@ const is_importer_node := true
 
 var event: bool = false
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/projectile_weapon_behavior.gd =====
-class_name ProjectileWeaponBehavior
-extends WeaponBehavior
-
-@export var projectile_scene: PackedScene
-@export var projectile_count: int = 1
-@export var spread_degrees: float = 0.0
-
-
-func fire(attack_component: AttackComponent, muzzle: Node2D) -> void:
-	if not projectile_scene:
-		return
-	var mid_index: float = (projectile_count - 1) / 2.0
-	for i in projectile_count:
-		var angle_offset: float = deg_to_rad((i - mid_index) * spread_degrees)
-		var projectile: Node2D = projectile_scene.instantiate()
-		attack_component.get_tree().current_scene.add_child(projectile)
-		projectile.global_transform = muzzle.global_transform
-		projectile.rotate(angle_offset)
-
 ===== /home/void/repositories/metroidvania-gamejam/scripts/room_camera.gd =====
 @tool
 extends PhantomCamera2D
@@ -1976,6 +1968,8 @@ var lose_radius: float = 220.0
 var attack_range: float = 24.0
 @export_custom(ETP.NONE, ETP.PROPERTY)
 var attack_cooldown: float = 1.0
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var attack_damage: int = 10
 
 var state: State = State.PATROL
 
@@ -2012,7 +2006,7 @@ func _on_setup() -> void:
 	facing_component = get_component(FacingComponent, false) as FacingComponent
 
 
-func _patrol(delta: float) -> void:
+func _patrol(_delta: float) -> void:
 	if wall_check.is_colliding() or not ledge_check.is_colliding():
 		_direction *= -1.0
 	_set_facing(_direction)
@@ -2022,7 +2016,7 @@ func _patrol(delta: float) -> void:
 		state = State.CHASE
 
 
-func _chase(delta: float) -> void:
+func _chase(_delta: float) -> void:
 	if not _player:
 		state = State.PATROL
 		return
@@ -2050,6 +2044,9 @@ func _attack(_delta: float) -> void:
 		return
 	if _attack_timer <= 0.0:
 		_attack_timer = attack_cooldown
+		var player_health := Component.find_component(_player, Health, false) as Health
+		if player_health:
+			player_health.damage(attack_damage, 0, 1.0, HealthActionType.Enum.KINETIC)
 
 
 func _set_facing(dir: float) -> void:
@@ -2057,6 +2054,63 @@ func _set_facing(dir: float) -> void:
 		var changed := facing_component.update(Vector2(dir, 0.0))
 		if changed:
 			moved.emit(facing_component.facing)
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/projectile_weapon_behavior.gd =====
+class_name ProjectileWeaponBehavior
+extends WeaponBehavior
+
+@export var projectile_scene: PackedScene
+@export var projectile_count: int = 1
+@export var spread_degrees: float = 0.0
+
+
+func fire(attack_component: AttackComponent, muzzle: Node2D) -> void:
+	if not projectile_scene:
+		return
+	var mid_index: float = (projectile_count - 1) / 2.0
+	for i in projectile_count:
+		var angle_offset: float = deg_to_rad((i - mid_index) * spread_degrees)
+		var projectile: Node2D = projectile_scene.instantiate()
+		attack_component.get_tree().current_scene.add_child(projectile)
+		projectile.global_transform = muzzle.global_transform
+		projectile.rotate(angle_offset)
+		var bullet := projectile as Bullet
+		if bullet:
+			bullet.set_damage(attack_component.weapon.damage)
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/bullet.gd =====
+# scripts/bullet.gd
+class_name Bullet
+extends BasicHitBox2D
+
+@export var speed: float = 600.0
+@export var lifetime: float = 3.0
+
+
+func _ready() -> void:
+	super()
+	affect = Health.Affect.DAMAGE
+	hurt_box_entered.connect(_on_hurt_box_entered)
+	unknown_area_entered.connect(_on_unknown_area_entered)
+	get_tree().create_timer(lifetime).timeout.connect(queue_free)
+
+
+func _physics_process(delta: float) -> void:
+	position += transform.x * speed * delta
+
+
+func set_damage(value: float) -> void:
+	amount = roundi(value)
+
+
+func _on_hurt_box_entered(_hurt_box: HurtBox2D) -> void:
+	ignore_collisions = true
+	queue_free()
+
+
+func _on_unknown_area_entered(_area: Area2D) -> void:
+	ignore_collisions = true
+	queue_free()
 
 ===== /home/void/repositories/metroidvania-gamejam/SampleProject/CustomRunnerIntegration/Config.gd =====
 extends CustomRunner

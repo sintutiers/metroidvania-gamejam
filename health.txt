@@ -1,0 +1,1105 @@
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hit_box_2d/basic_hit_box_2d.gd =====
+class_name BasicHitBox2D extends HitBox2D
+## [BasicHitBox2D] is associated with an object that can collide with a [HurtBox2D].
+
+
+## The [Health.Affect] to be performed.
+@export var affect: Health.Affect = Health.Affect.DAMAGE:
+	set(a):
+		affect = a
+		if actions.size() > 0:
+			actions[0].affect = a
+			actions[0].type = _type_from_affect(a)
+
+## The amount of the action.
+@export var amount: int = 1:
+	set(a):
+		amount = a
+		if actions.size() > 0:
+			actions[0].amount = amount
+
+
+func _ready() -> void:
+	super()
+	actions.append(HealthAction.new(affect, _type_from_affect(affect), amount))
+
+
+func _type_from_affect(affect: Health.Affect) -> HealthActionType.Enum:
+	return HealthActionType.Enum.KINETIC if affect == Health.Affect.DAMAGE else HealthActionType.Enum.MEDICINE
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hit_box_2d/hit_box_2d.gd =====
+class_name HitBox2D extends Area2D
+## [HitBox2D] is associated with an object that can collide with a [HurtBox2D].
+
+## emitted when collision with [HitBox2D] detected.
+signal hit_box_entered(hit_box: HitBox2D)
+## emitted when collision with [HurtBox2D] detected.
+signal hurt_box_entered(hurt_box: HurtBox2D)
+## emitted after the action is applied to a [HurtBox2D].
+signal action_applied(hurt_box: HurtBox2D)
+## emitted when collision with [Area2D] that isn't [HitBox2D] or [HurtBox2D].
+## Can be using to detect things like environment.
+signal unknown_area_entered(area: Area2D)
+
+
+## Ignore collisions when [color=orange]true[/color].[br]
+## Set this to [color=orange]true[/color] after a collision is detected to avoid
+## further collisions.[br]
+## It is recommended to set this to [color=orange]true[/color] before calling
+## [color=orange]queue_free()[/color] to avoid further collisions.
+@export var ignore_collisions: bool
+
+## [Modifer] applied to [HealthActionType.Enum].
+@export var actions: Array[HealthAction] = []
+
+
+func _ready() -> void:
+	area_entered.connect(_on_area_entered)
+
+
+## Detect collisions with [HitBox2D] or [HurtBox2D] and apply appropriate action.
+func _on_area_entered(area: Area2D) -> void:
+	if ignore_collisions:
+		return
+	
+	if area is HitBox2D:
+		hit_box_entered.emit(area)
+		return
+	
+	if area is not HurtBox2D:
+		unknown_area_entered.emit(area)
+		return
+
+	var hurt_box: HurtBox2D = area
+	hurt_box_entered.emit(hurt_box)
+	var cloned_actions := _clone_actions()
+	hurt_box.apply_all_actions(cloned_actions)
+	action_applied.emit(hurt_box)
+
+
+func _clone_actions() -> Array[HealthAction]:
+	var dup: Array[HealthAction]
+	dup.assign(
+		actions.map(
+			func(action: HealthAction) -> HealthAction: return action.clone()
+		)
+	)
+
+	return dup
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hit_box_2d/hit_box_2d.svg =====
+<svg width="16" height="16" version="1.1" viewBox="0 0 5.12 3.8" xmlns="http://www.w3.org/2000/svg">
+ <path d="m1.6404 1.2306-0.73447-0.68142c-0.11874-0.11017-0.30786-0.11017-0.42661 9e-8 -0.11874 0.11017-0.11874 0.28563-1.6e-7 0.39579l0.73007 0.67734c0.11874 0.11017 0.30786 0.11017 0.42661 0 0.12315-0.10609 0.12315-0.28155 0.00439-0.39171zm0.039582-1.3995 0.51676 0.47944 0.43101-0.39987-0.51676-0.47944c-0.11874-0.11017-0.30786-0.11017-0.42661 1.4e-7 -0.11874 0.11017-0.12315 0.2897-0.00439 0.39987zm-0.63991 1.9565-0.51676-0.47944c-0.11874-0.11017-0.30786-0.11017-0.42661 0-0.11874 0.11017-0.11874 0.28563-1.1e-7 0.39579l0.51676 0.47944c0.11874 0.11017 0.30786 0.11017 0.42661-1e-7 0.11874-0.11017 0.11874-0.28563 1e-7 -0.39579zm2.8741 0.2795 0.00439-1.2364c0-0.073446-0.030785-0.1469-0.085762-0.1979l-0.60472-0.56105c-0.11874-0.11017-0.30786-0.11017-0.42661 7e-8l-0.81803 0.75895c-0.11874 0.11017-0.11874 0.28563-1e-7 0.39579 0.11874 0.11017 0.30786 0.11017 0.42661 0l0.47279-0.43864c0.04838-0.044885 0.12754-0.044884 0.17592 0 0.048377 0.044884 0.048377 0.11834 0 0.16321-0.52117 0.48352-0.51676 1.271 0 1.7504 0.04838 0.044885 0.048377 0.11832 0 0.16321-0.048376 0.044883-0.12754 0.044883-0.17592 0-0.40682-0.37743-0.54536-0.90992-0.41121-1.3935-0.11874 0.057125-0.24848 0.075487-0.38043 0.059166l-0.88181 0.81811c-0.079165 0.073446-0.18252 0.11629-0.27708 0.13873l0.62452 0.57941c0.26389 0.24482 0.63991 0.33663 0.98736 0.2795l1.2007 1.1139 1.3744-1.2752zm-2.8345-1.6791 0.58054 0.53861c0.015393-0.095889 0.074766-0.18769 0.14954-0.25706l0.21331-0.1979-0.51676-0.47944c-0.11874-0.11017-0.30786-0.11017-0.42661 1e-7 -0.12094 0.10813-0.11874 0.28563-1e-7 0.39579z" fill="#8da5f3" stroke-width="1.1023"/>
+</svg>
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hit_box_2d/hit_box_2d.svg.import =====
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://cpwchp5bmp6sa"
+path="res://.godot/imported/hit_box_2d.svg-04c42ff1d0690e4b40b58e7908e7eb80.ctex"
+metadata={
+"has_editor_variant": true,
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://addons/health_hitbox_hurtbox/2d/hit_box_2d/hit_box_2d.svg"
+dest_files=["res://.godot/imported/hit_box_2d.svg-04c42ff1d0690e4b40b58e7908e7eb80.ctex"]
+
+[params]
+
+compress/mode=0
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/uastc_level=0
+compress/rdo_quality_loss=0.0
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=false
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=true
+editor/convert_colors_with_editor_theme=true
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hit_scan_2d/basic_hit_scan_2d.gd =====
+class_name BasicHitScan2D extends HitScan2D
+## BasicHitScan2D interacts with [HurtBox2D] to affect [Health] components.
+
+
+## The [Health.Affect] to be performed.
+@export var affect: Health.Affect = Health.Affect.DAMAGE:
+	set(a):
+		affect = a
+		if actions.size() > 0:
+			actions[0].affect = a
+			actions[0].type = _type_from_affect(a)
+
+## The amount of the action.
+@export var amount: int = 1:
+	set(a):
+		amount = a
+		if actions.size() > 0:
+			actions[0].amount = amount
+
+
+func _ready() -> void:
+	actions.append(HealthAction.new(affect, _type_from_affect(affect), amount))
+
+
+func _type_from_affect(affect: Health.Affect) -> HealthActionType.Enum:
+	return HealthActionType.Enum.KINETIC if affect == Health.Affect.DAMAGE else HealthActionType.Enum.MEDICINE
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hit_scan_2d/hit_scan_2d.gd =====
+@tool
+class_name HitScan2D extends RayCast2D
+## [HitScan2D] interacts with [HurtBox2D] to affect [Health] components.
+
+## emitted when collision with [HitBox2D] detected.
+signal hit_box_entered(hit_box: HitBox2D)
+## emitted when collision with [HurtBox2D] detected.
+signal hurt_box_entered(hurt_box: HurtBox2D)
+## emitted after the action is applied to a [HurtBox2D].
+signal action_applied(hurt_box: HurtBox2D)
+## emitted when collision with [Area2D] that isn't [HitBox2D] or [HurtBox2D].
+## Used to detect things like environment.
+signal unknown_area_entered(area: Area2D)
+
+
+## [Modifer] applied to [HealthActionType.Enum].
+@export var actions: Array[HealthAction] = []
+
+# Here for testing, can't mock native node functions
+var _collider: Node
+
+
+func _enter_tree() -> void:
+	# override default in editor
+	if Engine.is_editor_hint():
+		collide_with_areas = true
+
+
+func _set(property: StringName, value: Variant) -> bool:
+	# allow setting anything in game
+	if not Engine.is_editor_hint():
+		return false
+	
+	match property:
+		# force collide_with_area in editor
+		"collide_with_areas":
+			collide_with_areas = true
+		_:
+			return false
+	
+	return true
+
+
+## Detect collisions with [HurtBox2D] and apply appropriate action.
+func fire() -> void:
+	var collider = _collider if _collider else get_collider()
+	if not collider:
+		return
+	
+	if collider is HitBox2D:
+		var hit_box: HitBox2D = collider
+		if hit_box.ignore_collisions:
+			return
+		
+		hit_box_entered.emit(collider)
+		return
+	
+	if collider is not HurtBox2D:
+		unknown_area_entered.emit(collider)
+		return
+	
+	var hurt_box: HurtBox2D = collider
+	hurt_box_entered.emit(hurt_box)
+	hurt_box.apply_all_actions(actions)
+	action_applied.emit(hurt_box)
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hit_scan_2d/hit_scan_2d.svg =====
+<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+ <path d="m2.1695 11.079 1.4943-5.5767-2.1695-0.58132-1.4943 5.5767zm3.3328 4.921 5.5767-1.4943-0.58133-2.1695-5.5767 1.4943zm-0.96456-2.7516 7.9486-7.9486 2.6495 2.6495 0.88318-7.9486-7.9486 0.88318 2.6495 2.6495-7.9486 7.9486z" fill="#8da5f3" stroke-width=".84878"/>
+</svg>
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hit_scan_2d/hit_scan_2d.svg.import =====
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://53discmcr7gn"
+path="res://.godot/imported/hit_scan_2d.svg-76735babe2b0e36ac7e614925b1aeaa5.ctex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://addons/health_hitbox_hurtbox/2d/hit_scan_2d/hit_scan_2d.svg"
+dest_files=["res://.godot/imported/hit_scan_2d.svg-76735babe2b0e36ac7e614925b1aeaa5.ctex"]
+
+[params]
+
+compress/mode=0
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/uastc_level=0
+compress/rdo_quality_loss=0.0
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=false
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hurt_box_2d/basic_hurt_box_2d.gd =====
+class_name BasicHurtBox2D extends HurtBox2D
+## [BasicHurtBox2D] enables collision detection by [HitBox2D] or [HitScan2D] and applies affects to [Health].
+
+## The multiplier to apply to all damage actions.
+@export var damage_multiplier: float = 1.0:
+	set(mult):
+		damage_multiplier = mult
+		if modifiers.has(HealthActionType.Enum.KINETIC):
+			modifiers[HealthActionType.Enum.KINETIC].multiplier = mult
+
+## The multiplier to apply to all heal actions.
+@export var heal_multiplier: float = 1.0:
+	set(mult):
+		heal_multiplier = mult
+		if modifiers.has(HealthActionType.Enum.MEDICINE):
+			modifiers[HealthActionType.Enum.MEDICINE].multiplier = mult
+
+@export_group("Advanced")
+
+## Applies healing to [Health] when [color=orange]damage()[/color] is called.
+@export var heal_on_damage: bool = false:
+	set(enable):
+		heal_on_damage = enable
+		if modifiers.has(HealthActionType.Enum.KINETIC):
+			modifiers[HealthActionType.Enum.KINETIC].convert_affect = _affect_heal_on_damage(enable)
+
+
+## Applies damage to [Health] when [color=orange]heal()[/color] is called.
+@export var damage_on_heal: bool = false:
+	set(enable):
+		damage_on_heal = enable
+		if modifiers.has(HealthActionType.Enum.MEDICINE):
+			modifiers[HealthActionType.Enum.MEDICINE].convert_affect = _affect_damage_on_heal(enable)
+
+
+
+func _ready() -> void:
+	modifiers[HealthActionType.Enum.KINETIC] = HealthModifier.new(0, damage_multiplier, _affect_heal_on_damage(heal_on_damage))
+	modifiers[HealthActionType.Enum.MEDICINE] = HealthModifier.new(0, heal_multiplier, _affect_damage_on_heal(damage_on_heal))
+
+
+func _affect_heal_on_damage(enabled: bool) -> Health.Affect:
+	return Health.Affect.HEAL if enabled else Health.Affect.NONE
+
+
+func _affect_damage_on_heal(enabled: bool) -> Health.Affect:
+	return Health.Affect.DAMAGE if enabled else Health.Affect.NONE
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hurt_box_2d/hurt_box_2d.gd =====
+@tool
+class_name HurtBox2D extends Area2D
+## [HurtBox2D] enables collision detection by [HitBox2D] or [HitScan2D] and applies affects to [Health].
+
+
+## The [Health] component to affect.
+@export var health: Health = null:
+	set(new_health):
+		health = new_health
+		if Engine.is_editor_hint():
+			update_configuration_warnings()
+
+
+## [Modifer] applied to [HealthActionType.Enum].
+@export var modifiers: Dictionary[HealthActionType.Enum, HealthModifier] = {}
+
+
+func apply_all_actions(actions: Array[HealthAction]) -> void:
+	if not health:
+		push_error("%s is missing a 'Health' component" % self)
+		return
+	
+	var modified_actions: Array[HealthModifiedAction]
+	modified_actions.assign(
+		actions.filter(func(action: HealthAction) -> bool: return action != null)
+			.map(_map_modified_action)
+	)
+	
+	health.apply_all_modified_actions(modified_actions)
+
+
+func _map_modified_action(action: HealthAction) -> HealthModifiedAction:
+	var modifier := modifiers.get(action.type, HealthModifier.new())
+	var modified_action := HealthModifiedAction.new(action, modifier.clone())
+	return modified_action
+
+
+# Warn users if values haven't been configured.
+func _get_configuration_warnings() -> PackedStringArray:
+	var warnings := PackedStringArray()
+	
+	if health is not Health:
+		warnings.append("This node requires a 'Health' component")
+	
+	return warnings
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hurt_box_2d/hurt_box_2d.svg =====
+<svg width="16" height="16" version="1.1" viewBox="0 0 6.6636 6.6636" xmlns="http://www.w3.org/2000/svg">
+ <path d="m1.827 0c-0.23604 0.0061738-0.68281 0.28618-1.112 0.71581-0.52818 0.52878-0.83027 1.0844-0.67433 1.2405l4.6552 4.6601 0.00163-8.134e-4c0.00184 0.00204 0.00292 0.00457 0.00488 0.00651 0.15595 0.15613 0.70985-0.14555 1.238-0.67433s0.83029-1.0843 0.67433-1.2405c-0.00206-0.00194-0.00435-0.00302-0.00651-0.00488l8.16e-4 -8.14e-4 -4.6552-4.6601c-0.029242-0.029276-0.072425-0.042909-0.12689-0.041485zm1.5715 2.0295c0.035438-0.00134 0.063011 0.00669 0.081342 0.023589 0 0 0.040153 0.037221 1.1242 1.1242 0.10834 0.10846-0.12574 0.51815-0.52222 0.9151-0.3965 0.39683-0.80514 0.63068-0.91348 0.52222l-1.1217-1.1225c-0.10834-0.10856 0.12491-0.51825 0.52141-0.9151 0.35244-0.35276 0.67103-0.54141 0.83051-0.54744zm1.4381-2.0295c-0.05447-0.0014247-0.097652 0.012209-0.12689 0.041485-0.00194 0.001942-0.00302 0.0044644-0.00488 0.0065074l-8.139e-4 -8.1342e-4 -1.1461 1.1461c0.099903 0.11156 1.9132 1.9156 1.9132 1.9156l1.1453-1.1469-8.134e-4 -8.134e-4c0.00204-0.00184 0.00457-0.00291 0.00651-0.00488 0.15595-0.15613-0.14534-0.71159-0.67352-1.2405-0.42916-0.42963-0.87592-0.70964-1.112-0.71581zm-3.6449 3.562-1.1437 1.1453c-0.15596 0.15614 0.14615 0.71088 0.67433 1.2397 0.52818 0.52878 1.0821 0.83118 1.238 0.67514l1.1445-1.1453z" fill="#8da5f3"/>
+</svg>
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/2d/hurt_box_2d/hurt_box_2d.svg.import =====
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://v78abft1b1ba"
+path="res://.godot/imported/hurt_box_2d.svg-635cc32a4a08d276e81d7b9735ef33ab.ctex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://addons/health_hitbox_hurtbox/2d/hurt_box_2d/hurt_box_2d.svg"
+dest_files=["res://.godot/imported/hurt_box_2d.svg-635cc32a4a08d276e81d7b9735ef33ab.ctex"]
+
+[params]
+
+compress/mode=0
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/uastc_level=0
+compress/rdo_quality_loss=0.0
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=false
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/LICENSE =====
+MIT License
+
+Copyright (c) 2023 David Clutter
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/README.md =====
+# Godot <img src="https://raw.githubusercontent.com/cluttered-code/godot-health-hitbox-hurtbox/refs/heads/main/addons/health_hitbox_hurtbox/health/health.svg" width="24" height="24"/> Health, <img src="https://raw.githubusercontent.com/cluttered-code/godot-health-hitbox-hurtbox/refs/heads/main/addons/health_hitbox_hurtbox/2d/hit_box_2d/hit_box_2d.svg" width="24" height="24"/> HitBoxes, <img src="https://raw.githubusercontent.com/cluttered-code/godot-health-hitbox-hurtbox/refs/heads/main/addons/health_hitbox_hurtbox/3d/hurt_box_3d/hurt_box_3d.svg" width="24" height="24"/> HurtBoxes, and <img src="https://raw.githubusercontent.com/cluttered-code/godot-health-hitbox-hurtbox/refs/heads/main/addons/health_hitbox_hurtbox/2d/hit_scan_2d/hit_scan_2d.svg" width="24" height="24"/> HitScans
+
+[![Godot](https://img.shields.io/badge/Godot-4.5%2b-blue?logo=godot-engine)](https://godotengine.org/download)
+[![LICENSE](https://img.shields.io/badge/license-MIT-blue)](https://github.com/cluttered-code/godot-health-hitbox-hurtbox/blob/main/addons/health_hitbox_hurtbox/LICENSE)
+[![Current Release](https://img.shields.io/github/release/cluttered-code/godot-health-hitbox-hurtbox.svg "Current Release")](https://github.com/cluttered-code/godot-health-hitbox-hurtbox/releases/latest)
+[![actions](https://github.com/cluttered-code/godot-health-hitbox-hurtbox/actions/workflows/ci.yml/badge.svg)](https://github.com/cluttered-code/godot-health-hitbox-hurtbox/actions/workflows/ci.yml)
+[![Downloads](https://img.shields.io/github/downloads/cluttered-code/godot-health-hitbox-hurtbox/total.svg "Downloads")](https://github.com/cluttered-code/godot-health-hitbox-hurtbox/releases)
+
+[![Live Example](https://img.shields.io/badge/Live_Example-itch.io-fa5c5c)](https://cluttered-code.itch.io/godot-health-hitbox-hurtbox-hitscan)
+[![ko-fi](https://img.shields.io/badge/Support%20on-ko--fi-ff5e5b?logo=ko-fi)](https://ko-fi.com/clutteredcode)
+
+Composable 2D/3D components for health, damage, and healing in Godot 4.5+.
+
+> [!CAUTION]
+> v5 renamed the simple nodes to `Basic*` and added advanced variants with typed actions and modifiers.
+> Upgrade to v4.4.0 first if migrating from older versions, then to v5.
+
+## Documentation
+
+See the [Wiki](https://github.com/cluttered-code/godot-health-hitbox-hurtbox/wiki) for tutorials and deeper detail.
+
+## Overview
+
+```mermaid
+flowchart LR
+  Hit["HitBox / HitScan"] -->|"HealthAction[]"| Hurt[HurtBox]
+  Hurt -->|"HealthModifiedAction[]"| Health
+  Health --> Apply["damage / heal"]
+```
+
+| Role | Basic (simple) | Advanced |
+|------|----------------|----------|
+| Attack (area) | `BasicHitBox2D` / `3D` — `affect` + `amount` | `HitBox2D` / `3D` — `actions: Array[HealthAction]` |
+| Attack (ray) | `BasicHitScan2D` / `3D` — `affect` + `amount` | `HitScan2D` / `3D` — `actions`; call `fire()` |
+| Defense | `BasicHurtBox2D` / `3D` — damage/heal multipliers | `HurtBox2D` / `3D` — `modifiers` by action type |
+| State | `Health` — current/max, conditions, optional `modifiers` | same |
+
+**Pipeline:** HitBox/HitScan send `HealthAction` values → HurtBox wraps them with its `modifiers` → Health merges its own `modifiers` and applies damage or heal.
+
+Core resources: `HealthAction` (`affect`, `type`, `amount`), `HealthModifier` (`incrementer`, `multiplier`, convert fields), `HealthActionType` (`KINETIC`, `MEDICINE`, …).
+
+## Health
+
+Tracks an entity’s health and emits signals for damage, healing, death, revival, and related edge cases (`damageable`, `healable`, `killable`, `revivable`).
+
+![Health inspector](https://raw.githubusercontent.com/cluttered-code/godot-health-hitbox-hurtbox/refs/heads/main/images/health_inspector.png "Health Inspector")
+
+## HurtBox
+
+`HurtBox2D` / `HurtBox3D` need a collision shape and a linked `Health`. Prefer `BasicHurtBox*` when you only need damage/heal multipliers (or invert damage↔heal). Use the base HurtBox when you need per-type `modifiers`.
+
+![HurtBox2D Inspector](https://raw.githubusercontent.com/cluttered-code/godot-health-hitbox-hurtbox/refs/heads/main/images/basic_hurt_box_2d_inspector.png "BasicHurtBox2D Inspector")
+
+## HitBox
+
+`HitBox2D` / `HitBox3D` detect HurtBoxes on collision. Prefer `BasicHitBox*` for a single damage/heal amount. Use the base HitBox to send multiple typed `HealthAction`s. Set `ignore_collisions` to stop further hits (e.g. before `queue_free()`).
+
+![HitBox2D Inspector](https://raw.githubusercontent.com/cluttered-code/godot-health-hitbox-hurtbox/refs/heads/main/images/basic_hit_box_2d_inspector.png "BasicHitBox2D Inspector")
+
+## HitScan
+
+`HitScan2D` / `HitScan3D` extend `RayCast2D` / `RayCast3D`. Prefer `BasicHitScan*` for a single affect/amount. Call `fire()` to apply the hit. Enable colliding with areas (forced in the editor).
+
+![HitScan2D Inspector](https://raw.githubusercontent.com/cluttered-code/godot-health-hitbox-hurtbox/refs/heads/main/images/basic_hit_scan_2d_inspector.png "BasicHitScan2D Inspector")
+
+## Live example
+
+[itch.io — godot-health-hitbox-hurtbox-hitscan](https://cluttered-code.itch.io/godot-health-hitbox-hurtbox-hitscan)
+
+## Installation
+
+1. Open the **AssetLib** tab in the Godot Editor.
+2. Search for `Health`, `HitBox`, or `HurtBox`.
+3. Download **Health, HitBoxes, HurtBoxes, and HitScans**.
+4. Enable it under **Project → Project Settings → Plugins**.
+
+## Usage
+
+![Player Structure](https://raw.githubusercontent.com/cluttered-code/godot-health-hitbox-hurtbox/refs/heads/main/images/character_structure.png "CharacterBody2D Structure")
+
+1. Add a `Health` node to the entity (`CharacterBody2D`, `CharacterBody3D`, etc.).
+2. Add a `BasicHurtBox2D` (or `3D`) with a collision shape; assign `Health` and set its collision **layer**.
+3. For melee/projectiles: add `BasicHitBox2D` (or `3D`), set `affect` / `amount`, and match the HurtBox **mask** to that layer. Collisions apply automatically.
+4. For hitscan weapons: add `BasicHitScan2D` (or `3D`), set the mask the same way, and call `fire()` when shooting.
+
+For multiple damage types or custom resists, use the non-Basic HitBox/HitScan/HurtBox nodes and configure `actions` / `modifiers`.
+
+## Issues
+
+Submit issues on the [GitHub Issues page](https://github.com/cluttered-code/godot-health-hitbox-hurtbox/issues).
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/health/health.gd =====
+class_name Health extends Node
+## Health is used to track an entity's health, death, and revival.
+
+
+## Affect an action will have on [Health].
+enum Affect { NONE, DAMAGE, HEAL }
+
+## Emitted after damage is applied.
+signal damaged(entity: Node, type: HealthActionType.Enum, amount: int, incrementer: int, multiplier: float, applied: int)
+## Emitted after damage is applied when death has occured.
+signal died(entity: Node)
+
+## Emitted after healing is applied.
+signal healed(entity: Node, type: HealthActionType.Enum, amount: int, incrementer: int, multiplier: float, applied: int)
+## Emitted after healing is applied when dead.
+signal revived(entity: Node)
+
+## Emitted after damage or healing is applied.
+signal action_applied(action: HealthModifiedAction, applied: int)
+
+
+## Emitted when damaged and entity had full health.
+signal first_hit(entity: Node)
+## Emitted when trying to damage an entity that is not damageable.
+signal not_damageable(entity: Node)
+## Emitted when damaging and current health is already zero.
+signal already_dead(entity: Node)
+## Emitted when trying to apply enough damage to an enemy to kill them and they cannot be.
+signal not_killable(entity: Node)
+
+
+## Emitted when trying to heal and entity is not healable.
+signal not_healable(entity: Node)
+## Emitted when enity is healed and health is now full.
+signal full(entity: Node)
+## Emitted when healing and current health is already full.
+signal already_full(entity: Node)
+## Emitted when trying to heal a dead entity that is not revivable
+signal not_revivable(entity: Node)
+
+const DEFAULT_MAX = 100
+
+## The current amount of health.[br]
+## Value is clamped [0, max].
+@export var current: int = DEFAULT_MAX:
+	set(curr):
+		current = clampi(curr, 0, max)
+
+## The maximum amount of health.[br]
+## Will not allow values < 1.
+## Will reduce current if greater than updated max.[br]
+@export var max: int = DEFAULT_MAX:
+	set(new_max):
+		var old_max = max
+		max = maxi(new_max, 1)
+		# reduce current in game so it is not greater than max
+		current = mini(current, max)
+
+@export_group("Conditions")
+## Enable if entity is capable of taking damage.
+@export var damageable: bool = true
+## Enable if entity is capable of being healed.
+@export var healable: bool = true
+## Enable if entity is able to be killed.
+@export var killable: bool = true
+## Enable if entity is able to be revived from death.
+@export var revivable: bool = true
+
+
+@export_group("Advanced")
+## The entity this component is tracking health for,
+## sent in signals for association.[br][br]
+## Defaults to [color=orange]owner[/color].
+@export var entity: Node:
+	get():
+		return entity if entity else owner
+
+## Additional [Modifer] applied to [HealthActionType.Enum].
+@export var modifiers: Dictionary[HealthActionType.Enum, HealthModifier] = {}
+
+
+## Returns [color=orange]true[/color] when not alive.
+func is_dead() -> bool:
+	return current == 0 and killable
+
+
+## Returns [color=orange]true[/color] when current health is greater than 0.
+func is_alive() -> bool:
+	return not is_dead()
+
+
+## Return [color=orange]true[/color] when current health is max.
+func is_full() -> bool:
+	return current == max
+
+
+## Returns the percent of current to maximum health.
+func percent() -> float:
+	return clampf(float(current) / float(max), 0.0, 1.0)
+
+
+## Apply enough damage to kill. Ignores modifiers.
+func kill(type: HealthActionType.Enum = HealthActionType.Enum.NONE) -> void:
+	var mod_ac := HealthModifiedAction.new(HealthAction.new(Affect.DAMAGE, type, current), HealthModifier.new())
+	_damage(mod_ac)
+
+
+## Apply enough healing to fill. Ignores modifiers.
+func fill(type: HealthActionType.Enum = HealthActionType.Enum.NONE) -> void:
+	var mod_ac := HealthModifiedAction.new(HealthAction.new(Affect.HEAL, type, max - current), HealthModifier.new())
+	_heal(mod_ac)
+
+
+## Apply all the [HealthAction] objects in the arary.
+func apply_all_actions(actions: Array[HealthAction]) -> void:
+	for action in actions:
+		apply_action(action)
+
+
+## Apply the specified [HealthAction].
+func apply_action(action: HealthAction) -> void:
+	var modified_action := HealthModifiedAction.new(action, HealthModifier.new())
+	apply_modified_action(modified_action)
+
+
+## Apply all the [HealthModifiedAction] objects in the arary.
+func apply_all_modified_actions(actions: Array[HealthModifiedAction]) -> void:
+	for action in actions:
+		apply_modified_action(action)
+
+
+## Apply the specified [HealthModifiedAction].
+func apply_modified_action(action: HealthModifiedAction) -> void:
+	if not action:
+		return
+
+	var modifier := _get_modifier(action.type)
+
+	var affect: Affect = modifier.convert_affect if modifier.convert_affect else action.affect
+	var type: HealthActionType.Enum = modifier.convert_type if modifier.convert_type else action.type
+
+	var ac := HealthAction.new(affect, type, action.amount)
+	var mod := HealthModifier.new(action.incrementer + modifier.incrementer, action.multiplier * modifier.multiplier)
+	var mod_ac := HealthModifiedAction.new(ac, mod)
+
+	match affect:
+		Affect.DAMAGE:
+			_damage(mod_ac)
+		Affect.HEAL:
+			_heal(mod_ac)
+		_:
+			print_debug("%s affect unimplemented" % Health.Affect.find_key(affect))
+
+
+## Apply the specified amount of damage if damageable and not dead.
+func damage(amount: int, incrementer: int = 0, multiplier: float = 1.0, type: HealthActionType.Enum = HealthActionType.Enum.NONE) -> void:
+	var action := HealthAction.new(Affect.DAMAGE, type, amount)
+	var modifier := HealthModifier.new(incrementer, multiplier)
+	var modified_action := HealthModifiedAction.new(action, modifier)
+	apply_modified_action(modified_action)
+
+
+## apply the specified amount of healing if healable, not full, or dead and revivable.
+func heal(amount: int, incrementer: int = 0, multiplier: float = 1.0, type: HealthActionType.Enum = HealthActionType.Enum.NONE) -> void:
+	var action := HealthAction.new(Affect.HEAL, type, amount)
+	var modifier := HealthModifier.new(incrementer, multiplier)
+	var modified_action := HealthModifiedAction.new(action, modifier)
+	apply_modified_action(modified_action)
+
+
+## Apply the specified amount of damage if damageable and not dead.
+func _damage(mod_ac: HealthModifiedAction) -> void:
+	if not damageable:
+		print_debug("%s cannot be damaged" % entity)
+		not_damageable.emit(entity)
+		return
+	
+	if is_dead():
+		print_debug("%s is already dead" % entity)
+		already_dead.emit(entity)
+		return
+	
+	var applied := clampi(roundi((mod_ac.amount + mod_ac.incrementer) * mod_ac.multiplier), 0, current)
+	if applied == current and not killable:
+		print_debug("%s is not killable" % entity)
+		not_killable.emit(entity)
+		return
+
+	var is_first_hit := is_full() and applied > 0
+	current -= applied
+	print_debug(
+		"%s affect=%s type=%s amount=%d incrementer=%d multiplier=%0.4f applied=%d current=%d"
+		% [entity, Affect.find_key(mod_ac.affect), HealthActionType.Enum.find_key(mod_ac.type), mod_ac.amount, mod_ac.incrementer, mod_ac.multiplier, applied, current]
+	)
+	damaged.emit(entity, mod_ac.type, mod_ac.amount, mod_ac.incrementer, mod_ac.multiplier, applied)
+	action_applied.emit(mod_ac, applied)
+	
+	if is_first_hit:
+		print_debug("%s first hit" % entity)
+		first_hit.emit(entity)
+	
+	if is_dead():
+		print_debug("%s died" % entity)
+		died.emit(entity)
+
+
+## apply the specified amount of healing if healable, not full, or dead and revivable.
+func _heal(mod_ac: HealthModifiedAction) -> void:
+	if not healable:
+		print_debug("%s is not healable" % entity)
+		not_healable.emit(entity)
+		return
+	
+	if is_full():
+		print_debug("%s already has full health" % entity)
+		already_full.emit(entity)
+		return
+	
+	if is_dead() and not revivable:
+		print_debug("%s cannot be revived" % entity)
+		not_revivable.emit(entity)
+		return
+	
+	var notify_revived := is_dead() and mod_ac.amount > 0
+	
+	var applied := clampi(roundi((mod_ac.amount + mod_ac.incrementer) * mod_ac.multiplier), 0, max - current)
+	current += applied
+	print_debug(
+		"%s affect=%s type=%s amount=%d incrementer=%d multiplier=%0.4f applied=%d current=%d"
+		% [entity, Affect.find_key(mod_ac.affect), HealthActionType.Enum.find_key(mod_ac.type), mod_ac.amount, mod_ac.incrementer, mod_ac.multiplier, applied, current]
+	)
+	healed.emit(entity, mod_ac.type, mod_ac.amount, mod_ac.incrementer, mod_ac.multiplier, applied)
+	action_applied.emit(mod_ac, applied)
+	
+	if current == max and applied > 0:
+		print_debug("%s has full health" % entity)
+		full.emit(entity)
+	
+	if notify_revived:
+		print_debug("%s revived" % entity)
+		revived.emit(entity)
+
+
+func _get_modifier(type: HealthActionType.Enum) -> HealthModifier:
+	return modifiers.get(type, HealthModifier.new())
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/health/health.svg =====
+<svg width="16" height="16" fill="#000000" version="1.1" viewBox="0 0 .3 .3" xmlns="http://www.w3.org/2000/svg">
+ <path d="m0.012878 0.13465c-0.055065-0.11586 0.083744-0.19309 0.13731-0.07724 0.053557-0.11586 0.19238-0.038619 0.13732 0.07724-0.002005 0.004212-0.004679 0.008711-0.007184 0.013137h-0.041708l-0.04186-0.068598a0.014424 0.015758 0 0 0-0.025388 0.0028911l-0.03803 0.10384-0.030684-0.033523a0.014428 0.015763 0 0 0-0.010188-0.004613h-0.072416c-0.0025054-0.004428-0.0051793-0.008928-0.0071771-0.013139zm0.21802 0.044647a0.014449 0.015786 0 0 1-0.012008-0.007015l-0.030932-0.05069-0.03596 0.098219a0.014407 0.015741 0 0 1-0.010488 0.009578 0.013951 0.015242 0 0 1-0.002893 3.1759e-4 0.014421 0.015756 0 0 1-0.010195-0.004602l-0.041916-0.045809h-0.046265a0.98441 1.0755 0 0 0 0.10289 0.11779 0.010709 0.0117 0 0 0 0.014354 0 0.99802 1.0904 0 0 0 0.10267-0.11779z" fill="#e0e0e0" stroke-width=".024115"/>
+</svg>
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/health/health.svg.import =====
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://diu1fttubkvuv"
+path="res://.godot/imported/health.svg-38b8dcaf4b974319ed410dae73e766f5.ctex"
+metadata={
+"has_editor_variant": true,
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://addons/health_hitbox_hurtbox/health/health.svg"
+dest_files=["res://.godot/imported/health.svg-38b8dcaf4b974319ed410dae73e766f5.ctex"]
+
+[params]
+
+compress/mode=0
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/uastc_level=0
+compress/rdo_quality_loss=0.0
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=false
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=true
+editor/convert_colors_with_editor_theme=true
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/plugin.cfg =====
+[plugin]
+
+name="Health, HitBoxes, HurtBoxes, and HitScans"
+description="2D and 3D Components to manage health, damage, and healing"
+author="ClutteredCode"
+version="5.0.4"
+script="plugin.gd"
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/plugin.gd =====
+@tool
+extends EditorPlugin
+
+const addon_path = "res://addons/health_hitbox_hurtbox/%s"
+
+var hit_box_2d_added: bool
+var hit_scan_2d_added: bool
+var hurt_box_2d_added: bool
+var basic_hit_box_2d_added: bool
+var basic_hit_scan_2d_added: bool
+var basic_hurt_box_2d_added: bool
+
+var hit_box_3d_added: bool
+var hit_scan_3d_added: bool
+var hurt_box_3d_added: bool
+var basic_hit_box_3d_added: bool
+var basic_hit_scan_3d_added: bool
+var basic_hurt_box_3d_added: bool
+
+func _enter_tree() -> void:
+	add_custom_type("Health", "Node",
+		preload("health/health.gd"),
+		preload("health/health.svg"))
+	
+	# ==================
+	# Load 2D components
+	# ==================
+	if FileAccess.file_exists(addon_path % "2d/hit_box_2d/hit_box_2d.gd"):
+		hit_box_2d_added = true
+		add_custom_type("HitBox2D", "Area2D",
+			load(addon_path % "2d/hit_box_2d/hit_box_2d.gd"),
+			load(addon_path % "2d/hit_box_2d/hit_box_2d.svg"))
+	
+	if FileAccess.file_exists(addon_path % "2d/hit_scan_2d/hit_scan_2d.gd"):
+		hit_scan_2d_added = true
+		add_custom_type("HitScan2D", "RayCast2D",
+			load(addon_path % "2d/hit_scan_2d/hit_scan_2d.gd"),
+			load(addon_path % "2d/hit_scan_2d/hit_scan_2d.svg"))
+	
+	if FileAccess.file_exists(addon_path % "2d/hurt_box_2d/hurt_box_2d.gd"):
+		hurt_box_2d_added = true
+		add_custom_type("HurtBox2D", "Area2D",
+			load(addon_path % "2d/hurt_box_2d/hurt_box_2d.gd"),
+			load(addon_path % "2d/hurt_box_2d/hurt_box_2d.svg"))
+	
+	if FileAccess.file_exists(addon_path % "2d/hit_box_2d/basic_hit_box_2d.gd"):
+		basic_hit_box_2d_added = true
+		add_custom_type("BasicHitBox2D", "HitBox2D",
+			load(addon_path % "2d/hit_box_2d/basic_hit_box_2d.gd"),
+			load(addon_path % "2d/hit_box_2d/hit_box_2d.svg"))
+	
+	if FileAccess.file_exists(addon_path % "2d/hit_scan_2d/basic_hit_scan_2d.gd"):
+		basic_hit_scan_2d_added = true
+		add_custom_type("BasicHitScan2D", "HitScan2D",
+			load(addon_path % "2d/hit_scan_2d/basic_hit_scan_2d.gd"),
+			load(addon_path % "2d/hit_scan_2d/hit_scan_2d.svg"))
+	
+	if FileAccess.file_exists(addon_path % "2d/hurt_box_2d/basic_hurt_box_2d.gd"):
+		basic_hurt_box_2d_added = true
+		add_custom_type("BasicHurtBox2D", "HurtBox2D",
+			load(addon_path % "2d/hurt_box_2d/basic_hurt_box_2d.gd"),
+			load(addon_path % "2d/hurt_box_2d/hurt_box_2d.svg"))
+
+	# ==================
+	# Load 3D components
+	# ==================
+	if FileAccess.file_exists(addon_path % "3d/hit_box_3d/hit_box_3d.gd"):
+		hit_box_3d_added = true
+		add_custom_type("HitBox3D", "Area3D",
+			load(addon_path % "3d/hit_box_3d/hit_box_3d.gd"),
+			load(addon_path % "3d/hit_box_3d/hit_box_3d.svg"))
+
+	if FileAccess.file_exists(addon_path % "3d/hit_scan_3d/hit_scan_3d.gd"):
+		hit_scan_3d_added = true
+		add_custom_type("HitScan3D", "RayCast3D",
+			load(addon_path % "3d/hit_scan_3d/hit_scan_3d.gd"),
+			load(addon_path % "3d/hit_scan_3d/hit_scan_3d.svg"))
+
+	if FileAccess.file_exists(addon_path % "3d/hurt_box_3d/hurt_box_3d.gd"):
+		hurt_box_3d_added = true
+		add_custom_type("HurtBox3D", "Area3D",
+			load(addon_path % "3d/hurt_box_3d/hurt_box_3d.gd"),
+			load(addon_path % "3d/hurt_box_3d/hurt_box_3d.svg"))
+
+	if FileAccess.file_exists(addon_path % "3d/hit_box_3d/basic_hit_box_3d.gd"):
+		basic_hit_box_3d_added = true
+		add_custom_type("BasicHitBox3D", "HitBox3D",
+			load(addon_path % "3d/hit_box_3d/basic_hit_box_3d.gd"),
+			load(addon_path % "3d/hit_box_3d/hit_box_3d.svg"))
+
+	if FileAccess.file_exists(addon_path % "3d/hit_scan_3d/basic_hit_scan_3d.gd"):
+		basic_hit_scan_3d_added = true
+		add_custom_type("BasicHitScan3D", "HitScan3D",
+			load(addon_path % "3d/hit_scan_3d/basic_hit_scan_3d.gd"),
+			load(addon_path % "3d/hit_scan_3d/hit_scan_3d.svg"))
+
+	if FileAccess.file_exists(addon_path % "3d/hurt_box_3d/basic_hurt_box_3d.gd"):
+		basic_hurt_box_3d_added = true
+		add_custom_type("BasicHurtBox3D", "HurtBox3D",
+			load(addon_path % "3d/hurt_box_3d/basic_hurt_box_3d.gd"),
+			load(addon_path % "3d/hurt_box_3d/hurt_box_3d.svg"))
+
+
+func _exit_tree() -> void:
+	remove_custom_type("Health")
+	
+	# ====================
+	# Remove 2D components
+	# ====================
+	if hit_box_2d_added:
+		remove_custom_type("HitBox2D")
+	if hit_scan_2d_added:
+		remove_custom_type("HitScan2D")
+	if hurt_box_2d_added:
+		remove_custom_type("HurtBox2D")
+	if basic_hit_box_2d_added:
+		remove_custom_type("BasicHitBox2D")
+	if basic_hit_scan_2d_added:
+		remove_custom_type("BasicHitScan2D")
+	if basic_hurt_box_2d_added:
+		remove_custom_type("BasicHurtBox2D")
+	
+	# ====================
+	# Remove 3D components
+	# ====================
+	if hit_box_3d_added:
+		remove_custom_type("HitBox3D")
+	if hit_scan_3d_added:
+		remove_custom_type("HitScan3D")
+	if hurt_box_3d_added:
+		remove_custom_type("HurtBox3D")
+	if basic_hit_box_3d_added:
+		remove_custom_type("BasicHitBox3D")
+	if basic_hit_scan_3d_added:
+		remove_custom_type("BasicHitScan3D")
+	if basic_hurt_box_3d_added:
+		remove_custom_type("BasicHurtBox3D")
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/resources/health_action.gd =====
+class_name HealthAction extends Resource
+
+
+@export var affect: Health.Affect = Health.Affect.DAMAGE
+@export var type: HealthActionType.Enum = HealthActionType.Enum.KINETIC
+@export var amount: int = 1
+
+
+func _init(affect: Health.Affect = Health.Affect.DAMAGE, type: HealthActionType.Enum = HealthActionType.Enum.KINETIC, amount: int = 1) -> void:
+	self.affect = affect
+	self.type = type
+	self.amount = amount
+
+
+## clone because duplicate() doesn't work with _init() parameters
+func clone() -> HealthAction:
+	return HealthAction.new(affect, type, amount)
+
+
+func _to_string() -> String:
+	return "HealthAction<affect=%s type=%s amount=%d>" % [Health.Affect.find_key(affect), HealthActionType.Enum.find_key(type), amount]
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/resources/health_action_type.gd =====
+class_name HealthActionType extends Object
+
+## These are the keys used to add [HealthModifier] to [Health] and HurtBoxes.
+## NOTICE: Developers can add health action types here to enable more modifiers.
+## ALERT: It is recommended to move this and it's guid file out of the 'addon' folder
+## when adding more customs types so this file isn't replaced when updating the plugin.[br]
+## [br]
+## examples of other damage types: BLUDGEON, PIERCE, POISON, FIRE, LIGHTNING...
+## examples of other heal types: POTION, MED_KIT, INJECTION, FOOD...
+enum Enum { NONE, MEDICINE, KINETIC }
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/resources/health_modified_action.gd =====
+class_name HealthModifiedAction extends Resource
+
+var action: HealthAction
+var modifier: HealthModifier
+
+## passthrough returns the modifier.convert_affect or action.affect
+var affect: Health.Affect:
+	get():
+		return modifier.convert_affect if modifier.convert_affect else action.affect
+
+## passthought returns the modifier.conver_type or action.type
+var type: HealthActionType.Enum:
+	get():
+		return modifier.convert_type if modifier.convert_type else action.type
+
+## passthrough returns action.amount
+var amount: int:
+	get():
+		return action.amount
+
+## passthrough returns modifier.incrementer
+var incrementer: int:
+	get():
+		return modifier.incrementer
+
+## passthrough returns modifier.multiplier
+var multiplier: float:
+	get():
+		return modifier.multiplier
+
+
+func _init(action: HealthAction, modifier: HealthModifier) -> void:
+	self.action = action
+	self.modifier = modifier
+
+
+
+## clone because duplicate() doesn't work with _init() parameters
+func clone() -> HealthModifiedAction:
+	return HealthModifiedAction.new(action, modifier)
+
+
+func _to_string() -> String:
+	return "HealthModifiedAction<%s %s>" % [action, modifier]
+
+===== /home/void/repositories/metroidvania-gamejam/addons/health_hitbox_hurtbox/resources/health_modifier.gd =====
+class_name HealthModifier extends Resource
+
+@export var incrementer: int = 0
+@export var multiplier: float = 1.0
+
+@export var convert_affect: Health.Affect = Health.Affect.NONE
+@export var convert_type: HealthActionType.Enum = HealthActionType.Enum.NONE
+
+
+func _init(
+	incrementer: int = 0,
+	multiplier: float = 1.0,
+	convert_affect: Health.Affect = Health.Affect.NONE,
+	convert_type: HealthActionType.Enum = HealthActionType.Enum.NONE
+) -> void:
+	self.incrementer = incrementer
+	self.multiplier = multiplier
+	self.convert_affect = convert_affect
+	self.convert_type = convert_type
+
+
+
+## clone because duplicate() doesn't work with _init() parameters
+func clone() -> HealthModifier:
+	return HealthModifier.new(incrementer, multiplier, convert_affect, convert_type)
+
+
+func _to_string() -> String:
+	return "HealthModifier<incrementer=%d multiplier=%0.4f convert_affect=%s conver_type=%s>"\
+		% [incrementer, multiplier, Health.Affect.find_key(convert_affect), HealthActionType.Enum.find_key(convert_type)]

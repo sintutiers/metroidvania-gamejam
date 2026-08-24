@@ -4,7 +4,7 @@ extends Component
 signal respawned
 
 @export_custom(ETP.NONE, ETP.PROPERTY)
-var free_on_death: bool = false
+var free_on_death: bool = true
 @export_custom(ETP.NONE, ETP.PROPERTY)
 var respawn_on_death: bool = false
 @export_custom(ETP.NONE, ETP.PROPERTY)
