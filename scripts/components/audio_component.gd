@@ -3,14 +3,26 @@ class_name AudioComponent
 extends Component
 
 @export var footstep_sounds: Array[AudioStream] = []
+<<<<<<< HEAD
 @export var fire_sound: AudioStream
 @export var footstep_interval: float = 0.35
+=======
+
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var fire_sound: AudioStream
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var footstep_interval: float = 0.35
+>>>>>>> origin/main
 
 var _is_walking: bool = false
 var _footstep_timer: float = 0.0
 
 
+<<<<<<< HEAD
 func _process(delta: float) -> void:
+=======
+func _physics_process(delta: float) -> void:
+>>>>>>> origin/main
 	if not _is_walking:
 		return
 	_footstep_timer -= delta
@@ -22,13 +34,21 @@ func _process(delta: float) -> void:
 func play_footstep() -> void:
 	if footstep_sounds.is_empty():
 		return
+<<<<<<< HEAD
 	var _player: AudioStreamPlayer = SoundManager.play_sound(footstep_sounds.pick_random())
+=======
+	SoundManager.play_sound(footstep_sounds.pick_random())
+>>>>>>> origin/main
 
 
 func play_fire() -> void:
 	if not fire_sound:
 		return
+<<<<<<< HEAD
 	var _player: AudioStreamPlayer = SoundManager.play_sound(fire_sound)
+=======
+	SoundManager.play_sound(fire_sound)
+>>>>>>> origin/main
 
 
 func _on_setup() -> void:

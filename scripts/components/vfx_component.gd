@@ -8,6 +8,7 @@ enum RunDustMode {
 }
 
 @export_group("One-Shot Effects")
+<<<<<<< HEAD
 @export var jump_dust: PackedScene
 @export var jump_dust_offset: Vector2 = Vector2.ZERO
 @export var land_dust: PackedScene
@@ -25,6 +26,38 @@ enum RunDustMode {
 @export_group("Wall Dust")
 @export var wall_dust_scene: PackedScene
 @export var wall_dust_offset: Vector2 = Vector2.ZERO
+=======
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var jump_dust: PackedScene
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var jump_dust_offset: Vector2 = Vector2.ZERO
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var land_dust: PackedScene
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var land_dust_offset: Vector2 = Vector2.ZERO
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var dash_trail: PackedScene
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var dash_trail_offset: Vector2 = Vector2.ZERO
+
+@export_group("Run Dust")
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var run_dust_scene: PackedScene
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var run_dust_mode: RunDustMode = RunDustMode.CONTINUOUS
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var footstep_interval: float = 0.3
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var run_dust_offset: Vector2 = Vector2.ZERO
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var footstep_offset: Vector2 = Vector2.ZERO
+
+@export_group("Wall Dust")
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var wall_dust_scene: PackedScene
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var wall_dust_offset: Vector2 = Vector2.ZERO
+>>>>>>> origin/main
 
 var entity: Node2D
 var _run_dust: CPUParticles2D
@@ -46,6 +79,7 @@ func _physics_process(delta: float) -> void:
 
 func _on_setup() -> void:
 	entity = get_parent() as Node2D
+<<<<<<< HEAD
 	var movement := get_component(MovementBase, false) as MovementBase
 	if movement:
 		track(movement.ground_motion_changed, _on_ground_motion_changed)
@@ -60,6 +94,18 @@ func _on_setup() -> void:
 		track(sideways.wall_slid, _on_wall_slid)
 		track(sideways.fell_from_wall, _on_wall_dust_end)
 
+=======
+	var movement := get_component(PlatformerMovementBase, false) as PlatformerMovementBase
+	if movement:
+		track(movement.ground_motion_changed, _on_ground_motion_changed)
+		track(movement.jumped, _on_jumped)
+		track(movement.wall_jumped, _on_jumped)
+		track(movement.extra_jumped, _on_extra_jumped)
+		track(movement.landed, _on_landed)
+		track(movement.dashed, _on_dashed)
+		track(movement.wall_slid, _on_wall_slid)
+		track(movement.fell_from_wall, _on_wall_dust_end)
+>>>>>>> origin/main
 	if run_dust_scene and run_dust_mode == RunDustMode.CONTINUOUS:
 		_run_dust = _spawn_persistent(run_dust_scene, run_dust_offset)
 	if wall_dust_scene:

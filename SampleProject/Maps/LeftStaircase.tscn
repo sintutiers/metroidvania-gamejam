@@ -4,6 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="2_yec0f"]
 [ext_resource type="PackedScene" uid="uid://d165fnekqr5ex" path="res://SampleProject/Objects/Button.tscn" id="3_0lim4"]
 [ext_resource type="PackedScene" uid="uid://cuo3rbw43trj4" path="res://SampleProject/Objects/Pipe.tscn" id="4_5yvvy"]
+<<<<<<< HEAD
+=======
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="5_l6d5d"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="6_tqp1o"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="7_xhrxn"]
+>>>>>>> origin/main
 
 [sub_resource type="GDScript" id="GDScript_7ce5k"]
 resource_name = "GateOpen"
@@ -51,6 +57,12 @@ func start_water() -> void:
 	override.apply_to_group(1)
 "
 
+<<<<<<< HEAD
+=======
+[sub_resource type="Resource" id="Resource_82i0m"]
+script = ExtResource("7_xhrxn")
+
+>>>>>>> origin/main
 [node name="Map" type="Node2D" unique_id=876922097]
 
 [node name="TileMap" type="Node2D" parent="." unique_id=1772626143]
@@ -85,5 +97,23 @@ position = Vector2(736, 384)
 points = PackedVector2Array(640, 96, 640, 312, 864, 312)
 script = SubResource("GDScript_1dhgs")
 
+<<<<<<< HEAD
+=======
+[node name="Camera2D" type="Camera2D" parent="." unique_id=121811481]
+top_level = true
+position = Vector2(-1728, 0)
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1484814937]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("5_l6d5d")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=843191955]
+top_level = true
+script = ExtResource("6_tqp1o")
+follow_mode = 2
+tween_resource = SubResource("Resource_82i0m")
+
+>>>>>>> origin/main
 [connection signal="pressed" from="Button" to="TileMap/GateOpen" method="open"]
 [connection signal="pressed" from="Button" to="Pipe" method="start_water" flags=3]

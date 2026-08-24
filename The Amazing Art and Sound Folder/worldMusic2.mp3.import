@@ -12,8 +12,14 @@ dest_files=["res://.godot/imported/worldMusic2.mp3-438c7e3535247d0176fe09d3f549d
 
 [params]
 
+<<<<<<< HEAD
 loop=false
 loop_offset=0
 bpm=0
+=======
+loop=true
+loop_offset=0.0
+bpm=0.0
+>>>>>>> origin/main
 beat_count=0
 bar_beats=4

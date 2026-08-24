@@ -1,5 +1,9 @@
 $ln;Defaltia;Shadia;Renegia
+<<<<<<< HEAD
 0;Map 1:-5,1,0:-4,1,0:-3,1,0:-1,-1,0:-1,0,0:0,-1,0:0,0,0:1,0,0:1,-1,0:-1,-7,0:2,0,0:2,-1,0:-2,1,0:-2,0,0:-2,-1,0
+=======
+0;Map 1:-1,0,0:0,0,0:1,0,0:-1,-7,0:-2,0,0:-3,0,0:2,0,0:3,0,0
+>>>>>>> origin/main
 1;LavaWater:0,-1,0:1,-1,0
 -1,-6,0/elevator/1x5
 -5,1,0/label/1x1/Shadia
@@ -7,6 +11,7 @@ $ln;Defaltia;Shadia;Renegia
 -5,1,1/label/1x1/Defaltia
 -1,-7,2/label/1x1/Defaltia
 [-1,0,0]
+<<<<<<< HEAD
 -1,0,1,0|||uid://cv55nv1c2sbiq
 [0,0,0]
 -1,0,-1,0||0|uid://cv55nv1c2sbiq
@@ -26,6 +31,19 @@ $ln;Defaltia;Shadia;Renegia
 1,0,-1,0|||uid://cdbeu2j3o78ll
 [-5,1,0]
 1,0,0,0||1|uid://dafqk3u71on41
+=======
+-1,0,1,0|||uid://dr6xn055xr50i
+[0,0,0]
+-1,0,-1,0||0|uid://dr6xn055xr50i
+[1,0,0]
+1,0,-1,0|||uid://dr6xn055xr50i
+[0,-1,0]
+-1,0,1,0|||
+[1,-1,0]
+0,0,-1,0|||
+[-1,-1,0]
+1,0,0,1||0|
+>>>>>>> origin/main
 [-5,1,1]
 1,0,0,0|e646ff,e68bff,e68bff,e68bff,e68bff|1|uid://bfw23ln6e6532
 [-4,1,1]
@@ -56,6 +74,7 @@ $ln;Defaltia;Shadia;Renegia
 1,0,1,0|e646ff,e68bff,e68bff,e68bff,e68bff||uid://bbeer48b3sdk3
 [0,2,1]
 1,0,1,0|e646ff,e68bff,e68bff,e68bff,e68bff||uid://c8eic7p7bwbnk
+<<<<<<< HEAD
 [2,0,0]
 0,0,1,-1|||uid://doae46einc26s
 [2,-1,0]
@@ -66,3 +85,21 @@ $ln;Defaltia;Shadia;Renegia
 1,-1,0,-1|||uid://b1nanw80m5sqa
 [-2,-1,0]
 1,-1,0,0|||uid://b1nanw80m5sqa
+=======
+[-2,0,0]
+1,0,-1,0|||uid://b4rmoqo0vtwm5
+[-6,0,0]
+1,0,-1,0|||
+[-7,0,0]
+-1,0,-1,0|||
+[-8,0,0]
+-1,0,0,0||1|
+[-3,0,0]
+-1,0,0,0|||uid://b4rmoqo0vtwm5
+[1,-2,0]
+0,0,1,0|008a4c,94ff8b,94ff8b,94ff8b,94ff8b||uid://c0bb83117idye
+[2,0,0]
+-1,0,1,0|||uid://e6p6ajh0xphw
+[3,0,0]
+0,0,-1,0|||uid://e6p6ajh0xphw
+>>>>>>> origin/main

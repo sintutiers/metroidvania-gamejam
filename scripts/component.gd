@@ -42,9 +42,15 @@ func get_component(type: Variant, warn: bool = true) -> Node:
 	return result
 
 
+<<<<<<< HEAD
 func track(sig: Signal, callable: Callable) -> void:
 	sig.connect(callable)
 	_tracked.append({ "signal": sig, "callable": callable })
+=======
+func track(sig: Signal, callable: Callable, flags: int = 0) -> void:
+	sig.connect(callable, flags)
+	_tracked.append({ "signal": sig, "callable": callable, "flags": flags })
+>>>>>>> origin/main
 
 
 func _run_setup() -> void:

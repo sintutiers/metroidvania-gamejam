@@ -1,0 +1,348 @@
+[gd_scene format=3 uid="uid://dr6xn055xr50i"]
+
+[ext_resource type="PackedScene" uid="uid://bkcsjsk2ciff" path="res://addons/maaacks_game_template/base/nodes/music_players/background_music_player.tscn" id="1_7nu4i"]
+[ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="1_caqox"]
+[ext_resource type="Texture2D" uid="uid://dq186gvm73cvf" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/backcolor.png" id="1_ofsjo"]
+[ext_resource type="AudioStream" uid="uid://s2xdor1521oi" path="res://The Amazing Art and Sound Folder/worldMusic1.mp3" id="2_s027v"]
+[ext_resource type="Texture2D" uid="uid://cw03wev2bt0oe" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/back2sky.png" id="2_scqs1"]
+[ext_resource type="Texture2D" uid="uid://8aiqyqctxayy" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/cityscape3.png" id="3_driqh"]
+[ext_resource type="Texture2D" uid="uid://b1hhqiedxtx81" path="res://The Amazing Art and Sound Folder/entity1_grief.png" id="3_yakda"]
+[ext_resource type="Texture2D" uid="uid://bnudy5dmsjhxe" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/cloud2cityscape.png" id="4_7nu4i"]
+[ext_resource type="Texture2D" uid="uid://by012a0lsf264" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/frontcity.png" id="5_s027v"]
+[ext_resource type="Texture2D" uid="uid://sbysu1agubiy" path="res://The Amazing Art and Sound Folder/erinnewpath.png" id="5_tqpjq"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="5_ueimi"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="6_o3iea"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="8_5nru6"]
+[ext_resource type="Script" uid="uid://br8ja4246nfyg" path="res://scripts/jumpad.gd" id="9_h3gf6"]
+[ext_resource type="Texture2D" uid="uid://dynhqydehk1ve" path="res://The Amazing Art and Sound Folder/jumpTiles(jumpTileUp) _0001.png" id="9_ibjn2"]
+[ext_resource type="Texture2D" uid="uid://0es5efbo4548" path="res://The Amazing Art and Sound Folder/eye.png" id="10_aew1q"]
+[ext_resource type="Texture2D" uid="uid://dwg61bpcy6uv3" path="res://The Amazing Art and Sound Folder/table1 duke.png" id="10_ntcbd"]
+[ext_resource type="Texture2D" uid="uid://bs6wqopeuwodf" path="res://The Amazing Art and Sound Folder/secret_entity.png" id="13_klppx"]
+[ext_resource type="Script" uid="uid://84okuoju0wev" path="res://scenes/game/levels/gate.gd" id="13_ueimi"]
+[ext_resource type="Script" uid="uid://c642xwttxatjc" path="res://scripts/components/locked_gate_component.gd" id="14_s33yo"]
+[ext_resource type="Script" uid="uid://df3asxwplixpa" path="res://scripts/gate_requirement.gd" id="15_gxxra"]
+[ext_resource type="Script" uid="uid://cktqjl066w82y" path="res://scripts/object_collected_requirement.gd" id="16_q4whl"]
+[ext_resource type="Script" uid="uid://dq5r7n4mxqqoa" path="res://scripts/interactable_thing.gd" id="17_q4whl"]
+[ext_resource type="Script" uid="uid://dk3niudvdqw4d" path="res://scripts/collectible_object.gd" id="17_ueimi"]
+[ext_resource type="Texture2D" uid="uid://crmih01m3g7fj" path="res://The Amazing Art and Sound Folder/obmil_entity.png" id="18_ot4ag"]
+[ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="20_ueimi"]
+[ext_resource type="Texture2D" uid="uid://cxiyi8p1q47iy" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/sidewalk.png" id="21_ot4ag"]
+[ext_resource type="Script" uid="uid://0u1nlyd1ld6o" path="res://SampleProject/Scripts/SavePoint.gd" id="26_scqs1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
+size = Vector2(50, 50)
+
+[sub_resource type="Resource" id="Resource_5ix0u"]
+script = ExtResource("8_5nru6")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lfwmx"]
+size = Vector2(100.762, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j6erd"]
+size = Vector2(20, 400)
+
+[sub_resource type="Resource" id="Resource_q1sf4"]
+script = ExtResource("16_q4whl")
+object_id = &"test"
+source_path = NodePath("../../colectableshit")
+metadata/_custom_type_script = "uid://cktqjl066w82y"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wjmfi"]
+size = Vector2(40, 430)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_q1sf4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kmoln"]
+size = Vector2(2913, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wug2n"]
+atlas = ExtResource("10_aew1q")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3xwlj"]
+atlas = ExtResource("10_aew1q")
+region = Rect2(0, 100, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_q1sf4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wug2n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3xwlj")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 1.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_driqh"]
+radius = 32.0
+
+[node name="DeanMainTest" type="Node2D" unique_id=1756909701]
+
+[node name="BackgroundMusicPlayer" parent="." unique_id=1446051342 instance=ExtResource("1_7nu4i")]
+stream = ExtResource("2_s027v")
+
+[node name="paralax" type="CanvasLayer" parent="." unique_id=231199125]
+layer = -1
+scale = Vector2(0.219, 0.219)
+transform = Transform2D(0.219, 0, 0, 0.219, 0, 0)
+follow_viewport_enabled = true
+
+[node name="Parallax2D" type="Parallax2D" parent="paralax" unique_id=1639397260]
+scroll_scale = Vector2(0.1, 1)
+repeat_size = Vector2(4800, 2480)
+repeat_times = 3
+
+[node name="Backcolor" type="Sprite2D" parent="paralax/Parallax2D" unique_id=749985605]
+texture = ExtResource("1_ofsjo")
+centered = false
+
+[node name="Parallax2D2" type="Parallax2D" parent="paralax" unique_id=1974774224]
+scroll_scale = Vector2(0.2, 0.9)
+repeat_size = Vector2(4800, 0)
+repeat_times = 3
+
+[node name="Back2Sky" type="Sprite2D" parent="paralax/Parallax2D2" unique_id=997844201]
+texture = ExtResource("2_scqs1")
+centered = false
+
+[node name="Parallax2D3" type="Parallax2D" parent="paralax" unique_id=785570408]
+scroll_scale = Vector2(0.3, 0.9)
+repeat_size = Vector2(4800, 0)
+repeat_times = 3
+
+[node name="Cityscape3" type="Sprite2D" parent="paralax/Parallax2D3" unique_id=771577278]
+texture = ExtResource("3_driqh")
+centered = false
+
+[node name="Parallax2D4" type="Parallax2D" parent="paralax" unique_id=645641048]
+scroll_scale = Vector2(0.5, 0.9)
+repeat_size = Vector2(4800, 0)
+repeat_times = 3
+
+[node name="Cloud2Cityscape" type="Sprite2D" parent="paralax/Parallax2D4" unique_id=248320121]
+texture = ExtResource("4_7nu4i")
+centered = false
+
+[node name="Parallax2D5" type="Parallax2D" parent="paralax" unique_id=1961962587]
+scroll_scale = Vector2(0.7, 0.9)
+repeat_size = Vector2(4800, 0)
+repeat_times = 3
+
+[node name="Frontcity" type="Sprite2D" parent="paralax/Parallax2D5" unique_id=1605795486]
+texture = ExtResource("5_s027v")
+centered = false
+
+[node name="Parallax2D6" type="Parallax2D" parent="paralax" unique_id=1498767750]
+scroll_scale = Vector2(0.7, 0.9)
+repeat_size = Vector2(4800, 0)
+repeat_times = 3
+
+[node name="Sidewalk" type="Sprite2D" parent="paralax/Parallax2D6" unique_id=1521670434]
+texture = ExtResource("21_ot4ag")
+centered = false
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=654961184]
+
+[node name="StateChartDebugger" parent="CanvasLayer" unique_id=888271488 instance=ExtResource("1_caqox")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 1706.0
+offset_bottom = 218.0
+grow_horizontal = 1
+grow_vertical = 1
+scale = Vector2(0.5, 0.5)
+
+[node name="platforms" type="Node2D" parent="." unique_id=66196049]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="platforms" unique_id=865399169]
+position = Vector2(615, 515)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="platforms/StaticBody2D" unique_id=992438831]
+shape = SubResource("RectangleShape2D_nd4ja")
+
+[node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D" unique_id=1274947148]
+texture = ExtResource("3_yakda")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="platforms" unique_id=646671690]
+position = Vector2(621, 363)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="platforms/StaticBody2D3" unique_id=1207746649]
+shape = SubResource("RectangleShape2D_nd4ja")
+
+[node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D3" unique_id=2052467733]
+texture = ExtResource("3_yakda")
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="platforms" unique_id=908980549]
+position = Vector2(475, 287)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="platforms/StaticBody2D4" unique_id=1706646764]
+position = Vector2(0, 5)
+shape = SubResource("RectangleShape2D_nd4ja")
+
+[node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D4" unique_id=729220784]
+texture = ExtResource("3_yakda")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="platforms" unique_id=2108060759]
+position = Vector2(464, 475)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="platforms/StaticBody2D2" unique_id=1752965221]
+shape = SubResource("RectangleShape2D_nd4ja")
+
+[node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D2" unique_id=1860124635]
+texture = ExtResource("3_yakda")
+
+[node name="StaticBody2D5" type="StaticBody2D" parent="platforms" unique_id=1954912367]
+position = Vector2(340, 425)
+disable_mode = 1
+
+[node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D5" unique_id=229806752]
+scale = Vector2(0.548, 0.548)
+texture = ExtResource("5_tqpjq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="platforms/StaticBody2D5" unique_id=282538046]
+shape = SubResource("RectangleShape2D_nd4ja")
+
+[node name="Camera2D2" type="Camera2D" parent="." unique_id=1204252702]
+top_level = true
+position = Vector2(0, 300)
+limit_top = 30
+limit_bottom = 589
+editor_draw_limits = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D2" unique_id=1802143010]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("6_o3iea")
+metadata/_custom_type_script = "uid://bd046eokvcnu2"
+
+[node name="PhantomCamera2D2" type="Node2D" parent="." unique_id=910333417]
+top_level = true
+position = Vector2(0, 310)
+script = ExtResource("5_ueimi")
+follow_mode = 5
+tween_resource = SubResource("Resource_5ix0u")
+draw_limits = true
+limit_top = 0
+limit_bottom = 580
+metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
+
+[node name="launch" type="Area2D" parent="." unique_id=141474343]
+position = Vector2(1262, 475)
+script = ExtResource("9_h3gf6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="launch" unique_id=458524574]
+shape = SubResource("RectangleShape2D_lfwmx")
+
+[node name="JumpTiles(jumpTileUp)0001" type="Sprite2D" parent="launch" unique_id=761304634]
+position = Vector2(2.0980835e-05, 0)
+scale = Vector2(7.846151, 1)
+texture = ExtResource("9_ibjn2")
+
+[node name="launch2" type="Area2D" parent="." unique_id=761252793]
+position = Vector2(1481, 419)
+script = ExtResource("9_h3gf6")
+require_input = true
+
+[node name="Table1Duke" type="Sprite2D" parent="launch2" unique_id=1891764442]
+position = Vector2(2.4999943, 0)
+scale = Vector2(3.961539, 1)
+texture = ExtResource("10_ntcbd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="launch2" unique_id=920775912]
+shape = SubResource("RectangleShape2D_lfwmx")
+
+[node name="gate test" type="StaticBody2D" parent="." unique_id=1512242068]
+position = Vector2(1373, 302)
+script = ExtResource("13_ueimi")
+
+[node name="Sprite2D" type="Sprite2D" parent="gate test" unique_id=67342960]
+position = Vector2(-3, -6)
+scale = Vector2(1.1, 7.718)
+texture = ExtResource("13_klppx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="gate test" unique_id=1932025692]
+shape = SubResource("RectangleShape2D_j6erd")
+
+[node name="LockedGateComponent" type="Node" parent="gate test" unique_id=1194142569]
+script = ExtResource("14_s33yo")
+requirements = Array[ExtResource("15_gxxra")]([SubResource("Resource_q1sf4")])
+require_all = false
+unlock_mode = 2
+metadata/_custom_type_script = "uid://c642xwttxatjc"
+metadata/object_id = &"dean_main_test/gate test/LockedGateComponent"
+
+[node name="InteractableThing" type="Node2D" parent="gate test" unique_id=1131522710]
+script = ExtResource("17_q4whl")
+metadata/_custom_type_script = "uid://dq5r7n4mxqqoa"
+
+[node name="Area2D" type="Area2D" parent="gate test" unique_id=744711966]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="gate test/Area2D" unique_id=1013184444]
+shape = SubResource("RectangleShape2D_wjmfi")
+
+[node name="colectableshit" type="Node2D" parent="." unique_id=437612271]
+position = Vector2(1031, 450)
+script = ExtResource("17_ueimi")
+pickup_mode = 1
+object_id = &"test"
+show_marker_on_map = false
+sprite = Object(AnimatedSprite2D,"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"oversampling_with_scale":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(642, 310),"rotation":0.0,"scale":Vector2(2, 2),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_q1sf4"),"animation":&"default","autoplay":"default","frame":0,"frame_progress":0.026022155,"speed_scale":1.0,"centered":true,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
+
+
+[node name="Area2D" type="Area2D" parent="colectableshit" unique_id=367648136]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="colectableshit/Area2D" unique_id=570981217]
+shape = SubResource("CircleShape2D_q1sf4")
+
+[node name="Sprite2D" type="Sprite2D" parent="colectableshit" unique_id=504413036]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("18_ot4ag")
+
+[node name="walls" type="StaticBody2D" parent="." unique_id=1167011180]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="walls" unique_id=898774803]
+position = Vector2(1454.5, 551)
+shape = SubResource("RectangleShape2D_kmoln")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="walls" unique_id=1188445367]
+position = Vector2(1400, 0)
+shape = SubResource("RectangleShape2D_kmoln")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1663140860]
+position = Vector2(642, 310)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_q1sf4")
+autoplay = "default"
+frame_progress = 0.026022155
+
+[node name="RoomInstance" parent="." unique_id=1246059462 instance=ExtResource("20_ueimi")]
+
+[node name="SavePoint" type="Area2D" parent="." unique_id=1107441184]
+position = Vector2(171, 499)
+script = ExtResource("26_scqs1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SavePoint" unique_id=1625663513]
+shape = SubResource("CircleShape2D_driqh")
+
+[node name="Label" type="Label" parent="SavePoint" unique_id=449471003]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -29.0
+offset_top = -25.0
+offset_right = 29.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+text = "S"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true

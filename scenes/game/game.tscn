@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://bwoos7q5nwdi5"]
 
+<<<<<<< HEAD
 [ext_resource type="PackedScene" path="res://addons/maaacks_game_template/base/nodes/music_players/background_music_player.tscn" id="1_kp23o"]
 [ext_resource type="Script" path="res://scenes/game/scripts/game_timer.gd" id="2_5jirj"]
 [ext_resource type="Script" path="res://addons/maaacks_game_template/base/nodes/utilities/pause_menu_controller.gd" id="3_vaxfo"]
@@ -15,6 +16,167 @@
 [node name="Game" type="Node" unique_id=1262092417]
 
 [node name="BackgroundMusicPlayer" parent="." unique_id=986713811 instance=ExtResource("1_kp23o")]
+=======
+[ext_resource type="Script" uid="uid://btgvo27tngq4o" path="res://SampleProject/Scripts/Game.gd" id="1_5jirj"]
+[ext_resource type="Script" uid="uid://dt3de17w1gtf6" path="res://scenes/game/scripts/game_timer.gd" id="2_5jirj"]
+[ext_resource type="Script" uid="uid://cyh0d64pfygbl" path="res://addons/maaacks_game_template/base/nodes/utilities/pause_menu_controller.gd" id="3_vaxfo"]
+[ext_resource type="PackedScene" uid="uid://dnbjkpn4vuy5e" path="res://scenes/windows/pause_menu_layer.tscn" id="4_ftsea"]
+[ext_resource type="Script" uid="uid://bbymrin0cm704" path="res://addons/maaacks_game_template/extras/scripts/level_loader.gd" id="5_otnwt"]
+[ext_resource type="Script" uid="uid://b0vwbbcodcpgg" path="res://scripts/level_and_state_manager.gd" id="6_3xj4h"]
+[ext_resource type="PackedScene" uid="uid://dp6h1edx0uuti" path="res://scenes/windows/game_won_window.tscn" id="7_5v6r0"]
+[ext_resource type="PackedScene" uid="uid://dncns1yfw0hsv" path="res://scenes/windows/level_lost_window.tscn" id="8_uyinl"]
+[ext_resource type="PackedScene" uid="uid://cuok8qieodly0" path="res://scenes/windows/level_won_window.tscn" id="9_10c2w"]
+[ext_resource type="Script" uid="uid://wjq7li836lwj" path="res://addons/maaacks_game_template/extras/scripts/scene_lister.gd" id="10_pg2xm"]
+[ext_resource type="PackedScene" uid="uid://bnaknymh85kl0" path="res://scenes/loading_screen/level_loading_screen.tscn" id="11_gc57s"]
+[ext_resource type="PackedScene" uid="uid://07mfr2h0v760" path="res://scenes/game/player.tscn" id="13_vaxfo"]
+[ext_resource type="PackedScene" uid="uid://dch8dyylb7526" path="res://addons/MetroidvaniaSystem/Template/Nodes/Minimap.tscn" id="14_5v6r0"]
+[ext_resource type="PackedScene" uid="uid://bd5w7n7gew76f" path="res://SampleProject/Objects/CollectionGridItem.tscn" id="15_uyinl"]
+[ext_resource type="Texture2D" uid="uid://wiq0mic5m6is" path="res://SampleProject/Sprites/Collectible.png" id="16_10c2w"]
+[ext_resource type="Texture2D" uid="uid://dpwli04va881g" path="res://SampleProject/Sprites/MapItem.png" id="17_pg2xm"]
+
+[sub_resource type="GDScript" id="GDScript_gc57s"]
+resource_name = "MapWindow"
+script/source = "# The window that contains a bigger map overview than minimap. Toggled with M.
+extends Panel
+@onready var player: CharacterBody2D = %Player
+@onready var minimap: Control = %Minimap
+@onready var top_draw: Control = $TopDraw
+# The size of the window in cells.
+var SIZE: Vector2i
+# MapView object that draws cells.
+var map_view: MapView
+# The position where the player started (for the vector feature).
+var starting_coords: Vector2i
+# The player location node from MetSys.add_player_location()
+var player_location: Node2D
+# The vector feature, toggled with D. It displays an arrow from player's starting point to the current position.
+# It's purely to show custom drawing on the map.
+var show_delta: bool
+# The offset for drawing delta vector, updated with map panning.
+var offset: Vector2i
+func _ready() -> void:
+	# Cellular size is total size divided by cell size.
+	SIZE = size / MetSys.CELL_SIZE
+	map_view = MetSys.make_map_view(self, -SIZE / 2, SIZE, 0)
+	
+	# Create player location. We need a reference to update its offset.
+	player_location = MetSys.add_player_location(self)
+# Draws the delta vector. Note that TopDraw node is used, to make sure that it appears above cells.
+func _on_top_draw() -> void:
+	# Get the current player coordinates.
+	var coords: Vector2i = MetSys.get_current_flat_coords()
+	# If the delta vector (D) is enabled and player isn't on the starting position...
+	if show_delta and coords != starting_coords:
+		var start_pos: Vector2 = MetSys.get_cell_position(starting_coords - offset)
+		var current_pos: Vector2 = MetSys.get_cell_position(coords - offset)
+		# draw the vector...
+		top_draw.draw_line(start_pos, current_pos, Color.WHITE, 2)
+		
+		const arrow_size = 4
+		# and arrow. This code shows how to draw custom stuff on the map outside the MetSys functions.
+		top_draw.draw_set_transform(current_pos, start_pos.angle_to_point(current_pos), Vector2.ONE)
+		top_draw.draw_primitive([Vector2(-arrow_size, -arrow_size), Vector2(arrow_size, 0), Vector2(-arrow_size, arrow_size)], [Color.WHITE], [])
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if event.pressed:
+			# Toggle visibility when pressing M.
+			if event.keycode == KEY_M:
+				visible = not visible
+				minimap.visible = not visible # Make minimap invisible when full map is visible.
+				
+				if visible:
+					# Pause the player when opening map.
+					player.process_mode = Node.PROCESS_MODE_DISABLED
+					# Update map offset when opening it.
+					update_offset()
+				else:
+					player.process_mode = Node.PROCESS_MODE_INHERIT
+			elif event.keycode == KEY_D:
+				# D toggles position tracking (delta vector).
+				show_delta = not show_delta
+				top_draw.queue_redraw()
+			elif visible:
+				# Move with arrow keys.
+				var move_offset: Vector2i
+				if event.keycode == KEY_LEFT:
+					move_offset = Vector2i.LEFT
+				elif event.keycode == KEY_RIGHT:
+					move_offset = Vector2i.RIGHT
+				elif event.keycode == KEY_UP:
+					move_offset = Vector2i.UP
+				elif event.keycode == KEY_DOWN:
+					move_offset = Vector2i.DOWN
+				
+				# This moves the MapView's visible area, ensuring that only newly visible cells are redrawn.
+				map_view.move(move_offset)
+				# Player position node needs to be moved accordingly.
+				player_location.offset = -Vector2(map_view.begin) * MetSys.CELL_SIZE
+				# Update delta vector.
+				offset += move_offset
+				top_draw.queue_redraw()
+# Assigns the initial offset when the map is opened. It centers on the player position.
+func update_offset():
+	offset = MetSys.get_current_flat_coords() - SIZE / 2
+	# Player position node needs to be moved accordingly.
+	player_location.offset = -Vector2(offset) * MetSys.CELL_SIZE
+	# Updates map view initial position.
+	map_view.move_to(Vector3i(offset.x, offset.y, MetSys.current_layer))
+	# Update all cells of MapView to reflect the current state.
+	map_view.update_all()
+func reset_starting_coords():
+	# Starting position for the delta vector.
+	var coords: Vector2i = MetSys.get_current_flat_coords()
+	starting_coords = Vector2i(coords.x, coords.y)
+	top_draw.queue_redraw()
+"
+
+[sub_resource type="GDScript" id="GDScript_8b66f"]
+resource_name = "PercentLabel"
+script/source = "# Displays map completion percentage
+extends Label
+
+func _ready() -> void:
+	# The percentage may change when map is updated.
+	MetSys.map_updated.connect(update)
+
+func _notification(what: int) -> void:
+	# Update when the label is made visible. This happens when the map is toggled.
+	if what == NOTIFICATION_VISIBILITY_CHANGED:
+		update()
+
+func update():
+	# Only update when visible.
+	if is_visible_in_tree():
+		# Show the percentage.
+		text = \"%03d%%\" % int(MetSys.get_explored_ratio() * 100)
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3jaai"]
+content_margin_left = 2.0
+content_margin_right = 2.0
+bg_color = Color(0, 0, 0, 0.752941)
+
+[sub_resource type="GDScript" id="GDScript_1iff4"]
+resource_name = "CollectionGrid"
+script/source = "# This element displays a grid of all collectibles (orbs and map), divided into areas.
+# See also CollectibleGridItem.tscn. An item is visible in the grid if it was collected.
+extends PanelContainer
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if event.pressed:
+			# Toggle visibility when pressing M.
+			if event.keycode == KEY_M:
+				visible = not visible
+				# If visible, update collection grid items.
+				if visible:
+					propagate_call(&\"update_collectible\")
+"
+
+[node name="Game" type="Node" unique_id=1262092417]
+script = ExtResource("1_5jirj")
+starting_map = "uid://dr6xn055xr50i"
+>>>>>>> origin/main
 
 [node name="GameTimer" type="Node" parent="." unique_id=116840261]
 script = ExtResource("2_5jirj")
@@ -31,7 +193,11 @@ level_loading_screen = NodePath("../LevelLoadingScreen")
 [node name="LevelManager" type="Node" parent="." unique_id=1350972375 node_paths=PackedStringArray("level_loader", "scene_lister")]
 script = ExtResource("6_3xj4h")
 level_loader = NodePath("../LevelLoader")
+<<<<<<< HEAD
 starting_level_path = "res://scenes/game/levels/level_1.tscn"
+=======
+starting_level_path = "uid://dr6xn055xr50i"
+>>>>>>> origin/main
 scene_lister = NodePath("SceneLister")
 game_won_scene = ExtResource("7_5v6r0")
 level_lost_scene = ExtResource("8_uyinl")
@@ -39,10 +205,178 @@ level_won_scene = ExtResource("9_10c2w")
 
 [node name="SceneLister" type="Node" parent="LevelManager" unique_id=673614733]
 script = ExtResource("10_pg2xm")
+<<<<<<< HEAD
 files = Array[String](["res://scenes/game/levels/level_1.tscn", "res://scenes/game/levels/level_2.tscn", "res://scenes/game/levels/level_3.tscn"])
+=======
+>>>>>>> origin/main
 directory = "res://scenes/game/levels"
 
 [node name="LevelContainer" type="Node" parent="." unique_id=437554331]
 
 [node name="LevelLoadingScreen" parent="." unique_id=816430938 instance=ExtResource("11_gc57s")]
 visible = false
+<<<<<<< HEAD
+=======
+
+[node name="Player" parent="." unique_id=933192025 instance=ExtResource("13_vaxfo")]
+unique_name_in_owner = true
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1082986833]
+
+[node name="Minimap" parent="UI" unique_id=794729252 instance=ExtResource("14_5v6r0")]
+unique_name_in_owner = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -152.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 104.0
+grow_horizontal = 0
+display_player_location = true
+
+[node name="Background" type="Panel" parent="UI/Minimap" unique_id=405515589]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MapWindow" type="Panel" parent="UI" unique_id=854387256]
+visible = false
+clip_contents = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -160.0
+offset_right = 240.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_gc57s")
+
+[node name="Percent" type="Label" parent="UI/MapWindow" unique_id=1400333936]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "0%"
+script = SubResource("GDScript_8b66f")
+
+[node name="Label" type="Label" parent="UI/MapWindow" unique_id=1784929157]
+z_index = 5
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 40.0
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_3jaai")
+text = "Press D to toggle delta vector"
+
+[node name="TopDraw" type="Control" parent="UI/MapWindow" unique_id=1300680293]
+z_index = 5
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CollectionGrid" type="PanelContainer" parent="UI" unique_id=697503315]
+visible = false
+offset_left = 85.0
+offset_top = 81.0
+offset_right = 153.0
+offset_bottom = 224.0
+script = SubResource("GDScript_1iff4")
+
+[node name="CollectionGrid" type="HBoxContainer" parent="UI/CollectionGrid" unique_id=1207857622]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CollectionGrid/CollectionGrid" unique_id=1732723346]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/CollectionGrid/CollectionGrid/VBoxContainer" unique_id=1404977811]
+layout_mode = 2
+text = "D"
+horizontal_alignment = 1
+
+[node name="CollectionGridItem" parent="UI/CollectionGrid/CollectionGrid/VBoxContainer" unique_id=1245511340 instance=ExtResource("15_uyinl")]
+layout_mode = 2
+texture = ExtResource("16_10c2w")
+id = "StartingPoint/./Collectible"
+
+[node name="CollectionGridItem2" parent="UI/CollectionGrid/CollectionGrid/VBoxContainer" unique_id=1940613752 instance=ExtResource("15_uyinl")]
+layout_mode = 2
+texture = ExtResource("16_10c2w")
+id = "RelicRoom/./Collectible"
+
+[node name="CollectionGridItem3" parent="UI/CollectionGrid/CollectionGrid/VBoxContainer" unique_id=194151435 instance=ExtResource("15_uyinl")]
+layout_mode = 2
+texture = ExtResource("16_10c2w")
+id = "Corridor/./Collectible"
+
+[node name="CollectionGridItem4" parent="UI/CollectionGrid/CollectionGrid/VBoxContainer" unique_id=1520175015 instance=ExtResource("15_uyinl")]
+layout_mode = 2
+texture = ExtResource("16_10c2w")
+id = "lava_orb"
+
+[node name="CollectionGridItem5" parent="UI/CollectionGrid/CollectionGrid/VBoxContainer" unique_id=458031937 instance=ExtResource("15_uyinl")]
+layout_mode = 2
+texture = ExtResource("17_pg2xm")
+id = "RightStaircase/./MapItem"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI/CollectionGrid/CollectionGrid" unique_id=395658940]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/CollectionGrid/CollectionGrid/VBoxContainer2" unique_id=297178169]
+layout_mode = 2
+text = "S"
+horizontal_alignment = 1
+
+[node name="CollectionGridItem5" parent="UI/CollectionGrid/CollectionGrid/VBoxContainer2" unique_id=2061076233 instance=ExtResource("15_uyinl")]
+layout_mode = 2
+texture = ExtResource("16_10c2w")
+id = "SecretChamber/./Collectible"
+
+[node name="CollectionGridItem6" parent="UI/CollectionGrid/CollectionGrid/VBoxContainer2" unique_id=1175080329 instance=ExtResource("15_uyinl")]
+layout_mode = 2
+texture = ExtResource("16_10c2w")
+id = "LoopRoom1/./Collectible"
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="UI/CollectionGrid/CollectionGrid" unique_id=15780726]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="UI/CollectionGrid/CollectionGrid/VBoxContainer3" unique_id=1869960057]
+layout_mode = 2
+text = "R"
+horizontal_alignment = 1
+
+[node name="CollectionGridItem5" parent="UI/CollectionGrid/CollectionGrid/VBoxContainer3" unique_id=2065585242 instance=ExtResource("15_uyinl")]
+layout_mode = 2
+texture = ExtResource("16_10c2w")
+id = "random_collectible"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI" unique_id=2114789919]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 48.0
+offset_bottom = 34.0
+
+[node name="TextureRect" type="TextureRect" parent="UI/HBoxContainer" unique_id=876046174]
+layout_mode = 2
+texture = ExtResource("16_10c2w")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="CollectibleCount" type="Label" parent="UI/HBoxContainer" unique_id=183166430]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0"
+vertical_alignment = 1
+
+[connection signal="draw" from="UI/MapWindow/TopDraw" to="UI/MapWindow" method="_on_top_draw"]
+>>>>>>> origin/main

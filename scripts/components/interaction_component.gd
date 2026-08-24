@@ -2,6 +2,7 @@
 class_name InteractionComponent
 extends Component
 
+<<<<<<< HEAD
 @export var interact_radius: float = 32.0
 
 var interact_area: Area2D
@@ -12,6 +13,23 @@ var interact_area: Area2D
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_select"):
+=======
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var interact_radius: float = 32.0
+
+var interact_area: Area2D
+var input_component: InputComponent
+var state_chart: StateChart
+var interact_component: InteractComponent
+
+@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if interact_component and interact_component.is_locked:
+		return
+	if input_component.is_interact_event(event):
+>>>>>>> origin/main
 		interact()
 
 
@@ -29,7 +47,12 @@ func interact() -> void:
 	if not closest:
 		return
 	closest.trigger(interact_area)
+<<<<<<< HEAD
 	state_chart.send_event(&"interact")
+=======
+	if state_chart:
+		state_chart.send_event(StateEvents.INTERACT)
+>>>>>>> origin/main
 	if closest.holds_interact_lock:
 		closest.interaction_finished.connect(_end_interact, CONNECT_ONE_SHOT)
 	else:
@@ -38,7 +61,18 @@ func interact() -> void:
 
 func _on_setup() -> void:
 	interact_area = get_component(Area2D, false) as Area2D
+<<<<<<< HEAD
 
 
 func _end_interact() -> void:
 	state_chart.send_event(&"interact_end")
+=======
+	input_component = get_component(InputComponent) as InputComponent
+	state_chart = get_component(StateChart, false) as StateChart
+	interact_component = get_component(InteractComponent, false) as InteractComponent
+
+
+func _end_interact() -> void:
+	if state_chart:
+		state_chart.send_event(StateEvents.INTERACT_END)
+>>>>>>> origin/main

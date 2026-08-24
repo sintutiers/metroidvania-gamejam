@@ -3,6 +3,12 @@
 [ext_resource type="TileSet" uid="uid://bwpcg2opya34n" path="res://SampleProject/Resources/Tileset.tres" id="1_oj4y1"]
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="2_mlr6y"]
 [ext_resource type="PackedScene" uid="uid://c8j6i3fx8p758" path="res://SampleProject/Objects/Collectible.tscn" id="3_whicd"]
+<<<<<<< HEAD
+=======
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_yvt83"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="5_myvuf"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="6_li055"]
+>>>>>>> origin/main
 
 [sub_resource type="GDScript" id="GDScript_taojh"]
 script/source = "# This is a special config script that determines the scene's content.  The \"content\" in this case are the available exits and existence of collectible.
@@ -20,6 +26,12 @@ func apply_config():
 		%Collectible.free()
 "
 
+<<<<<<< HEAD
+=======
+[sub_resource type="Resource" id="Resource_tlcdc"]
+script = ExtResource("6_li055")
+
+>>>>>>> origin/main
 [node name="Map" type="Node2D" unique_id=3632541]
 script = SubResource("GDScript_taojh")
 
@@ -62,3 +74,20 @@ tile_set = ExtResource("1_oj4y1")
 [node name="Collectible" parent="." unique_id=634168464 instance=ExtResource("3_whicd")]
 unique_name_in_owner = true
 position = Vector2(432, 232)
+<<<<<<< HEAD
+=======
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1712029335]
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=359916254]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("4_yvt83")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=1553610610]
+top_level = true
+script = ExtResource("5_myvuf")
+follow_mode = 2
+tween_resource = SubResource("Resource_tlcdc")
+>>>>>>> origin/main

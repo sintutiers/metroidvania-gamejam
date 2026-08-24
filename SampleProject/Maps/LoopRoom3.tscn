@@ -3,6 +3,12 @@
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="1_uklh7"]
 [ext_resource type="TileSet" uid="uid://bwpcg2opya34n" path="res://SampleProject/Resources/Tileset.tres" id="2_uklh7"]
 [ext_resource type="Script" uid="uid://b7ocxe212putd" path="res://SampleProject/Scripts/LoopScript.gd" id="3_jv21t"]
+<<<<<<< HEAD
+=======
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_xs2h6"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="5_e1gsq"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="6_kmhb5"]
+>>>>>>> origin/main
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uklh7"]
 size = Vector2(32, 224)
@@ -10,6 +16,12 @@ size = Vector2(32, 224)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jv21t"]
 size = Vector2(32, 96)
 
+<<<<<<< HEAD
+=======
+[sub_resource type="Resource" id="Resource_e8ryr"]
+script = ExtResource("6_kmhb5")
+
+>>>>>>> origin/main
 [node name="Map" type="Node2D" unique_id=422495360]
 
 [node name="RoomInstance" parent="." unique_id=716916612 instance=ExtResource("1_uklh7")]
@@ -54,6 +66,23 @@ loop_shift = Vector2(-864, 0)
 position = Vector2(864, 368)
 shape = SubResource("RectangleShape2D_jv21t")
 
+<<<<<<< HEAD
+=======
+[node name="Camera2D" type="Camera2D" parent="." unique_id=825972514]
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=609768977]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("4_xs2h6")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=1186732469]
+top_level = true
+script = ExtResource("5_e1gsq")
+follow_mode = 2
+tween_resource = SubResource("Resource_e8ryr")
+
+>>>>>>> origin/main
 [connection signal="body_entered" from="Loop1" to="Loop1" method="_on_body_entered"]
 [connection signal="body_exited" from="Loop1" to="Loop1" method="_on_body_exited"]
 [connection signal="body_entered" from="Loop1b" to="Loop1b" method="_on_body_entered"]
