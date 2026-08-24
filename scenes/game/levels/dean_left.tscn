@@ -218,7 +218,7 @@ shape = SubResource("RectangleShape2D_kmoln")
 
 [node name="Camera2D2" type="Camera2D" parent="." unique_id=1204252702]
 top_level = true
-position = Vector2(0, 310)
+position = Vector2(0, 55.231873)
 limit_top = 0
 limit_bottom = 580
 editor_draw_limits = true
