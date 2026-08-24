@@ -4,10 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://1erjp2vl6wxu" path="res://The Amazing Art and Sound Folder/Player Running Aiming 48x48.png" id="1_74cnq"]
 [ext_resource type="Texture2D" uid="uid://xdbi5t1lalex" path="res://The Amazing Art and Sound Folder/player land 48x48.png" id="1_e605p"]
 [ext_resource type="Texture2D" uid="uid://muax2a0rttlp" path="res://The Amazing Art and Sound Folder/player air spin 48x48.png" id="1_ey0fj"]
-<<<<<<< HEAD
-=======
 [ext_resource type="Script" uid="uid://bet8hyt331yfp" path="res://scripts/player.gd" id="1_rpvn3"]
->>>>>>> origin/main
 [ext_resource type="Texture2D" uid="uid://cfccxu51pcduf" path="res://The Amazing Art and Sound Folder/PlayerWalk 48x48.png" id="2_8egkn"]
 [ext_resource type="Script" uid="uid://clhg7apuc3ldq" path="res://scripts/components/facing_component.gd" id="2_68xwl"]
 [ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="2_nybob"]
@@ -27,21 +24,12 @@
 [ext_resource type="Script" uid="uid://beajnp3irp7ln" path="res://scripts/components/sideways_movement_component.gd" id="7_t8yk2"]
 [ext_resource type="Texture2D" uid="uid://biwl0swru74qt" path="res://The Amazing Art and Sound Folder/player wall slide 48x48.png" id="8_knjtp"]
 [ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="9_3vq1g"]
-<<<<<<< HEAD
-=======
 [ext_resource type="Texture2D" uid="uid://bl76yu16ti2xj" path="res://The Amazing Art and Sound Folder/mainplayerrun_erin_FIX_DEAN.png" id="10_judl8"]
->>>>>>> origin/main
 [ext_resource type="Texture2D" uid="uid://bxot3r8qgddga" path="res://The Amazing Art and Sound Folder/player shoot 2H 48x48.png" id="11_3vrwl"]
 [ext_resource type="Script" uid="uid://ccv1q2cdjiacc" path="res://scripts/components/launch_component.gd" id="11_mr2x2"]
 [ext_resource type="Texture2D" uid="uid://ir82d107vogr" path="res://The Amazing Art and Sound Folder/Player Running Shooting 48x48.png" id="12_3vrwl"]
 [ext_resource type="Script" uid="uid://c04nw515cb8mx" path="res://scripts/components/vfx_component.gd" id="19_1rckg"]
 [ext_resource type="PackedScene" uid="uid://cnfeymuwv6c4q" path="res://misc shit for dean/JumpDust.tscn" id="20_vrrwq"]
-<<<<<<< HEAD
-[ext_resource type="Script" uid="uid://by6vw7j34edj4" path="res://scripts/attack_component.gd" id="22_fmmik"]
-[ext_resource type="Texture2D" uid="uid://cexcf7xpv684h" path="res://The Amazing Art and Sound Folder/lamp_on.png" id="22_wx2rq"]
-[ext_resource type="Script" uid="uid://dxdwf5svx01jq" path="res://scripts/aim_component.gd" id="23_vbjuv"]
-[ext_resource type="Resource" uid="uid://3fylc7kv7beo" path="res://misc shit for dean/basic_weapon.tres" id="23_wx2rq"]
-=======
 [ext_resource type="Script" uid="uid://by6vw7j34edj4" path="res://scripts/components/attack_component.gd" id="22_fmmik"]
 [ext_resource type="Texture2D" uid="uid://cexcf7xpv684h" path="res://The Amazing Art and Sound Folder/lamp_on.png" id="22_wx2rq"]
 [ext_resource type="Script" uid="uid://dxdwf5svx01jq" path="res://scripts/components/aim_component.gd" id="23_vbjuv"]
@@ -50,7 +38,6 @@
 [ext_resource type="Script" uid="uid://dr8bvnfebp76" path="res://addons/health_hitbox_hurtbox/health/health.gd" id="36_pft2h"]
 [ext_resource type="Script" uid="uid://cts8qlslbl7nn" path="res://scripts/dean_hurt_box_2d.gd" id="37_pft2h"]
 [ext_resource type="Script" uid="uid://d33a1bxcxnqk4" path="res://scripts/components/ability_component.gd" id="38_rpvn3"]
->>>>>>> origin/main
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rnkgc"]
 atlas = ExtResource("1_74cnq")
@@ -256,8 +243,6 @@ region = Rect2(288, 0, 48, 48)
 atlas = ExtResource("1_e605p")
 region = Rect2(336, 0, 48, 48)
 
-<<<<<<< HEAD
-=======
 [sub_resource type="AtlasTexture" id="AtlasTexture_18204"]
 atlas = ExtResource("3_cyajl")
 region = Rect2(144, 0, 48, 48)
@@ -270,7 +255,6 @@ region = Rect2(192, 0, 48, 48)
 atlas = ExtResource("3_cyajl")
 region = Rect2(240, 0, 48, 48)
 
->>>>>>> origin/main
 [sub_resource type="AtlasTexture" id="AtlasTexture_8egkn"]
 atlas = ExtResource("1_0eoyi")
 region = Rect2(0, 0, 48, 48)
@@ -323,21 +307,6 @@ region = Rect2(48, 0, 48, 48)
 atlas = ExtResource("3_cyajl")
 region = Rect2(96, 0, 48, 48)
 
-<<<<<<< HEAD
-[sub_resource type="AtlasTexture" id="AtlasTexture_fpvr6"]
-atlas = ExtResource("3_cyajl")
-region = Rect2(144, 0, 48, 48)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dhrtq"]
-atlas = ExtResource("3_cyajl")
-region = Rect2(192, 0, 48, 48)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_a6jc5"]
-atlas = ExtResource("3_cyajl")
-region = Rect2(240, 0, 48, 48)
-
-=======
->>>>>>> origin/main
 [sub_resource type="AtlasTexture" id="AtlasTexture_v7uls"]
 atlas = ExtResource("4_cyajl")
 region = Rect2(0, 0, 48, 48)
@@ -410,8 +379,6 @@ region = Rect2(288, 0, 48, 48)
 atlas = ExtResource("5_fh65b")
 region = Rect2(336, 0, 48, 48)
 
-<<<<<<< HEAD
-=======
 [sub_resource type="AtlasTexture" id="AtlasTexture_u6feb"]
 atlas = ExtResource("10_judl8")
 region = Rect2(0, 0, 405, 673)
@@ -460,7 +427,6 @@ region = Rect2(4050, 0, 405, 673)
 atlas = ExtResource("10_judl8")
 region = Rect2(4455, 0, 405, 673)
 
->>>>>>> origin/main
 [sub_resource type="AtlasTexture" id="AtlasTexture_kjus8"]
 atlas = ExtResource("11_3vrwl")
 region = Rect2(0, 0, 48, 48)
@@ -760,9 +726,6 @@ animations = [{
 }],
 "loop": 0,
 "name": &"fall",
-<<<<<<< HEAD
-"speed": 15.0
-=======
 "speed": 10.0
 }, {
 "frames": [{
@@ -778,7 +741,6 @@ animations = [{
 "loop": 1,
 "name": &"falling",
 "speed": 7.0
->>>>>>> origin/main
 }, {
 "frames": [{
 "duration": 1.0,
@@ -824,18 +786,6 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_g8nad")
-<<<<<<< HEAD
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fpvr6")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dhrtq")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_a6jc5")
-=======
->>>>>>> origin/main
 }],
 "loop": 1,
 "name": &"jump",
@@ -903,8 +853,6 @@ animations = [{
 }],
 "loop": 1,
 "name": &"run",
-<<<<<<< HEAD
-=======
 "speed": 10.0
 }, {
 "frames": [{
@@ -946,7 +894,6 @@ animations = [{
 }],
 "loop": 1,
 "name": &"run-NEW",
->>>>>>> origin/main
 "speed": 7.0
 }, {
 "frames": [{
@@ -1040,11 +987,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"walk",
-<<<<<<< HEAD
-"speed": 5.0
-=======
 "speed": 7.0
->>>>>>> origin/main
 }, {
 "frames": [{
 "duration": 1.0,
@@ -1063,33 +1006,22 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1uit0"]
 
-<<<<<<< HEAD
-[node name="Player" type="CharacterBody2D" unique_id=933192025]
-=======
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q1sf4"]
 size = Vector2(14, 22)
 
 [node name="Player" type="CharacterBody2D" unique_id=933192025]
 scale = Vector2(1.2, 1.2)
 script = ExtResource("1_rpvn3")
->>>>>>> origin/main
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=282735918]
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_q1sf4")
-<<<<<<< HEAD
-animation = &"shoot"
-frame_progress = 0.8281338
-=======
 animation = &"dash"
 autoplay = "airspin"
->>>>>>> origin/main
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=359072486]
 shape = SubResource("CapsuleShape2D_1uit0")
 
-<<<<<<< HEAD
-=======
 [node name="Health" type="Node" parent="." unique_id=1459347903]
 script = ExtResource("36_pft2h")
 metadata/_custom_type_script = "uid://dr8bvnfebp76"
@@ -1107,27 +1039,11 @@ debug_color = Color(1, 0, 0, 0.41960785)
 script = ExtResource("38_rpvn3")
 metadata/_custom_type_script = "uid://d33a1bxcxnqk4"
 
->>>>>>> origin/main
 [node name="SidewaysMovementComponent" type="Node" parent="." unique_id=870414210]
 script = ExtResource("7_t8yk2")
 wall_jump_enabled = false
 metadata/_custom_type_script = "uid://beajnp3irp7ln"
 
-<<<<<<< HEAD
-[node name="FacingComponent" type="Node" parent="." unique_id=291864630]
-script = ExtResource("2_68xwl")
-metadata/_custom_type_script = "uid://clhg7apuc3ldq"
-
-[node name="LaunchComponent" type="Node" parent="." unique_id=143997192]
-script = ExtResource("11_mr2x2")
-metadata/_custom_type_script = "uid://ccv1q2cdjiacc"
-
-[node name="InteractComponent" type="Node" parent="." unique_id=331137762]
-script = ExtResource("3_m5ugi")
-metadata/_custom_type_script = "uid://kb1gt4lu1sxw"
-
-=======
->>>>>>> origin/main
 [node name="InteractionComponent" type="Node" parent="." unique_id=1154283013]
 script = ExtResource("4_3vq1g")
 metadata/_custom_type_script = "uid://dmxnpj5ebi7nn"
@@ -1136,13 +1052,6 @@ metadata/_custom_type_script = "uid://dmxnpj5ebi7nn"
 script = ExtResource("4_t8yk2")
 metadata/_custom_type_script = "uid://b81q8i2kndqdf"
 
-<<<<<<< HEAD
-[node name="AnimationComponent" type="Node" parent="." unique_id=1124669972]
-script = ExtResource("6_dsw4c")
-metadata/_custom_type_script = "uid://b0bul4sdikiw3"
-
-=======
->>>>>>> origin/main
 [node name="VFXComponent" type="Node" parent="." unique_id=1047895015]
 script = ExtResource("19_1rckg")
 jump_dust = ExtResource("20_vrrwq")
@@ -1156,8 +1065,6 @@ metadata/_custom_type_script = "uid://c04nw515cb8mx"
 script = ExtResource("7_0eoyi")
 metadata/_custom_type_script = "uid://cfxp2t1o4nm1s"
 
-<<<<<<< HEAD
-=======
 [node name="FacingComponent" type="Node" parent="." unique_id=291864630]
 script = ExtResource("2_68xwl")
 metadata/_custom_type_script = "uid://clhg7apuc3ldq"
@@ -1178,7 +1085,6 @@ metadata/_custom_type_script = "uid://b0bul4sdikiw3"
 script = ExtResource("33_wgy36")
 metadata/_custom_type_script = "uid://c0q0rfmy8x2gh"
 
->>>>>>> origin/main
 [node name="Gun" type="Node2D" parent="." unique_id=1189904842]
 
 [node name="Muzzle" type="Node2D" parent="Gun" unique_id=2025839135]
@@ -1200,13 +1106,10 @@ script = ExtResource("22_fmmik")
 weapon = ExtResource("23_wx2rq")
 metadata/_custom_type_script = "uid://by6vw7j34edj4"
 
-<<<<<<< HEAD
-=======
 [node name="PlayerInputComponent" type="Node" parent="Gun" unique_id=1636194210]
 script = ExtResource("33_wgy36")
 metadata/_custom_type_script = "uid://c0q0rfmy8x2gh"
 
->>>>>>> origin/main
 [node name="StateChart" type="Node" parent="." unique_id=1592911677]
 unique_name_in_owner = true
 script = ExtResource("2_nybob")

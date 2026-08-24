@@ -10,20 +10,12 @@ config_version=5
 
 [addons]
 
-<<<<<<< HEAD
-metroidvania_system/settings_file="res://SampleProject/Resources/Settings.tres"
-=======
 metroidvania_system/settings_file="uid://po1yy1ihchuv"
->>>>>>> origin/main
 
 [application]
 
 config/name="metroidvania gamejam"
-<<<<<<< HEAD
-config/version="idk"
-=======
 config/version="-some kinda not fucking done version"
->>>>>>> origin/main
 run/main_scene="res://scenes/opening/opening.tscn"
 config/features=PackedStringArray("4.7")
 config/icon="uid://bir818d8kuhpr"
@@ -39,23 +31,6 @@ SceneLoader="*uid://cbwmrnp0af35y"
 ProjectMusicController="*uid://r5t485lr3p7t"
 ProjectUISoundController="*uid://cc37235kj4384"
 PhantomCameraManager="*uid://duq6jhf6unyis"
-<<<<<<< HEAD
-SoundManager="*uid://6q1wagejt60k"
-StartUp="*uid://cno5ujal5t3kf"
-AppConfig="*uid://cjke6crjg14a0"
-DialogueManager="*uid://c3rodes2l3gxb"
-DebugMenu="*uid://cggqb75a8w8r"
-
-[debug]
-
-gdscript/warnings/unassigned_variable=0
-gdscript/warnings/unassigned_variable_op_assign=0
-gdscript/warnings/unused_variable=0
-gdscript/warnings/unused_local_constant=0
-gdscript/warnings/unused_private_class_variable=0
-gdscript/warnings/unused_parameter=0
-gdscript/warnings/integer_division=0
-=======
 StartUp="*uid://cno5ujal5t3kf"
 AppConfig="*uid://cjke6crjg14a0"
 DialogueManager="*uid://c3rodes2l3gxb"
@@ -65,18 +40,12 @@ SoundManager="*uid://6q1wagejt60k"
 
 [debug]
 
->>>>>>> origin/main
 gdscript/warnings/narrowing_conversion=0
 
 [display]
 
-<<<<<<< HEAD
-window/size/viewport_width=864
-window/size/viewport_height=480
-=======
 window/size/viewport_width=960
 window/size/viewport_height=540
->>>>>>> origin/main
 window/size/always_on_top=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
@@ -89,11 +58,7 @@ script/search_in_file_extensions=PackedStringArray("gd", "gdshader", "tscn")
 
 [editor_plugins]
 
-<<<<<<< HEAD
-enabled=PackedStringArray("res://addons/GDQuest_GDScript_formatter/plugin.cfg", "res://addons/MetroidvaniaSystem/plugin.cfg", "res://addons/debug_menu/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/godot_state_charts/plugin.cfg", "res://addons/godotresourcecleaner/plugin.cfg", "res://addons/maaacks_game_template/plugin.cfg", "res://addons/phantom_camera/plugin.cfg", "res://addons/plugin_updater/plugin.cfg", "res://addons/project-time-tracker/plugin.cfg", "res://addons/script-ide/plugin.cfg", "res://addons/sound_manager/plugin.cfg")
-=======
 enabled=PackedStringArray("res://addons/GDQuest_GDScript_formatter/plugin.cfg", "res://addons/MetroidvaniaSystem/plugin.cfg", "res://addons/debug_menu/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/godot_state_charts/plugin.cfg", "res://addons/godotresourcecleaner/plugin.cfg", "res://addons/health_hitbox_hurtbox/plugin.cfg", "res://addons/maaacks_game_template/plugin.cfg", "res://addons/phantom_camera/plugin.cfg", "res://addons/project-time-tracker/plugin.cfg", "res://addons/script-ide/plugin.cfg", "res://addons/sound_manager/plugin.cfg", "res://addons/xesa/ExposeThemProperties/plugin.cfg")
->>>>>>> origin/main
 
 [file_customization]
 
@@ -179,17 +144,10 @@ locale/translations_pot_files=PackedStringArray("res://addons/MetroidvaniaSystem
 disable_install_audio_busses=true
 disable_install_wizard=true
 main_menu_scene_path="res://scenes/menus/main_menu/main_menu.tscn"
-<<<<<<< HEAD
-game_scene_path="res://scenes/game/dean_main_test.tscn"
-ending_scene_path="res://scenes/end_credits/end_credits.tscn"
-copy_path="res://"
-disable_update_check=false
-=======
 ending_scene_path="res://scenes/end_credits/end_credits.tscn"
 copy_path="res://"
 disable_update_check=false
 game_scene_path="res://scenes/game/dean_main_test.tscn"
->>>>>>> origin/main
 
 [plugin_updater]
 

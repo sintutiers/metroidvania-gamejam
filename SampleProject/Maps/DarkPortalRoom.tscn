@@ -3,15 +3,12 @@
 [ext_resource type="TileSet" uid="uid://bwpcg2opya34n" path="res://SampleProject/Resources/Tileset.tres" id="1_o3x6j"]
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="2_iipfy"]
 [ext_resource type="PackedScene" uid="uid://cwrf84g5mlucd" path="res://SampleProject/Objects/Portal.tscn" id="3_dwger"]
-<<<<<<< HEAD
-=======
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_csfdr"]
 [ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="5_7vl77"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="6_g5rqj"]
 
 [sub_resource type="Resource" id="Resource_xjjd3"]
 script = ExtResource("6_g5rqj")
->>>>>>> origin/main
 
 [node name="Map" type="Node2D" unique_id=1342534034]
 
@@ -34,8 +31,6 @@ tile_set = ExtResource("1_o3x6j")
 modulate = Color(0.207843, 0.870588, 0.121569, 1)
 position = Vector2(304, 263)
 target_map = "uid://dafqk3u71on41"
-<<<<<<< HEAD
-=======
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1845688184]
 top_level = true
@@ -50,4 +45,3 @@ top_level = true
 script = ExtResource("5_7vl77")
 follow_mode = 2
 tween_resource = SubResource("Resource_xjjd3")
->>>>>>> origin/main

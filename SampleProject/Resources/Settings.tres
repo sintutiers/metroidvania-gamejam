@@ -8,15 +8,9 @@
 script = ExtResource("2_r56ns")
 theme = ExtResource("3_qyjha")
 map_data_file = "res://SampleProject/Maps/MapData.txt"
-<<<<<<< HEAD
-in_game_cell_size = Vector2(864, 480)
-custom_element_script = ExtResource("1_v4ykp")
-_last_scene_folder = "res://SampleProject/Maps"
-=======
 in_game_cell_size = Vector2(960, 540)
 custom_element_script = ExtResource("1_v4ykp")
 _last_scene_folder = "res://scenes/game/levels"
->>>>>>> origin/main
 _collectible_list = Array[Dictionary]([{
 &"element": "Collectible",
 &"icon": "uid://wiq0mic5m6is"
