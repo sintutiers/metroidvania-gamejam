@@ -4,13 +4,20 @@
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="1_45cto"]
 [ext_resource type="Script" uid="uid://0u1nlyd1ld6o" path="res://SampleProject/Scripts/SavePoint.gd" id="3_7p5jr"]
 [ext_resource type="PackedScene" uid="uid://c8j6i3fx8p758" path="res://SampleProject/Objects/Collectible.tscn" id="4_ljvb3"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="5_kfobk"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="6_kfobk"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="7_vxmpj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4rbcf"]
 radius = 32.0
 
+[sub_resource type="Resource" id="Resource_kfobk"]
+script = ExtResource("7_vxmpj")
+
 [node name="Map" type="Node2D" unique_id=403972411]
 
 [node name="TileMap" type="Node2D" parent="." unique_id=1905298203]
+scale = Vector2(1.12, 1.12)
 
 [node name="Foreground" type="TileMapLayer" parent="TileMap" unique_id=1507375893]
 use_parent_material = true
@@ -51,3 +58,18 @@ vertical_alignment = 1
 
 [node name="Collectible" parent="." unique_id=1937460030 instance=ExtResource("4_ljvb3")]
 position = Vector2(2064, 160)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1016552682]
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1431807445]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("5_kfobk")
+
+[node name="@Node2D@32853" type="Node2D" parent="." unique_id=527076781]
+top_level = true
+script = ExtResource("6_kfobk")
+follow_mode = 5
+tween_resource = SubResource("Resource_kfobk")
+dead_zone_height = 0.86

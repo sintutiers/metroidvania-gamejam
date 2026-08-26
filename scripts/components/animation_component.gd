@@ -2,22 +2,26 @@
 class_name AnimationComponent
 extends Component
 
+@export_group("Flip")
+@export var flip_duration: float = 0.1
+
 var _is_airborne: bool = false
 var _is_landing: bool = false
 var _is_tumbling: bool = false
 var _pending_ground_motion: StringName = Motions.IDLE
 var _current_motion: StringName = Motions.IDLE
 var _is_aiming: bool = false
+var _flip_tween: Tween
 
 @onready var sprite: AnimatedSprite2D = %AnimatedSprite2D
 
 
 func _on_ready() -> void:
-	sprite.animation_finished.connect(_on_animation_finished)
+	track(sprite.animation_finished, _on_animation_finished)
 
 
 func _on_setup() -> void:
-	var movement := get_component(MovementBase, false) as MovementBase
+	var movement := get_component(PlatformerMovementBase, false) as PlatformerMovementBase
 	if movement:
 		track(movement.ground_motion_changed, _on_ground_motion_changed)
 		track(movement.jumped, _on_jumped)
@@ -61,47 +65,72 @@ func _on_ground_motion_changed(motion: StringName) -> void:
 func _on_jumped(jump_number: int) -> void:
 	_is_airborne = true
 	_is_tumbling = jump_number != 1
+<<<<<<< HEAD
 	sprite.play(&"jump" if jump_number == 1 else &"airspin")
+=======
+	sprite.play(Animations.JUMP if jump_number == 1 else Animations.AIRSPIN)
+>>>>>>> origin/main
 
 
 func _on_wall_jumped() -> void:
 	_is_airborne = true
 	_is_tumbling = false
+<<<<<<< HEAD
 	sprite.play(&"jump")
+=======
+	sprite.play(Animations.JUMP)
+>>>>>>> origin/main
 
 
 func _on_airspin() -> void:
 	_is_airborne = true
 	_is_tumbling = true
+<<<<<<< HEAD
 	sprite.play(&"airspin")
+=======
+	sprite.play(Animations.AIRSPIN)
+>>>>>>> origin/main
 
 
 func _on_extra_jumped(_jump_number: int) -> void:
 	_is_airborne = true
 	_is_tumbling = true
+<<<<<<< HEAD
 	sprite.play(&"airspin")
+=======
+	sprite.play(Animations.AIRSPIN)
+>>>>>>> origin/main
 
 
 func _on_wall_slid() -> void:
 	_is_airborne = true
 	_is_tumbling = false
+<<<<<<< HEAD
 	if sprite.animation != &"wall_slide":
 		sprite.play(&"wall_slide")
+=======
+	if sprite.animation != Animations.WALL_SLIDE:
+		sprite.play(Animations.WALL_SLIDE)
+>>>>>>> origin/main
 
 
 func _on_dashed() -> void:
 	_is_airborne = true
 	_is_tumbling = false
+<<<<<<< HEAD
 	sprite.play(&"dash")
+=======
+	sprite.play(Animations.DASH)
+>>>>>>> origin/main
 
 
 func _on_dash_ended() -> void:
-	sprite.play(&"fall")
+	sprite.play(Animations.FALL)
 
 
 func _on_launched() -> void:
 	_is_airborne = true
-	sprite.play(&"airspin")
+	sprite.play(Animations.AIRSPIN)
 
 
 func _on_landed(motion: StringName) -> void:
@@ -109,21 +138,25 @@ func _on_landed(motion: StringName) -> void:
 	_is_landing = true
 	_is_tumbling = false
 	_pending_ground_motion = motion
-	sprite.play(&"fall")
+	sprite.play(Animations.FALL)
 
 
 func _on_fired() -> void:
 	if _is_airborne:
 		return
 	var is_moving: bool = _current_motion == Motions.WALK or _current_motion == Motions.RUN
+<<<<<<< HEAD
 	sprite.play(&"shoot_running" if is_moving else &"shoot")
+=======
+	sprite.play(Animations.SHOOT_RUNNING if is_moving else Animations.SHOOT)
+>>>>>>> origin/main
 
 
 func _on_aim_started() -> void:
 	_is_aiming = true
 	if _is_airborne:
 		return
-	sprite.play(&"aim")
+	sprite.play(Animations.AIM)
 
 
 func _on_aim_ended() -> void:
@@ -137,15 +170,23 @@ func _on_started_falling() -> void:
 	if _is_aiming or _is_tumbling:
 		return
 	_is_airborne = true
+<<<<<<< HEAD
 	sprite.play(&"falling")
+=======
+	sprite.play(Animations.FALLING)
+>>>>>>> origin/main
 
 
 func _on_animation_finished() -> void:
-	if sprite.animation != &"fall":
+	if sprite.animation != Animations.FALL:
 		return
 	_is_landing = false
 	sprite.play(_pending_ground_motion)
 
 
 func _on_flipped(new_facing_x: float) -> void:
-	sprite.flip_h = new_facing_x < 0.0
+	var target_scale_x: float = -1.0 if new_facing_x < 0.0 else 1.0
+	if _flip_tween and _flip_tween.is_running():
+		_flip_tween.kill()
+	_flip_tween = create_tween()
+	_flip_tween.tween_property(sprite, "scale:x", target_scale_x, flip_duration)

@@ -4,6 +4,9 @@
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="2_h8ruc"]
 [ext_resource type="PackedScene" uid="uid://dgbhua1xw0ckx" path="res://SampleProject/Objects/MiniPortal.tscn" id="3_1ystc"]
 [ext_resource type="PackedScene" uid="uid://d165fnekqr5ex" path="res://SampleProject/Objects/Button.tscn" id="4_cl36g"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="5_tp750"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="6_c1uyt"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="7_4vnxo"]
 
 [sub_resource type="GDScript" id="GDScript_r3e0s"]
 resource_name = "Outside"
@@ -25,6 +28,9 @@ func _draw() -> void:
 			if not Vector2i(x, y) in local_cells:
 				draw_rect(Rect2(Vector2(x, y) * MetSys.settings.in_game_cell_size, MetSys.settings.in_game_cell_size), Color.BLACK)
 "
+
+[sub_resource type="Resource" id="Resource_7hy8c"]
+script = ExtResource("7_4vnxo")
 
 [node name="Map" type="Node2D" unique_id=1033580382]
 
@@ -58,5 +64,19 @@ target_map = "uid://swme0gqqjneh"
 
 [node name="Button" parent="." unique_id=1873209695 instance=ExtResource("4_cl36g")]
 position = Vector2(752, 704)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1001758632]
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=821416265]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("5_tp750")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=1711399925]
+top_level = true
+script = ExtResource("6_c1uyt")
+follow_mode = 2
+tween_resource = SubResource("Resource_7hy8c")
 
 [connection signal="pressed" from="Button" to="TileMap/Clog" method="queue_free"]

@@ -3,9 +3,15 @@
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="1_v514r"]
 [ext_resource type="TileSet" uid="uid://bwpcg2opya34n" path="res://SampleProject/Resources/Tileset.tres" id="2_v514r"]
 [ext_resource type="Script" uid="uid://b7ocxe212putd" path="res://SampleProject/Scripts/LoopScript.gd" id="3_epo1w"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_spp1h"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="5_vuusb"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="6_twwi5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8gjny"]
 size = Vector2(32, 96)
+
+[sub_resource type="Resource" id="Resource_nrg7l"]
+script = ExtResource("6_twwi5")
 
 [node name="Map" type="Node2D" unique_id=656825027]
 
@@ -42,6 +48,20 @@ loop_mode = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Loop2a" unique_id=139227307]
 position = Vector2(0, 112)
 shape = SubResource("RectangleShape2D_8gjny")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=56186521]
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=347814958]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("4_spp1h")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=734235946]
+top_level = true
+script = ExtResource("5_vuusb")
+follow_mode = 2
+tween_resource = SubResource("Resource_nrg7l")
 
 [connection signal="body_entered" from="Loop2" to="Loop2" method="_on_body_entered"]
 [connection signal="body_exited" from="Loop2" to="Loop2" method="_on_body_exited"]

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bc2jmjg3we1t5"]
 
-[ext_resource type="Script" uid="uid://v1eng4p8uw2y" path="res://misc shit for dean/bullet.gd" id="1_0at8l"]
+[ext_resource type="Script" uid="uid://v1eng4p8uw2y" path="res://scripts/bullet.gd" id="1_0at8l"]
 [ext_resource type="Texture2D" uid="uid://cvflcf17h8n43" path="res://The Amazing Art and Sound Folder/sun_splash.png" id="1_7emgm"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_evqwy"]

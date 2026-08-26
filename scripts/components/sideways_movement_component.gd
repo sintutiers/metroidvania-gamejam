@@ -1,51 +1,97 @@
-# sideways_movement_component.gd
+# scripts/components/sideways_movement_component.gd
 class_name SidewaysMovementComponent
+<<<<<<< HEAD
 extends MovementBase
+=======
+extends PlatformerMovementBase
+>>>>>>> origin/main
 
 @export_group("Movement")
-@export var move_speed: float = 200.0
-@export var run_speed: float = 400.0
-@export var move_acceleration: float = 1200.0
-@export var turn_acceleration: float = 3600.0
-@export var move_friction: float = 1200.0
+@export_range(0.0, 1000.0, 10.0, ETP.PROPERTY)
+var move_speed: float = 200.0
+@export_range(0.0, 1000.0, 10.0, ETP.PROPERTY)
+var run_speed: float = 400.0
+@export_range(0.0, 5000.0, 100.0, ETP.PROPERTY)
+var move_acceleration: float = 1200.0
+@export_range(0.0, 5000.0, 100.0, ETP.PROPERTY)
+var turn_acceleration: float = 3600.0
+@export_range(0.0, 5000.0, 100.0, ETP.PROPERTY)
+var move_friction: float = 1200.0
 
 @export_group("Jump")
+<<<<<<< HEAD
 @export var jump_height: float = 80.0
 @export var max_jumps: int = 2
 @export var jump_gravity: float = 0.0
 @export var coyote_time: float = 0.1
 @export var jump_buffer_time: float = 0.1
+=======
+@export_range(0.0, 500.0, 5.0, ETP.PROPERTY)
+var jump_height: float = 80.0
+@export_range(0.0, 3000.0, 10.0, ETP.PROPERTY)
+var jump_gravity: float = 0.0
+@export_range(0.0, 1.0, 0.01, ETP.PROPERTY)
+var coyote_time: float = 0.1
+@export_range(0.0, 1.0, 0.01, ETP.PROPERTY)
+var jump_buffer_time: float = 0.1
+@export_range(1, 10, 1, ETP.PROPERTY)
+var default_max_jumps: int = 2
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var jump_ability_id: String = String(AbilityIds.EXTRA_JUMPS)
+@export_range(0.0, 1.0, 0.05, ETP.PROPERTY)
+var jump_cut_multiplier: float = 0.5
+@export_range(0.0, 3.0, 0.05, ETP.PROPERTY)
+var running_jump_height_multiplier: float = 1.5
+@export_range(0.0, 3.0, 0.05, ETP.PROPERTY)
+var momentum_jump_distance_multiplier: float = 1.5
+>>>>>>> origin/main
 
 @export_group("Fall")
-@export var max_fall_speed: float = 600.0
-@export var fall_gravity_offset: float = 0.0
-@export var apex_hang_threshold: float = 40.0
+@export_range(0.0, 2000.0, 10.0, ETP.PROPERTY)
+var max_fall_speed: float = 600.0
+@export_range(-1000.0, 1000.0, 10.0, ETP.PROPERTY)
+var fall_gravity_offset: float = 0.0
+@export_range(0.0, 500.0, 5.0, ETP.PROPERTY)
+var apex_hang_threshold: float = 40.0
+@export_range(0.0, 1.0, 0.05, ETP.PROPERTY)
+var apex_hang_gravity_multiplier: float = 0.5
 
 @export_group("Wall")
-@export var wall_slide_speed: float = 100.0
-@export var wall_jump_enabled: bool = true
-@export var wall_jump_push_speed: float = 300.0
-@export var wall_jump_input_lock_time: float = 0.1
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var wall_jump_enabled: bool = true
+@export_range(0.0, 1000.0, 10.0, ETP.PROPERTY)
+var wall_slide_speed: float = 100.0
+@export_range(0.0, 1000.0, 10.0, ETP.PROPERTY)
+var wall_jump_push_speed: float = 300.0
+@export_range(0.0, 1.0, 0.01, ETP.PROPERTY)
+var wall_jump_lock_duration: float = 0.1
 
 @export_group("Dash")
-@export var dash_speed: float = 800.0
-@export var dash_duration: float = 0.2
-@export var dash_cooldown: float = 0.5
-@export var max_dashes: int = 1
-@export var crouch_collision_scale: float = 0.5
-@export var crouch_shape_y_offset: float = 8.0
-
-@export_range(0.0, 1.0, 0.05) var jump_cut_mult: float = 0.5
-@export_range(0.0, 3.0, 0.05) var running_jump_height_mult: float = 1.5
-@export_range(0.0, 3.0, 0.05) var speed_based_jump_distance_mult: float = 1.5
-@export_range(0.0, 1.0, 0.05) var apex_hang_gravity_mult: float = 0.5
+@export_range(0.0, 2000.0, 10.0, ETP.PROPERTY)
+var dash_speed: float = 800.0
+@export_range(0.0, 1.0, 0.01, ETP.PROPERTY)
+var dash_duration: float = 0.2
+@export_range(0.0, 5.0, 0.01, ETP.PROPERTY)
+var dash_cooldown: float = 0.5
+@export_range(1, 10, 1, ETP.PROPERTY)
+var max_dashes: int = 1
 
 @export_group("Crouch")
-@export_range(0.0, 1.0, 0.05) var crouch_speed_mult: float = 0.5
+@export_range(0.0, 1.0, 0.01, ETP.PROPERTY)
+var crouch_collision_scale: float = 0.5
+@export_range(-100.0, 100.0, 1.0, ETP.PROPERTY)
+var crouch_shape_y_offset: float = 8.0
+@export_range(0.0, 1.0, 0.05, ETP.PROPERTY)
+var crouch_speed_multiplier: float = 0.5
 
 var facing_component: FacingComponent
 var collision_shape: CollisionShape2D
 var input_component: InputComponent
+<<<<<<< HEAD
+=======
+
+var ability_component: AbilityComponent
+>>>>>>> origin/main
 
 var launch_component: LaunchComponent
 var _was_moving: bool = false
@@ -81,15 +127,15 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_ready() -> void:
-	ground_state.state_physics_processing.connect(_on_ground_physics)
-	air_state.state_physics_processing.connect(_on_air_physics)
-	wall_slide_state.state_physics_processing.connect(_on_wall_slide_physics)
-	wall_slide_state.state_entered.connect(_on_wall_slide_entered)
-	dash_state.state_entered.connect(_on_dash_entered)
-	dash_state.state_physics_processing.connect(_on_dash_physics)
-	crouch_state.state_entered.connect(_on_crouch_entered)
-	crouch_state.state_physics_processing.connect(_on_crouch_physics)
-	crouch_state.state_exited.connect(_on_crouch_exited)
+	track(ground_state.state_physics_processing, _on_ground_physics)
+	track(air_state.state_physics_processing, _on_air_physics)
+	track(wall_slide_state.state_physics_processing, _on_wall_slide_physics)
+	track(wall_slide_state.state_entered, _on_wall_slide_entered)
+	track(dash_state.state_entered, _on_dash_entered)
+	track(dash_state.state_physics_processing, _on_dash_physics)
+	track(crouch_state.state_entered, _on_crouch_entered)
+	track(crouch_state.state_physics_processing, _on_crouch_physics)
+	track(crouch_state.state_exited, _on_crouch_exited)
 
 
 func _on_setup() -> void:
@@ -97,6 +143,10 @@ func _on_setup() -> void:
 	collision_shape = get_component(CollisionShape2D, false) as CollisionShape2D
 	launch_component = get_component(LaunchComponent, false) as LaunchComponent
 	input_component = get_component(InputComponent) as InputComponent
+<<<<<<< HEAD
+=======
+	ability_component = get_component(AbilityComponent, false) as AbilityComponent
+>>>>>>> origin/main
 	if collision_shape:
 		_standing_shape_position = collision_shape.position
 	if launch_component:
@@ -157,20 +207,20 @@ func _update_current_motion(on_ground: bool, input_dir: float, is_running: bool)
 
 
 func _try_jump(is_running: bool, is_wall_jump: bool = false) -> bool:
-	var can_jump: bool = _coyote_timer > 0.0 or _jumps_used < max_jumps
+	var can_jump: bool = _coyote_timer > 0.0 or _jumps_used < _max_jumps()
 	if _jump_buffer_timer <= 0.0 or not can_jump:
 		return false
 
-	var height: float = jump_height * (running_jump_height_mult if is_running else 1.0)
+	var height: float = jump_height * (running_jump_height_multiplier if is_running else 1.0)
 	var rise_gravity: float = jump_gravity if jump_gravity > 0.0 else base_gravity
 	body.velocity.y = -sqrt(2.0 * rise_gravity * height)
 
 	if is_wall_jump:
 		body.velocity.x = body.get_wall_normal().x * wall_jump_push_speed
-		_wall_jump_lock_timer = wall_jump_input_lock_time
+		_wall_jump_lock_timer = wall_jump_lock_duration
 	else:
 		var speed_ratio: float = clampf(absf(body.velocity.x) / run_speed, 0.0, 1.0)
-		body.velocity.x *= lerpf(1.0, speed_based_jump_distance_mult, speed_ratio)
+		body.velocity.x *= lerpf(1.0, momentum_jump_distance_multiplier, speed_ratio)
 
 	_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
@@ -246,7 +296,7 @@ func _on_air_physics(delta: float) -> void:
 		else base_gravity + fall_gravity_offset
 	)
 	if absf(body.velocity.y) < apex_hang_threshold:
-		gravity *= apex_hang_gravity_mult
+		gravity *= apex_hang_gravity_multiplier
 	body.velocity.y = minf(body.velocity.y + gravity * delta, max_fall_speed)
 
 	if body.is_on_ceiling() and body.velocity.y < 0.0:
@@ -262,7 +312,11 @@ func _on_air_physics(delta: float) -> void:
 	_update_jump_buffer(delta)
 
 	if input_component.jump_just_released() and body.velocity.y < 0.0:
+<<<<<<< HEAD
 		body.velocity.y *= jump_cut_mult
+=======
+		body.velocity.y *= jump_cut_multiplier
+>>>>>>> origin/main
 
 	var input_dir: float = input_component.move_axis()
 	_apply_horizontal(delta, input_dir, false)
@@ -313,6 +367,10 @@ func _on_dash_entered() -> void:
 	_dash_cooldown_timer = dash_cooldown
 	_dashes_used += 1
 	_was_falling = false
+<<<<<<< HEAD
+=======
+	is_uninterruptible = true
+>>>>>>> origin/main
 	_dash_direction = facing_component.facing.x if not is_zero_approx(facing_component.facing.x) else 1.0
 	dashed.emit()
 
@@ -325,6 +383,7 @@ func _on_dash_physics(delta: float) -> void:
 	if _dash_timer > 0.0:
 		return
 
+	is_uninterruptible = false
 	if body.is_on_floor():
 		_update_current_motion(true, input_component.move_axis(), _is_running)
 		_land()
@@ -342,7 +401,11 @@ func _on_crouch_entered() -> void:
 
 func _on_crouch_physics(delta: float) -> void:
 	var input_dir: float = input_component.move_axis()
+<<<<<<< HEAD
 	_apply_horizontal(delta, input_dir, false, crouch_speed_mult)
+=======
+	_apply_horizontal(delta, input_dir, false, crouch_speed_multiplier)
+>>>>>>> origin/main
 	body.move_and_slide()
 
 	var motion: StringName = Motions.CROUCH_WALK if input_dir != 0.0 else Motions.CROUCH_IDLE
@@ -368,3 +431,12 @@ func _on_launch_landed() -> void:
 	_coyote_timer = coyote_time
 	_update_current_motion(true, input_component.move_axis(), _is_running)
 	_land(true)
+
+
+func _max_jumps() -> int:
+	var bonus: int = (
+		ability_component.get_level(StringName(jump_ability_id))
+		if ability_component
+		else 0
+	)
+	return default_max_jumps + bonus

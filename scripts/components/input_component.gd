@@ -36,3 +36,14 @@ func is_interact_event(_event: InputEvent) -> bool:
 
 func is_launch_accept_event(_event: InputEvent) -> bool:
 	return false
+<<<<<<< HEAD
+=======
+
+
+func get_movement_vector() -> Vector2:
+	return Vector2.ZERO
+
+
+func get_aim_world_position() -> Vector2:
+	return Vector2.ZERO
+>>>>>>> origin/main

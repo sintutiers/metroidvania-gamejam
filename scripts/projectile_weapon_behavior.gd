@@ -16,3 +16,6 @@ func fire(attack_component: AttackComponent, muzzle: Node2D) -> void:
 		attack_component.get_tree().current_scene.add_child(projectile)
 		projectile.global_transform = muzzle.global_transform
 		projectile.rotate(angle_offset)
+		var bullet := projectile as Bullet
+		if bullet:
+			bullet.set_damage(attack_component.weapon.damage)

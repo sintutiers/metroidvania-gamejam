@@ -8,23 +8,36 @@ enum RunDustMode {
 }
 
 @export_group("One-Shot Effects")
-@export var jump_dust: PackedScene
-@export var jump_dust_offset: Vector2 = Vector2.ZERO
-@export var land_dust: PackedScene
-@export var land_dust_offset: Vector2 = Vector2.ZERO
-@export var dash_trail: PackedScene
-@export var dash_trail_offset: Vector2 = Vector2.ZERO
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var jump_dust: PackedScene
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var jump_dust_offset: Vector2 = Vector2.ZERO
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var land_dust: PackedScene
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var land_dust_offset: Vector2 = Vector2.ZERO
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var dash_trail: PackedScene
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var dash_trail_offset: Vector2 = Vector2.ZERO
 
 @export_group("Run Dust")
-@export var run_dust_scene: PackedScene
-@export var run_dust_mode: RunDustMode = RunDustMode.CONTINUOUS
-@export var footstep_interval: float = 0.3
-@export var run_dust_offset: Vector2 = Vector2.ZERO
-@export var footstep_offset: Vector2 = Vector2.ZERO
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var run_dust_scene: PackedScene
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var run_dust_mode: RunDustMode = RunDustMode.CONTINUOUS
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var footstep_interval: float = 0.3
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var run_dust_offset: Vector2 = Vector2.ZERO
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var footstep_offset: Vector2 = Vector2.ZERO
 
 @export_group("Wall Dust")
-@export var wall_dust_scene: PackedScene
-@export var wall_dust_offset: Vector2 = Vector2.ZERO
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var wall_dust_scene: PackedScene
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var wall_dust_offset: Vector2 = Vector2.ZERO
 
 var entity: Node2D
 var _run_dust: CPUParticles2D
@@ -46,7 +59,7 @@ func _physics_process(delta: float) -> void:
 
 func _on_setup() -> void:
 	entity = get_parent() as Node2D
-	var movement := get_component(MovementBase, false) as MovementBase
+	var movement := get_component(PlatformerMovementBase, false) as PlatformerMovementBase
 	if movement:
 		track(movement.ground_motion_changed, _on_ground_motion_changed)
 		track(movement.jumped, _on_jumped)
