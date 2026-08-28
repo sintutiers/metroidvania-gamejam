@@ -38,6 +38,9 @@
 [ext_resource type="Script" uid="uid://d33a1bxcxnqk4" path="res://scripts/components/ability_component.gd" id="38_rpvn3"]
 [ext_resource type="Script" uid="uid://do5fchdp4aaev" path="res://scripts/components/death_response_component.gd" id="38_v7uls"]
 [ext_resource type="Script" uid="uid://cb48wwaxxxjaw" path="res://scripts/components/weapon_inventory_component.gd" id="38_ynh2p"]
+[ext_resource type="Script" uid="uid://d2ovqlwx3isma" path="res://scripts/weapon_resource.gd" id="39_v7uls"]
+[ext_resource type="Resource" uid="uid://b1petjgmqadxt" path="res://misc shit for dean/shotgun.tres" id="40_xfcrr"]
+[ext_resource type="Resource" uid="uid://3fylc7kv7beo" path="res://misc shit for dean/basic_pistol.tres" id="41_g8nad"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rnkgc"]
 atlas = ExtResource("1_74cnq")
@@ -1266,4 +1269,5 @@ metadata/_custom_type_script = "uid://do5fchdp4aaev"
 
 [node name="WeaponInventoryComponent" type="Node" parent="." unique_id=440618476]
 script = ExtResource("38_ynh2p")
+weapon_catalog = Array[ExtResource("39_v7uls")]([ExtResource("40_xfcrr"), ExtResource("41_g8nad")])
 metadata/_custom_type_script = "uid://cb48wwaxxxjaw"

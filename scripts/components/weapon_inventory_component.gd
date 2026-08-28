@@ -4,8 +4,7 @@ extends Component
 
 signal weapon_changed(weapon: WeaponResource)
 
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var weapon_catalog: Array[WeaponResource] = []
+@export var weapon_catalog: Array[WeaponResource] = []
 
 var owned_weapons: Array[WeaponResource] = []
 var current_index: int = 0

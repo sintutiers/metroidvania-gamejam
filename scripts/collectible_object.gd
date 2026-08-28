@@ -10,20 +10,13 @@ enum PickupMode {
 }
 
 #const is_importer_node := true
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var pickup_mode: PickupMode = PickupMode.ON_INTERACT
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var object_id: StringName
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var show_marker_on_map: bool = true
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var marker_index: int = -1
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var vanishes_when_collected: bool = true
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var granted_ability_id: StringName
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var granted_ability_amount: int = 1
+@export var pickup_mode: PickupMode = PickupMode.ON_INTERACT
+@export var object_id: StringName
+@export var show_marker_on_map: bool = true
+@export var marker_index: int = -1
+@export var vanishes_when_collected: bool = true
+@export var granted_ability_id: StringName
+@export var granted_ability_amount: int = 1
 
 var _pickup_area: Area2D
 

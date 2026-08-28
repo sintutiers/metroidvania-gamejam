@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ProjectileWeaponBehavior" format=3 uid="uid://b6wlxyetujrfi"]
 
-[ext_resource type="PackedScene" uid="uid://bc2jmjg3we1t5" path="res://misc shit for dean/bullet.tscn" id="1_riopx"]
+[ext_resource type="PackedScene" uid="uid://bc2jmjg3we1t5" path="res://misc shit for dean/basic_bullet.tscn" id="1_riopx"]
 [ext_resource type="Script" uid="uid://bqmymwk42kbdc" path="res://scripts/projectile_weapon_behavior.gd" id="1_vurq4"]
 
 [resource]

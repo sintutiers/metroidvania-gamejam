@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ProjectileWeaponBehavior" format=3 uid="uid://bmvou5r101cjl"]
+
+[ext_resource type="PackedScene" uid="uid://cgwest32m2tny" path="res://misc shit for dean/shotgun_ammo.tscn" id="1_7o1ld"]
+[ext_resource type="Script" uid="uid://bqmymwk42kbdc" path="res://scripts/projectile_weapon_behavior.gd" id="1_u4p8e"]
+
+[resource]
+script = ExtResource("1_u4p8e")
+projectile_scene = ExtResource("1_7o1ld")
+projectile_count = 3
+metadata/_custom_type_script = "uid://bqmymwk42kbdc"

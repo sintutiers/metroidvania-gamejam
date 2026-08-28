@@ -6,4 +6,5 @@
 [resource]
 script = ExtResource("1_g11wx")
 behavior = ExtResource("1_a3tq1")
+ability_id = &"pistol"
 metadata/_custom_type_script = "uid://d2ovqlwx3isma"

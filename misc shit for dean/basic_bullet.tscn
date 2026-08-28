@@ -1,17 +1,17 @@
 [gd_scene format=3 uid="uid://bc2jmjg3we1t5"]
 
-[ext_resource type="Script" uid="uid://v1eng4p8uw2y" path="res://scripts/bullet.gd" id="1_0at8l"]
-[ext_resource type="Texture2D" uid="uid://cvflcf17h8n43" path="res://The Amazing Art and Sound Folder/sun_splash.png" id="1_7emgm"]
+[ext_resource type="Script" uid="uid://v1eng4p8uw2y" path="res://scripts/bullet.gd" id="1_81lgk"]
+[ext_resource type="Texture2D" uid="uid://cvflcf17h8n43" path="res://The Amazing Art and Sound Folder/sun_splash.png" id="2_njcud"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_evqwy"]
 radius = 5.0
 
 [node name="Bullet" type="Area2D" unique_id=2115749226]
-script = ExtResource("1_0at8l")
+script = ExtResource("1_81lgk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=858850243]
 shape = SubResource("CircleShape2D_evqwy")
 
 [node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D" unique_id=954552947]
 scale = Vector2(0.207, 0.207)
-texture = ExtResource("1_7emgm")
+texture = ExtResource("2_njcud")

@@ -1,0 +1,350 @@
+diff --git a/project.godot b/project.godot
+index b5b3f3e..118424b 100644
+--- a/project.godot
++++ b/project.godot
+@@ -137,6 +137,12 @@ fire={
+ , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194309,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+ ]
+ }
++weapon_scroll={
++"deadzone": 0.2,
++"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":16,"position":Vector2(249, 9),"global_position":Vector2(258, 57),"factor":1.0,"button_index":5,"canceled":false,"pressed":true,"double_click":false,"script":null)
++, Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":8,"position":Vector2(396, 18),"global_position":Vector2(405, 66),"factor":1.0,"button_index":4,"canceled":false,"pressed":true,"double_click":false,"script":null)
++]
++}
+ 
+ [internationalization]
+ 
+diff --git a/scripts/ability_requirement.gd b/scripts/ability_requirement.gd
+deleted file mode 100644
+index a3d8e39..0000000
+--- a/scripts/ability_requirement.gd
++++ /dev/null
+@@ -1,10 +0,0 @@
+-class_name AbilityRequirement
+-extends GateRequirement
+-
+-@export var ability_id: StringName
+-@export var min_level: int = 1
+-
+-
+-func is_met(player: Node) -> bool:
+-	var ability := Component.find_component(player, AbilityComponent, false) as AbilityComponent
+-	return ability and ability.get_level(ability_id) >= min_level
+diff --git a/scripts/collectible_object.gd b/scripts/collectible_object.gd
+index 83154e8..12885bc 100644
+--- a/scripts/collectible_object.gd
++++ b/scripts/collectible_object.gd
+@@ -1,3 +1,4 @@
++# scripts/collectible_object.gd
+ class_name CollectibleObject
+ extends InteractableThing
+ 
+@@ -9,12 +10,20 @@ enum PickupMode {
+ }
+ 
+ #const is_importer_node := true
+-@export var pickup_mode: PickupMode = PickupMode.ON_INTERACT
+-@export var object_id: StringName
+-@export var show_marker_on_map: bool = true
+-@export var marker_index: int = -1
+-@export var vanishes_when_collected: bool = true
+-@export var granted_weapon: WeaponResource
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var pickup_mode: PickupMode = PickupMode.ON_INTERACT
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var object_id: StringName
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var show_marker_on_map: bool = true
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var marker_index: int = -1
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var vanishes_when_collected: bool = true
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var granted_ability_id: StringName
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var granted_ability_amount: int = 1
+ 
+ var _pickup_area: Area2D
+ 
+@@ -22,6 +31,7 @@ var _pickup_area: Area2D
+ ## -1 = use map theme's default marker for collectibles, per MetSys docs.
+ func _ready() -> void:
+ 	super()
++	add_to_group(&"collectible")
+ 	set_meta(&"object_id", object_id)
+ 	if MetSys.register_storable_object(self):
+ 		return
+@@ -45,12 +55,12 @@ func _on_body_entered(body: Node2D) -> void:
+ func _on_interacted(_by: Area2D) -> void:
+ 	MetSys.store_object(self)
+ 	collected.emit()
+-	if granted_weapon:
++	if not granted_ability_id.is_empty():
+ 		var player := get_tree().get_first_node_in_group(&"player")
+ 		if player:
+-			var inventory := Component.find_component(player, WeaponInventoryComponent, false) as WeaponInventoryComponent
+-			if inventory:
+-				inventory.add_weapon(granted_weapon)
++			var ability_component := Component.find_component(player, AbilityComponent, false) as AbilityComponent
++			if ability_component:
++				ability_component.grant(granted_ability_id, granted_ability_amount)
+ 	finish_interaction()
+ 	if vanishes_when_collected:
+ 		queue_free()
+diff --git a/scripts/components/ability_component.gd b/scripts/components/ability_component.gd
+index 3d95b8f..316dbb9 100644
+--- a/scripts/components/ability_component.gd
++++ b/scripts/components/ability_component.gd
+@@ -4,7 +4,8 @@ extends Component
+ 
+ signal ability_granted(id: StringName, new_level: int)
+ 
+-@export var starting_levels: Dictionary[StringName, int] = { }
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var starting_levels: Dictionary[StringName, int] = { }
+ 
+ var _levels: Dictionary[StringName, int] = { }
+ 
+diff --git a/scripts/components/input_component.gd b/scripts/components/input_component.gd
+index 649f6ac..8b5cde5 100644
+--- a/scripts/components/input_component.gd
++++ b/scripts/components/input_component.gd
+@@ -38,17 +38,13 @@ func is_launch_accept_event(_event: InputEvent) -> bool:
+ 	return false
+ 
+ 
++func weapon_scroll_direction(_event: InputEvent) -> int:
++	return 0
++
++
+ func get_movement_vector() -> Vector2:
+ 	return Vector2.ZERO
+ 
+ 
+ func get_aim_world_position() -> Vector2:
+ 	return Vector2.ZERO
+-
+-
+-func is_weapon_next_event(_event: InputEvent) -> bool:
+-	return false
+-
+-
+-func is_weapon_prev_event(_event: InputEvent) -> bool:
+-	return false
+diff --git a/scripts/components/player_input_component.gd b/scripts/components/player_input_component.gd
+index 999b71e..aa37d04 100644
+--- a/scripts/components/player_input_component.gd
++++ b/scripts/components/player_input_component.gd
+@@ -47,12 +47,17 @@ func is_launch_accept_event(event: InputEvent) -> bool:
+ 	return event.is_action_pressed("ui_accept")
+ 
+ 
+-func is_weapon_next_event(event: InputEvent) -> bool:
+-	return event.is_action_pressed("weapon_next")
+-
+-
+-func is_weapon_prev_event(event: InputEvent) -> bool:
+-	return event.is_action_pressed("weapon_prev")
++func weapon_scroll_direction(event: InputEvent) -> int:
++	if not event.is_action_pressed("weapon_scroll"):
++		return 0
++	var mb := event as InputEventMouseButton
++	if not mb:
++		return 0
++	if mb.button_index == MOUSE_BUTTON_WHEEL_UP:
++		return 1
++	if mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
++		return -1
++	return 0
+ 
+ 
+ func _on_ready() -> void:
+diff --git a/scripts/components/weapon_inventory_component.gd b/scripts/components/weapon_inventory_component.gd
+index e9e0132..b7d2142 100644
+--- a/scripts/components/weapon_inventory_component.gd
++++ b/scripts/components/weapon_inventory_component.gd
+@@ -1,42 +1,61 @@
++# scripts/components/weapon_inventory_component.gd
+ class_name WeaponInventoryComponent
+ extends Component
+ 
+ signal weapon_changed(weapon: WeaponResource)
+ 
+-@export var starting_weapons: Array[WeaponResource] = []
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var weapon_catalog: Array[WeaponResource] = []
+ 
+ var owned_weapons: Array[WeaponResource] = []
+ var current_index: int = 0
+ 
+ var input_component: InputComponent
++var ability_component: AbilityComponent
+ 
+ 
+ func _unhandled_input(event: InputEvent) -> void:
+ 	if owned_weapons.size() <= 1:
+ 		return
+-	if input_component.is_weapon_next_event(event):
+-		_cycle(1)
+-	elif input_component.is_weapon_prev_event(event):
+-		_cycle(-1)
++	var dir: int = input_component.weapon_scroll_direction(event)
++	if dir != 0:
++		_cycle(dir)
+ 
+ 
+ func current_weapon() -> WeaponResource:
+ 	return owned_weapons[current_index] if not owned_weapons.is_empty() else null
+ 
+ 
+-func add_weapon(weapon: WeaponResource) -> void:
+-	if weapon in owned_weapons:
++func _on_setup() -> void:
++	input_component = get_component(InputComponent) as InputComponent
++	ability_component = get_component(AbilityComponent, false) as AbilityComponent
++	if ability_component:
++		track(ability_component.ability_granted, _on_ability_granted)
++	owned_weapons = _resolve_owned_weapons()
++	if not owned_weapons.is_empty():
++		weapon_changed.emit(current_weapon())
++
++
++func _on_ability_granted(_id: StringName, _new_level: int) -> void:
++	var new_owned: Array[WeaponResource] = _resolve_owned_weapons()
++	if new_owned == owned_weapons:
+ 		return
+-	owned_weapons.append(weapon)
++	owned_weapons = new_owned
+ 	current_index = owned_weapons.size() - 1
+ 	weapon_changed.emit(current_weapon())
+ 
+ 
+-func _on_setup() -> void:
+-	input_component = get_component(InputComponent) as InputComponent
+-	owned_weapons = starting_weapons.duplicate()
+-	if not owned_weapons.is_empty():
+-		weapon_changed.emit(current_weapon())
++func _resolve_owned_weapons() -> Array[WeaponResource]:
++	var result: Array[WeaponResource] = []
++	if not ability_component:
++		return result
++	result.assign(
++		weapon_catalog.filter(
++			func(weapon: WeaponResource) -> bool:
++				return ability_component.has_ability(weapon.ability_id),
++		)
++	)
++	return result
+ 
+ 
+ func _cycle(delta: int) -> void:
+diff --git a/scripts/gate_requirement.gd b/scripts/gate_requirement.gd
+index f75a543..2650919 100644
+--- a/scripts/gate_requirement.gd
++++ b/scripts/gate_requirement.gd
+@@ -1,12 +1,67 @@
++# scripts/gate_requirement.gd
+ class_name GateRequirement
+ extends Resource
+ 
+ signal requirement_changed
+ 
++enum CheckType {
++	ABILITY,
++	OBJECT_COLLECTED,
++}
+ 
+-func is_met(_player: Node) -> bool:
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var check_type: CheckType = CheckType.ABILITY
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var ability_id: StringName
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var min_level: int = 1
++@export_custom(ETP.NONE, ETP.PROPERTY)
++var object_id: StringName
++
++
++func is_met(player: Node) -> bool:
++	match check_type:
++		CheckType.ABILITY:
++			var ability := Component.find_component(player, AbilityComponent, false) as AbilityComponent
++			return ability and ability.get_level(ability_id) >= min_level
++		CheckType.OBJECT_COLLECTED:
++			return MetSys.is_object_id_stored(object_id)
+ 	return false
+ 
+ 
+-func setup(_gate: Node) -> void:
+-	pass
++func setup(gate: Node) -> void:
++	match check_type:
++		CheckType.ABILITY:
++			_setup_ability(gate)
++		CheckType.OBJECT_COLLECTED:
++			_setup_object_collected(gate)
++
++
++func _setup_ability(gate: Node) -> void:
++	var tree := gate.get_tree()
++	if not tree:
++		return
++	var player := tree.get_first_node_in_group(&"player")
++	if not player:
++		return
++	var ability_component := Component.find_component(player, AbilityComponent, false) as AbilityComponent
++	if ability_component:
++		ability_component.ability_granted.connect(_on_ability_granted)
++
++
++func _setup_object_collected(gate: Node) -> void:
++	var tree := gate.get_tree()
++	if not tree:
++		return
++	for node in tree.get_nodes_in_group(&"collectible"):
++		var collectible := node as CollectibleObject
++		if collectible and collectible.object_id == object_id:
++			collectible.collected.connect(_on_collected)
++
++
++func _on_ability_granted(_id: StringName, _level: int) -> void:
++	requirement_changed.emit()
++
++
++func _on_collected() -> void:
++	requirement_changed.emit()
+diff --git a/scripts/object_collected_requirement.gd b/scripts/object_collected_requirement.gd
+deleted file mode 100644
+index 580b730..0000000
+--- a/scripts/object_collected_requirement.gd
++++ /dev/null
+@@ -1,19 +0,0 @@
+-class_name ObjectCollectedRequirement
+-extends GateRequirement
+-
+-@export var object_id: StringName
+-@export var source_path: NodePath
+-
+-
+-func is_met(_player: Node) -> bool:
+-	return MetSys.is_object_id_stored(object_id)
+-
+-
+-func setup(gate: Node) -> void:
+-	var source := gate.get_node_or_null(source_path) as CollectibleObject
+-	if source:
+-		source.collected.connect(_on_collected)
+-
+-
+-func _on_collected() -> void:
+-	requirement_changed.emit()
+diff --git a/scripts/weapon_resource.gd b/scripts/weapon_resource.gd
+index 3ced314..e0b0da9 100644
+--- a/scripts/weapon_resource.gd
++++ b/scripts/weapon_resource.gd
+@@ -4,3 +4,4 @@ extends Resource
+ @export var fire_rate: float = 0.2
+ @export var damage: float = 10.0
+ @export var behavior: WeaponBehavior
++@export var ability_id: StringName
