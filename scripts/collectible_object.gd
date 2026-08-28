@@ -25,6 +25,7 @@ var _pickup_area: Area2D
 func _ready() -> void:
 	super()
 	add_to_group(&"collectible")
+	print("CollectibleObject ready: ", name, " object_id=", object_id)
 	set_meta(&"object_id", object_id)
 	if MetSys.register_storable_object(self):
 		return

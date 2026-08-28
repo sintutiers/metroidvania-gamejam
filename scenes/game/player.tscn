@@ -32,6 +32,7 @@
 [ext_resource type="Script" uid="uid://by6vw7j34edj4" path="res://scripts/components/attack_component.gd" id="22_fmmik"]
 [ext_resource type="Texture2D" uid="uid://cexcf7xpv684h" path="res://The Amazing Art and Sound Folder/lamp_on.png" id="22_wx2rq"]
 [ext_resource type="Script" uid="uid://dxdwf5svx01jq" path="res://scripts/components/aim_component.gd" id="23_vbjuv"]
+[ext_resource type="Script" uid="uid://dkim8wle57ymu" path="res://scenes/game/gun.gd" id="30_g8nad"]
 [ext_resource type="Script" uid="uid://c0q0rfmy8x2gh" path="res://scripts/components/player_input_component.gd" id="33_wgy36"]
 [ext_resource type="Script" uid="uid://dr8bvnfebp76" path="res://addons/health_hitbox_hurtbox/health/health.gd" id="36_pft2h"]
 [ext_resource type="Script" uid="uid://cts8qlslbl7nn" path="res://scripts/dean_hurt_box_2d.gd" id="37_pft2h"]
@@ -1085,6 +1086,7 @@ script = ExtResource("33_wgy36")
 metadata/_custom_type_script = "uid://c0q0rfmy8x2gh"
 
 [node name="Gun" type="Node2D" parent="." unique_id=1189904842]
+script = ExtResource("30_g8nad")
 
 [node name="Muzzle" type="Node2D" parent="Gun" unique_id=2025839135]
 unique_name_in_owner = true

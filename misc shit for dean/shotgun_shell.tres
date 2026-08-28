@@ -7,4 +7,5 @@
 script = ExtResource("1_u4p8e")
 projectile_scene = ExtResource("1_7o1ld")
 projectile_count = 3
+spread_degrees = 20.0
 metadata/_custom_type_script = "uid://bqmymwk42kbdc"
