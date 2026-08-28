@@ -44,3 +44,11 @@ func get_movement_vector() -> Vector2:
 
 func get_aim_world_position() -> Vector2:
 	return Vector2.ZERO
+
+
+func is_weapon_next_event(_event: InputEvent) -> bool:
+	return false
+
+
+func is_weapon_prev_event(_event: InputEvent) -> bool:
+	return false

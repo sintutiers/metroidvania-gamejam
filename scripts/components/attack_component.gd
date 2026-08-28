@@ -6,7 +6,7 @@ signal fired
 signal aim_started
 signal aim_ended
 
-@export var weapon: WeaponResource
+var weapon: WeaponResource
 
 var input_component: InputComponent
 var _fire_cooldown: float = 0.0
@@ -31,6 +31,15 @@ func _physics_process(delta: float) -> void:
 
 func _on_setup() -> void:
 	input_component = get_component(InputComponent) as InputComponent
+	var inventory := get_component(WeaponInventoryComponent, false) as WeaponInventoryComponent
+	if inventory:
+		track(inventory.weapon_changed, _on_weapon_changed)
+		weapon = inventory.current_weapon()
+
+
+func _on_weapon_changed(new_weapon: WeaponResource) -> void:
+	weapon = new_weapon
+	_fire_cooldown = 0.0
 
 
 func _try_fire() -> void:

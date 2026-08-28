@@ -38,56 +38,45 @@ const AIM: StringName = &"aim"
 const SHOOT: StringName = &"shoot"
 const SHOOT_RUNNING: StringName = &"shoot_running"
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/collectible_object.gd =====
-class_name CollectibleObject
-extends InteractableThing
+===== /home/void/repositories/metroidvania-gamejam/scripts/bullet.gd =====
+class_name Bullet
+extends BasicHitBox2D
 
-signal collected
+@export var speed: float = 600.0
+@export var lifetime: float = 3.0
 
-enum PickupMode {
-	ON_INTERACT,
-	ON_OVERLAP,
-}
-
-#const is_importer_node := true
-@export var pickup_mode: PickupMode = PickupMode.ON_INTERACT
-@export var object_id: StringName
-@export var show_marker_on_map: bool = true
-@export var marker_index: int = -1
-@export var vanishes_when_collected: bool = true
-
-var _pickup_area: Area2D
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var shake_trauma: float = 0.3
 
 
-## -1 = use map theme's default marker for collectibles, per MetSys docs.
 func _ready() -> void:
 	super()
-	set_meta(&"object_id", object_id)
-	if MetSys.register_storable_object(self):
-		return
-
-	if pickup_mode == PickupMode.ON_OVERLAP:
-		_pickup_area = Component.find_component(self, Area2D, false) as Area2D
-		if _pickup_area:
-			_pickup_area.body_entered.connect(_on_body_entered)
-		else:
-			push_warning("CollectibleObject: ON_OVERLAP set but no Area2D found.")
-	else:
-		interacted.connect(_on_interacted, CONNECT_ONE_SHOT)
+	affect = Health.Affect.DAMAGE
+	hurt_box_entered.connect(_on_hurt_box_entered)
+	unknown_area_entered.connect(_on_unknown_area_entered)
+	get_tree().create_timer(lifetime).timeout.connect(queue_free)
 
 
-func _on_body_entered(body: Node2D) -> void:
-	if not body.is_in_group(&"player"):
-		return
-	_on_interacted(null)
+func _physics_process(delta: float) -> void:
+	position += transform.x * speed * delta
 
 
-func _on_interacted(_by: Area2D) -> void:
-	MetSys.store_object(self)
-	collected.emit()
-	finish_interaction()
-	if vanishes_when_collected:
-		queue_free()
+func set_damage(value: float) -> void:
+	amount = roundi(value)
+
+
+func _on_hurt_box_entered(_hurt_box: HurtBox2D) -> void:
+	ignore_collisions = true
+	var room_instance := MetSys.get_current_room_instance()
+	var room_camera := room_instance.get_node_or_null(^"PhantomCamera2D") as PhantomCamera2D
+	if room_camera and room_camera.has_method("add_trauma"):
+		room_camera.add_trauma(shake_trauma)
+	queue_free()
+
+
+func _on_unknown_area_entered(_area: Area2D) -> void:
+	ignore_collisions = true
+	queue_free()
 
 ===== /home/void/repositories/metroidvania-gamejam/scripts/component.gd =====
 class_name Component
@@ -394,49 +383,6 @@ func _on_flipped(new_facing_x: float) -> void:
 	_flip_tween = create_tween()
 	_flip_tween.tween_property(sprite, "scale:x", target_scale_x, flip_duration)
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/attack_component.gd =====
-#attack_component
-class_name AttackComponent
-extends Component
-
-signal fired
-signal aim_started
-signal aim_ended
-
-@export var weapon: WeaponResource
-
-var input_component: InputComponent
-var _fire_cooldown: float = 0.0
-var _was_aiming: bool = false
-
-@onready var muzzle: Node2D = %Muzzle
-
-
-func _physics_process(delta: float) -> void:
-	if _fire_cooldown > 0.0:
-		_fire_cooldown -= delta
-	var holding_fire: bool = input_component.fire_held()
-	if holding_fire:
-		_try_fire()
-	var is_aiming: bool = holding_fire and _fire_cooldown > 0.0
-	if is_aiming and not _was_aiming:
-		aim_started.emit()
-	elif not is_aiming and _was_aiming:
-		aim_ended.emit()
-	_was_aiming = is_aiming
-
-
-func _on_setup() -> void:
-	input_component = get_component(InputComponent) as InputComponent
-
-
-func _try_fire() -> void:
-	if not weapon or not weapon.behavior or _fire_cooldown > 0.0:
-		return
-	_fire_cooldown = weapon.fire_rate
-	weapon.behavior.fire(self, muzzle)
-	fired.emit()
-
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/audio_component.gd =====
 # audio_component.gd
 class_name AudioComponent
@@ -489,6 +435,62 @@ func _on_stopped() -> void:
 	_is_walking = false
 	_footstep_timer = 0.0
 
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/death_response_component.gd =====
+class_name DeathResponseComponent
+extends Component
+
+signal respawned
+
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var free_on_death: bool = true
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var respawn_on_death: bool = false
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var respawn_heal_amount: int = 0
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var heal_on_respawn: bool = true
+
+var is_respawning: bool = false
+var reset_position: Vector2
+var _has_reset_position: bool = false
+
+var _health: Health
+
+@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
+
+
+func mark_room_entry_point() -> void:
+	reset_position = body.global_position
+	_has_reset_position = true
+
+
+func fall_and_respawn(respawn_position: Vector2) -> void:
+	if is_respawning:
+		return
+	is_respawning = true
+	body.velocity = Vector2.ZERO
+	body.global_position = respawn_position
+	is_respawning = false
+	respawned.emit()
+	if heal_on_respawn and _health:
+		if respawn_heal_amount <= 0:
+			_health.fill()
+		else:
+			_health.heal(respawn_heal_amount)
+
+
+func _on_setup() -> void:
+	_health = get_component(Health, false) as Health
+	if _health:
+		track(_health.died, _on_died)
+
+
+func _on_died(_entity: Node) -> void:
+	if free_on_death:
+		get_parent().queue_free()
+	elif respawn_on_death:
+		fall_and_respawn(reset_position if _has_reset_position else body.global_position)
+
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/facing_component.gd =====
 # facing_component.gd
 class_name FacingComponent
@@ -518,54 +520,6 @@ func update(direction: Vector2) -> bool:
 
 func _on_setup() -> void:
 	facing = Vector2(1.0 if default_facing_right else -1.0, -1.0)
-
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/input_component.gd =====
-class_name InputComponent
-extends Component
-
-
-func move_axis() -> float:
-	return 0.0
-
-
-func run_held() -> bool:
-	return false
-
-
-func jump_just_pressed() -> bool:
-	return false
-
-
-func jump_just_released() -> bool:
-	return false
-
-
-func crouch_held() -> bool:
-	return false
-
-
-func dash_just_pressed() -> bool:
-	return false
-
-
-func fire_held() -> bool:
-	return false
-
-
-func is_interact_event(_event: InputEvent) -> bool:
-	return false
-
-
-func is_launch_accept_event(_event: InputEvent) -> bool:
-	return false
-
-
-func get_movement_vector() -> Vector2:
-	return Vector2.ZERO
-
-
-func get_aim_world_position() -> Vector2:
-	return Vector2.ZERO
 
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/interact_component.gd =====
 #interact_component.gd
@@ -649,6 +603,53 @@ func _on_setup() -> void:
 func _end_interact() -> void:
 	if state_chart:
 		state_chart.send_event(StateEvents.INTERACT_END)
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/invincibility_component.gd =====
+class_name InvincibilityComponent
+extends Component
+
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var duration: float = 0.5
+
+var is_invincible: bool = false
+
+var _timer: float = 0.0
+var _health: Health
+
+
+func _physics_process(delta: float) -> void:
+	if not is_invincible:
+		return
+	_timer -= delta
+	if _timer <= 0.0:
+		_end_invincibility()
+
+
+func _on_setup() -> void:
+	_health = get_component(Health, false) as Health
+	if _health:
+		track(_health.damaged, _on_damaged)
+
+
+func _on_damaged(
+	_entity: Node,
+	_type: HealthActionType.Enum,
+	_amount: int,
+	_incrementer: int,
+	_multiplier: float,
+	applied: int,
+) -> void:
+	if applied <= 0 or duration <= 0.0:
+		return
+	is_invincible = true
+	_health.damageable = false
+	_timer = duration
+
+
+func _end_invincibility() -> void:
+	is_invincible = false
+	if _health:
+		_health.damageable = true
 
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/launch_component.gd =====
 # launch_componet
@@ -803,59 +804,6 @@ func _unlock() -> void:
 		_collision_shape.set_deferred("disabled", true)
 	if not stays_as_walkthrough:
 		get_parent().queue_free()
-
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/player_input_component.gd =====
-class_name PlayerInputComponent
-extends InputComponent
-
-
-func get_movement_vector() -> Vector2:
-	return Input.get_vector("move_left", "move_right", "move_up", "move_down")
-
-
-func get_aim_world_position() -> Vector2:
-	var mouse_pos := get_viewport().get_mouse_position()
-	return get_viewport().get_canvas_transform().affine_inverse() * mouse_pos
-
-
-func move_axis() -> float:
-	return Input.get_axis("move_left", "move_right")
-
-
-func run_held() -> bool:
-	return Input.is_action_pressed("run")
-
-
-func jump_just_pressed() -> bool:
-	return Input.is_action_just_pressed("jump")
-
-
-func jump_just_released() -> bool:
-	return Input.is_action_just_released("jump")
-
-
-func crouch_held() -> bool:
-	return Input.is_action_pressed("crouch")
-
-
-func dash_just_pressed() -> bool:
-	return Input.is_action_just_pressed("dash")
-
-
-func fire_held() -> bool:
-	return Input.is_action_pressed("fire")
-
-
-func is_interact_event(event: InputEvent) -> bool:
-	return event.is_action_pressed("ui_select")
-
-
-func is_launch_accept_event(event: InputEvent) -> bool:
-	return event.is_action_pressed("ui_accept")
-
-
-func _on_ready() -> void:
-	get_parent().add_to_group(&"player")
 
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/sideways_movement_component.gd =====
 # scripts/components/sideways_movement_component.gd
@@ -1272,6 +1220,63 @@ func _max_jumps() -> int:
 	)
 	return default_max_jumps + bonus
 
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/top_down_movement_component.gd =====
+# top_down_movement_component.gd
+class_name TopDownMovementComponent
+extends MovementBase
+
+@export var move_speed: float = 100.0
+@export var locks_during_interact: bool = true
+
+var input_component: InputComponent
+var facing_component: FacingComponent
+var _was_moving: bool = false
+var _locked: bool = false
+
+@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
+@onready var move_state: StateChartState = %Move
+
+
+func _on_ready() -> void:
+	track(move_state.state_physics_processing, _on_move_physics)
+
+
+func _on_setup() -> void:
+	facing_component = get_component(FacingComponent) as FacingComponent
+	input_component = get_component(InputComponent) as InputComponent
+
+	if locks_during_interact:
+		var interact_component := get_component(InteractComponent, false) as InteractComponent
+		if interact_component:
+			track(
+				interact_component.interact_started,
+				func() -> void:
+					_locked = true,
+			)
+			track(
+				interact_component.interact_ended,
+				func() -> void:
+					_locked = false,
+			)
+
+
+func _on_move_physics(_delta: float) -> void:
+	var input_dir: Vector2 = input_component.get_movement_vector()
+
+	if _locked or input_dir.is_zero_approx():
+		body.velocity = Vector2.ZERO
+		if _was_moving:
+			stopped.emit()
+		_was_moving = false
+	else:
+		body.velocity = input_dir * move_speed
+		var changed: bool = facing_component.update(input_dir)
+		if not _was_moving or changed:
+			moved.emit(facing_component.facing)
+		_was_moving = true
+
+	body.move_and_slide()
+
 ===== /home/void/repositories/metroidvania-gamejam/scripts/components/vfx_component.gd =====
 # vfx_component.gd
 class_name VFXComponent
@@ -1414,143 +1419,318 @@ func _spawn_persistent(scene: PackedScene, offset: Vector2 = Vector2.ZERO) -> CP
 	particles.emitting = false
 	return particles
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/top_down_movement_component.gd =====
-# top_down_movement_component.gd
-class_name TopDownMovementComponent
-extends MovementBase
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/input_component.gd =====
+class_name InputComponent
+extends Component
 
-@export var move_speed: float = 100.0
-@export var locks_during_interact: bool = true
 
-var input_component: InputComponent
-var facing_component: FacingComponent
-var _was_moving: bool = false
-var _locked: bool = false
+func move_axis() -> float:
+	return 0.0
 
-@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
-@onready var move_state: StateChartState = %Move
+
+func run_held() -> bool:
+	return false
+
+
+func jump_just_pressed() -> bool:
+	return false
+
+
+func jump_just_released() -> bool:
+	return false
+
+
+func crouch_held() -> bool:
+	return false
+
+
+func dash_just_pressed() -> bool:
+	return false
+
+
+func fire_held() -> bool:
+	return false
+
+
+func is_interact_event(_event: InputEvent) -> bool:
+	return false
+
+
+func is_launch_accept_event(_event: InputEvent) -> bool:
+	return false
+
+
+func get_movement_vector() -> Vector2:
+	return Vector2.ZERO
+
+
+func get_aim_world_position() -> Vector2:
+	return Vector2.ZERO
+
+
+func is_weapon_next_event(_event: InputEvent) -> bool:
+	return false
+
+
+func is_weapon_prev_event(_event: InputEvent) -> bool:
+	return false
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/player_input_component.gd =====
+class_name PlayerInputComponent
+extends InputComponent
+
+
+func get_movement_vector() -> Vector2:
+	return Input.get_vector("move_left", "move_right", "move_up", "move_down")
+
+
+func get_aim_world_position() -> Vector2:
+	var mouse_pos := get_viewport().get_mouse_position()
+	return get_viewport().get_canvas_transform().affine_inverse() * mouse_pos
+
+
+func move_axis() -> float:
+	return Input.get_axis("move_left", "move_right")
+
+
+func run_held() -> bool:
+	return Input.is_action_pressed("run")
+
+
+func jump_just_pressed() -> bool:
+	return Input.is_action_just_pressed("jump")
+
+
+func jump_just_released() -> bool:
+	return Input.is_action_just_released("jump")
+
+
+func crouch_held() -> bool:
+	return Input.is_action_pressed("crouch")
+
+
+func dash_just_pressed() -> bool:
+	return Input.is_action_just_pressed("dash")
+
+
+func fire_held() -> bool:
+	return Input.is_action_pressed("fire")
+
+
+func is_interact_event(event: InputEvent) -> bool:
+	return event.is_action_pressed("ui_select")
+
+
+func is_launch_accept_event(event: InputEvent) -> bool:
+	return event.is_action_pressed("ui_accept")
+
+
+func is_weapon_next_event(event: InputEvent) -> bool:
+	return event.is_action_pressed("weapon_next")
+
+
+func is_weapon_prev_event(event: InputEvent) -> bool:
+	return event.is_action_pressed("weapon_prev")
 
 
 func _on_ready() -> void:
-	track(move_state.state_physics_processing, _on_move_physics)
+	get_parent().add_to_group(&"player")
 
-
-func _on_setup() -> void:
-	facing_component = get_component(FacingComponent) as FacingComponent
-	input_component = get_component(InputComponent) as InputComponent
-
-	if locks_during_interact:
-		var interact_component := get_component(InteractComponent, false) as InteractComponent
-		if interact_component:
-			track(
-				interact_component.interact_started,
-				func() -> void:
-					_locked = true,
-			)
-			track(
-				interact_component.interact_ended,
-				func() -> void:
-					_locked = false,
-			)
-
-
-func _on_move_physics(_delta: float) -> void:
-	var input_dir: Vector2 = input_component.get_movement_vector()
-
-	if _locked or input_dir.is_zero_approx():
-		body.velocity = Vector2.ZERO
-		if _was_moving:
-			stopped.emit()
-		_was_moving = false
-	else:
-		body.velocity = input_dir * move_speed
-		var changed: bool = facing_component.update(input_dir)
-		if not _was_moving or changed:
-			moved.emit(facing_component.facing)
-		_was_moving = true
-
-	body.move_and_slide()
-
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/death_response_component.gd =====
-class_name DeathResponseComponent
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/weapon_inventory_component.gd =====
+class_name WeaponInventoryComponent
 extends Component
 
-signal respawned
+signal weapon_changed(weapon: WeaponResource)
 
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var free_on_death: bool = false
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var respawn_on_death: bool = false
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var respawn_heal_amount: int = 0
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var heal_on_respawn: bool = true
+@export var starting_weapons: Array[WeaponResource] = []
 
-var is_respawning: bool = false
-var reset_position: Vector2
-var _has_reset_position: bool = false
+var owned_weapons: Array[WeaponResource] = []
+var current_index: int = 0
 
-var _health: Health
-
-@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
+var input_component: InputComponent
 
 
-func mark_room_entry_point() -> void:
-	reset_position = body.global_position
-	_has_reset_position = true
-
-
-func fall_and_respawn(respawn_position: Vector2) -> void:
-	if is_respawning:
+func _unhandled_input(event: InputEvent) -> void:
+	if owned_weapons.size() <= 1:
 		return
-	is_respawning = true
-	body.velocity = Vector2.ZERO
-	body.global_position = respawn_position
-	is_respawning = false
-	respawned.emit()
-	if heal_on_respawn and _health:
-		if respawn_heal_amount <= 0:
-			_health.fill()
-		else:
-			_health.heal(respawn_heal_amount)
+	if input_component.is_weapon_next_event(event):
+		_cycle(1)
+	elif input_component.is_weapon_prev_event(event):
+		_cycle(-1)
+
+
+func current_weapon() -> WeaponResource:
+	return owned_weapons[current_index] if not owned_weapons.is_empty() else null
+
+
+func add_weapon(weapon: WeaponResource) -> void:
+	if weapon in owned_weapons:
+		return
+	owned_weapons.append(weapon)
+	current_index = owned_weapons.size() - 1
+	weapon_changed.emit(current_weapon())
 
 
 func _on_setup() -> void:
-	_health = get_component(Health, false) as Health
-	if _health:
-		track(_health.died, _on_died)
+	input_component = get_component(InputComponent) as InputComponent
+	owned_weapons = starting_weapons.duplicate()
+	if not owned_weapons.is_empty():
+		weapon_changed.emit(current_weapon())
 
 
-func _on_died(_entity: Node) -> void:
-	if free_on_death:
-		get_parent().queue_free()
-	elif respawn_on_death:
-		fall_and_respawn(reset_position if _has_reset_position else body.global_position)
+func _cycle(delta: int) -> void:
+	current_index = wrapi(current_index + delta, 0, owned_weapons.size())
+	weapon_changed.emit(current_weapon())
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/components/invincibility_component.gd =====
-class_name InvincibilityComponent
+===== /home/void/repositories/metroidvania-gamejam/scripts/components/attack_component.gd =====
+#attack_component
+class_name AttackComponent
 extends Component
 
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var duration: float = 0.5
+signal fired
+signal aim_started
+signal aim_ended
 
-var is_invincible: bool = false
+var weapon: WeaponResource
 
-var _timer: float = 0.0
-var _health: Health
+var input_component: InputComponent
+var _fire_cooldown: float = 0.0
+var _was_aiming: bool = false
+
+@onready var muzzle: Node2D = %Muzzle
 
 
 func _physics_process(delta: float) -> void:
-	if not is_invincible:
-		return
-	_timer -= delta
-	if _timer <= 0.0:
-		_end_invincibility()
+	if _fire_cooldown > 0.0:
+		_fire_cooldown -= delta
+	var holding_fire: bool = input_component.fire_held()
+	if holding_fire:
+		_try_fire()
+	var is_aiming: bool = holding_fire and _fire_cooldown > 0.0
+	if is_aiming and not _was_aiming:
+		aim_started.emit()
+	elif not is_aiming and _was_aiming:
+		aim_ended.emit()
+	_was_aiming = is_aiming
 
 
 func _on_setup() -> void:
+	input_component = get_component(InputComponent) as InputComponent
+	var inventory := get_component(WeaponInventoryComponent, false) as WeaponInventoryComponent
+	if inventory:
+		track(inventory.weapon_changed, _on_weapon_changed)
+		weapon = inventory.current_weapon()
+
+
+func _on_weapon_changed(new_weapon: WeaponResource) -> void:
+	weapon = new_weapon
+	_fire_cooldown = 0.0
+
+
+func _try_fire() -> void:
+	if not weapon or not weapon.behavior or _fire_cooldown > 0.0:
+		return
+	_fire_cooldown = weapon.fire_rate
+	weapon.behavior.fire(self, muzzle)
+	fired.emit()
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/dean_hurt_box_2d.gd =====
+class_name DeanHurtBox2D
+extends BasicHurtBox2D
+
+
+func _ready() -> void:
+	if not health:
+		health = Component.find_component(get_parent(), Health, true) as Health
+	super()
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/enemy/enemy.gd =====
+class_name Enemy
+extends CharacterBody2D
+
+const is_importer_node := true
+
+===== /home/void/repositories/metroidvania-gamejam/scripts/enemy/enemy_behavior_component.gd =====
+class_name EnemyBehaviorComponent
+extends MovementBase
+
+enum State {
+	PATROL,
+	CHASE,
+	ATTACK,
+}
+
+@export_group("Flight")
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var is_flying: bool = false
+
+@export_group("Patrol")
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var patrol_speed: float = 60.0
+
+@export_group("Chase")
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var chase_speed: float = 120.0
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var detection_radius: float = 150.0
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var lose_radius: float = 220.0
+
+@export_group("Aggro On Hit")
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var aggro_on_hit: bool = true
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var aggro_duration: float = 4.0
+
+@export_group("Attack")
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var attack_range: float = 24.0
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var attack_cooldown: float = 1.0
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var attack_damage: int = 10
+
+var state: State = State.PATROL
+
+var facing_component: FacingComponent
+var _health: Health
+var _direction: float = 1.0
+var _player: Node2D
+var _attack_timer: float = 0.0
+var _aggro_timer: float = 0.0
+
+@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
+@onready var wall_check: RayCast2D = get_node_or_null(^"%WallCheck") as RayCast2D
+@onready var ledge_check: RayCast2D = get_node_or_null(^"%LedgeCheck") as RayCast2D
+@onready var base_gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
+
+
+func _physics_process(delta: float) -> void:
+	if _attack_timer > 0.0:
+		_attack_timer -= delta
+
+	if _aggro_timer > 0.0:
+		_aggro_timer -= delta
+
+	_player = get_tree().get_first_node_in_group(&"player")
+
+	match state:
+		State.PATROL:
+			_patrol(delta)
+		State.CHASE:
+			_chase(delta)
+		State.ATTACK:
+			_attack(delta)
+
+	if not is_flying:
+		body.velocity.y += base_gravity * delta
+	body.move_and_slide()
+
+
+func _on_setup() -> void:
+	facing_component = get_component(FacingComponent, false) as FacingComponent
 	_health = get_component(Health, false) as Health
-	if _health:
+	if _health and aggro_on_hit:
 		track(_health.damaged, _on_damaged)
 
 
@@ -1562,27 +1742,79 @@ func _on_damaged(
 	_multiplier: float,
 	applied: int,
 ) -> void:
-	if applied <= 0 or duration <= 0.0:
+	if applied <= 0:
 		return
-	is_invincible = true
-	_health.damageable = false
-	_timer = duration
+	_aggro_timer = aggro_duration
+	if state == State.PATROL:
+		state = State.CHASE
 
 
-func _end_invincibility() -> void:
-	is_invincible = false
-	if _health:
-		_health.damageable = true
-
-===== /home/void/repositories/metroidvania-gamejam/scripts/dean_hurt_box_2d.gd =====
-class_name DeanHurtBox2D
-extends BasicHurtBox2D
+func _current_detection_radius() -> float:
+	return lose_radius if _aggro_timer > 0.0 else detection_radius
 
 
-func _ready() -> void:
-	if not health:
-		health = Component.find_component(get_parent(), Health, true) as Health
-	super()
+func _patrol(_delta: float) -> void:
+	if is_flying:
+		body.velocity = Vector2.ZERO
+	else:
+		if wall_check.is_colliding() or not ledge_check.is_colliding():
+			_direction *= -1.0
+		_set_facing(_direction)
+		body.velocity.x = _direction * patrol_speed
+
+	if _player and body.global_position.distance_to(_player.global_position) <= _current_detection_radius():
+		state = State.CHASE
+
+
+func _chase(_delta: float) -> void:
+	if not _player:
+		state = State.PATROL
+		return
+
+	var dist: float = body.global_position.distance_to(_player.global_position)
+
+	if _aggro_timer <= 0.0 and dist > lose_radius:
+		state = State.PATROL
+		return
+
+	if dist <= attack_range:
+		state = State.ATTACK
+		return
+
+	if is_flying:
+		var to_player: Vector2 = (_player.global_position - body.global_position).normalized()
+		body.velocity = to_player * chase_speed
+		_set_facing(signf(to_player.x))
+	else:
+		_direction = signf(_player.global_position.x - body.global_position.x)
+		_set_facing(_direction)
+		body.velocity.x = _direction * chase_speed
+
+
+func _attack(_delta: float) -> void:
+	if is_flying:
+		body.velocity = Vector2.ZERO
+	else:
+		body.velocity.x = 0.0
+
+	if not _player:
+		state = State.PATROL
+		return
+	if body.global_position.distance_to(_player.global_position) > attack_range:
+		state = State.CHASE
+		return
+	if _attack_timer <= 0.0:
+		_attack_timer = attack_cooldown
+		var player_health := Component.find_component(_player, Health, false) as Health
+		if player_health:
+			player_health.damage(attack_damage, 0, 1.0, HealthActionType.Enum.KINETIC)
+
+
+func _set_facing(dir: float) -> void:
+	if facing_component:
+		var changed := facing_component.update(Vector2(dir, 0.0))
+		if changed:
+			moved.emit(facing_component.facing)
 
 ===== /home/void/repositories/metroidvania-gamejam/scripts/game_state.gd =====
 # scripts/game_state.gd
@@ -1897,9 +2129,47 @@ const is_importer_node := true
 
 var event: bool = false
 
+===== /home/void/repositories/metroidvania-gamejam/scripts/projectile_weapon_behavior.gd =====
+class_name ProjectileWeaponBehavior
+extends WeaponBehavior
+
+@export var projectile_scene: PackedScene
+@export var projectile_count: int = 1
+@export var spread_degrees: float = 0.0
+
+
+func fire(attack_component: AttackComponent, muzzle: Node2D) -> void:
+	if not projectile_scene:
+		return
+	var mid_index: float = (projectile_count - 1) / 2.0
+	for i in projectile_count:
+		var angle_offset: float = deg_to_rad((i - mid_index) * spread_degrees)
+		var projectile: Node2D = projectile_scene.instantiate()
+		attack_component.get_tree().current_scene.add_child(projectile)
+		projectile.global_transform = muzzle.global_transform
+		projectile.rotate(angle_offset)
+		var bullet := projectile as Bullet
+		if bullet:
+			bullet.set_damage(attack_component.weapon.damage)
+
 ===== /home/void/repositories/metroidvania-gamejam/scripts/room_camera.gd =====
 @tool
 extends PhantomCamera2D
+
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var shake_decay_per_second: float = 5.0
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var shake_trauma_power: float = 2.0
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var shake_max_offset: Vector2 = Vector2(12.0, 8.0)
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var shake_max_roll: float = 0.05
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var shake_noise_speed: float = 20.0
+
+var _trauma: float = 0.0
+var _noise: FastNoiseLite = FastNoiseLite.new()
+var _noise_t: float = 0.0
 
 
 func _ready() -> void:
@@ -1908,6 +2178,28 @@ func _ready() -> void:
 	var player := get_tree().get_first_node_in_group(&"player")
 	if player:
 		follow_target = player
+	_noise.seed = randi()
+	_noise.frequency = 1.0
+
+
+func _process(delta: float) -> void:
+	if Engine.is_editor_hint() or _trauma <= 0.0:
+		return
+
+	_noise_t += delta * shake_noise_speed
+	var shake: float = pow(_trauma, shake_trauma_power)
+
+	var offset_x: float = shake_max_offset.x * shake * _noise.get_noise_2d(_noise_t, 0.0)
+	var offset_y: float = shake_max_offset.y * shake * _noise.get_noise_2d(0.0, _noise_t)
+	var roll: float = shake_max_roll * shake * _noise.get_noise_2d(_noise_t, _noise_t)
+
+	emit_noise(Transform2D(roll, Vector2(offset_x, offset_y)))
+
+	_trauma = maxf(_trauma - shake_decay_per_second * delta, 0.0)
+
+
+func add_trauma(amount: float) -> void:
+	_trauma = clampf(_trauma + amount, 0.0, 1.0)
 
 ===== /home/void/repositories/metroidvania-gamejam/scripts/state_events.gd =====
 class_name StateEvents
@@ -1941,176 +2233,63 @@ extends Resource
 @export var damage: float = 10.0
 @export var behavior: WeaponBehavior
 
-===== /home/void/repositories/metroidvania-gamejam/scripts/enemy/enemy_behavior_component.gd =====
-class_name EnemyBehaviorComponent
-extends MovementBase
+===== /home/void/repositories/metroidvania-gamejam/scripts/collectible_object.gd =====
+class_name CollectibleObject
+extends InteractableThing
 
-enum State {
-	PATROL,
-	CHASE,
-	ATTACK,
+signal collected
+
+enum PickupMode {
+	ON_INTERACT,
+	ON_OVERLAP,
 }
 
-@export_group("Patrol")
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var patrol_speed: float = 60.0
+#const is_importer_node := true
+@export var pickup_mode: PickupMode = PickupMode.ON_INTERACT
+@export var object_id: StringName
+@export var show_marker_on_map: bool = true
+@export var marker_index: int = -1
+@export var vanishes_when_collected: bool = true
+@export var granted_weapon: WeaponResource
 
-@export_group("Chase")
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var chase_speed: float = 120.0
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var detection_radius: float = 150.0
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var lose_radius: float = 220.0
-
-@export_group("Attack")
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var attack_range: float = 24.0
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var attack_cooldown: float = 1.0
-@export_custom(ETP.NONE, ETP.PROPERTY)
-var attack_damage: int = 10
-
-var state: State = State.PATROL
-
-var facing_component: FacingComponent
-var _direction: float = 1.0
-var _player: Node2D
-var _attack_timer: float = 0.0
-
-@onready var body: CharacterBody2D = get_parent() as CharacterBody2D
-@onready var wall_check: RayCast2D = %WallCheck
-@onready var ledge_check: RayCast2D = %LedgeCheck
-@onready var base_gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
+var _pickup_area: Area2D
 
 
-func _physics_process(delta: float) -> void:
-	if _attack_timer > 0.0:
-		_attack_timer -= delta
-
-	_player = get_tree().get_first_node_in_group(&"player")
-
-	match state:
-		State.PATROL:
-			_patrol(delta)
-		State.CHASE:
-			_chase(delta)
-		State.ATTACK:
-			_attack(delta)
-
-	body.velocity.y += base_gravity * delta
-	body.move_and_slide()
-
-
-func _on_setup() -> void:
-	facing_component = get_component(FacingComponent, false) as FacingComponent
-
-
-func _patrol(_delta: float) -> void:
-	if wall_check.is_colliding() or not ledge_check.is_colliding():
-		_direction *= -1.0
-	_set_facing(_direction)
-	body.velocity.x = _direction * patrol_speed
-
-	if _player and body.global_position.distance_to(_player.global_position) <= detection_radius:
-		state = State.CHASE
-
-
-func _chase(_delta: float) -> void:
-	if not _player:
-		state = State.PATROL
-		return
-
-	var dist: float = body.global_position.distance_to(_player.global_position)
-	if dist > lose_radius:
-		state = State.PATROL
-		return
-	if dist <= attack_range:
-		state = State.ATTACK
-		return
-
-	_direction = signf(_player.global_position.x - body.global_position.x)
-	_set_facing(_direction)
-	body.velocity.x = _direction * chase_speed
-
-
-func _attack(_delta: float) -> void:
-	body.velocity.x = 0.0
-	if not _player:
-		state = State.PATROL
-		return
-	if body.global_position.distance_to(_player.global_position) > attack_range:
-		state = State.CHASE
-		return
-	if _attack_timer <= 0.0:
-		_attack_timer = attack_cooldown
-		var player_health := Component.find_component(_player, Health, false) as Health
-		if player_health:
-			player_health.damage(attack_damage, 0, 1.0, HealthActionType.Enum.KINETIC)
-
-
-func _set_facing(dir: float) -> void:
-	if facing_component:
-		var changed := facing_component.update(Vector2(dir, 0.0))
-		if changed:
-			moved.emit(facing_component.facing)
-
-===== /home/void/repositories/metroidvania-gamejam/scripts/projectile_weapon_behavior.gd =====
-class_name ProjectileWeaponBehavior
-extends WeaponBehavior
-
-@export var projectile_scene: PackedScene
-@export var projectile_count: int = 1
-@export var spread_degrees: float = 0.0
-
-
-func fire(attack_component: AttackComponent, muzzle: Node2D) -> void:
-	if not projectile_scene:
-		return
-	var mid_index: float = (projectile_count - 1) / 2.0
-	for i in projectile_count:
-		var angle_offset: float = deg_to_rad((i - mid_index) * spread_degrees)
-		var projectile: Node2D = projectile_scene.instantiate()
-		attack_component.get_tree().current_scene.add_child(projectile)
-		projectile.global_transform = muzzle.global_transform
-		projectile.rotate(angle_offset)
-		var bullet := projectile as Bullet
-		if bullet:
-			bullet.set_damage(attack_component.weapon.damage)
-
-===== /home/void/repositories/metroidvania-gamejam/scripts/bullet.gd =====
-# scripts/bullet.gd
-class_name Bullet
-extends BasicHitBox2D
-
-@export var speed: float = 600.0
-@export var lifetime: float = 3.0
-
-
+## -1 = use map theme's default marker for collectibles, per MetSys docs.
 func _ready() -> void:
 	super()
-	affect = Health.Affect.DAMAGE
-	hurt_box_entered.connect(_on_hurt_box_entered)
-	unknown_area_entered.connect(_on_unknown_area_entered)
-	get_tree().create_timer(lifetime).timeout.connect(queue_free)
+	set_meta(&"object_id", object_id)
+	if MetSys.register_storable_object(self):
+		return
+
+	if pickup_mode == PickupMode.ON_OVERLAP:
+		_pickup_area = Component.find_component(self, Area2D, false) as Area2D
+		if _pickup_area:
+			_pickup_area.body_entered.connect(_on_body_entered)
+		else:
+			push_warning("CollectibleObject: ON_OVERLAP set but no Area2D found.")
+	else:
+		interacted.connect(_on_interacted, CONNECT_ONE_SHOT)
 
 
-func _physics_process(delta: float) -> void:
-	position += transform.x * speed * delta
+func _on_body_entered(body: Node2D) -> void:
+	if not body.is_in_group(&"player"):
+		return
+	_on_interacted(null)
 
 
-func set_damage(value: float) -> void:
-	amount = roundi(value)
-
-
-func _on_hurt_box_entered(_hurt_box: HurtBox2D) -> void:
-	ignore_collisions = true
-	queue_free()
-
-
-func _on_unknown_area_entered(_area: Area2D) -> void:
-	ignore_collisions = true
-	queue_free()
+func _on_interacted(_by: Area2D) -> void:
+	MetSys.store_object(self)
+	collected.emit()
+	if granted_weapon:
+		var player := get_tree().get_first_node_in_group(&"player")
+		if player:
+			var inventory := Component.find_component(player, WeaponInventoryComponent, false) as WeaponInventoryComponent
+			if inventory:
+				inventory.add_weapon(granted_weapon)
+	finish_interaction()
+	if vanishes_when_collected:
+		queue_free()
 
 ===== /home/void/repositories/metroidvania-gamejam/SampleProject/CustomRunnerIntegration/Config.gd =====
 extends CustomRunner
@@ -2171,6 +2350,98 @@ func draw_label(canvas_item: RID, coords: Vector3i, pos: Vector2, size: Vector2,
 	var font := ThemeDB.get_default_theme().default_font
 	font.draw_string(canvas_item,
 		pos + Vector2(-1, -0.5) * MetSys.CELL_SIZE, data, HORIZONTAL_ALIGNMENT_CENTER, MetSys.CELL_SIZE.x * 3)
+
+===== /home/void/repositories/metroidvania-gamejam/SampleProject/Scripts/Game.gd =====
+class_name Game
+extends "res://addons/MetroidvaniaSystem/Template/Scripts/MetSysGame.gd"
+
+const SaveManager = preload("res://addons/MetroidvaniaSystem/Template/Scripts/SaveManager.gd")
+
+var ability_component: AbilityComponent
+var death_response_component: DeathResponseComponent
+var health: Health
+@export_file("room_link") var starting_map: String
+var collectibles: int:
+	set(count):
+		collectibles = count
+		%CollectibleCount.text = "%d/7" % count
+var generated_rooms: Array[Vector3i]
+var events: Array[String]
+var custom_run: bool
+var loop: String
+
+
+static func get_singleton() -> Game:
+	return (Game as Script).get_meta(&"singleton") as Game
+
+
+func _ready() -> void:
+	get_script().set_meta(&"singleton", self)
+	print(ResourceUID.get_id_path(ResourceUID.text_to_id("uid://cv55nv1c2sbiq")))
+	MetSys.reset_state()
+	set_player($Player)
+	ability_component = Component.find_component(player, AbilityComponent) as AbilityComponent
+	death_response_component = Component.find_component(player, DeathResponseComponent, false) as DeathResponseComponent
+	health = Component.find_component(player, Health, false) as Health
+	MetSys.set_save_data()
+	if GameState.has_game_state():
+		var game_state := GameState.get_or_create_state()
+		collectibles = game_state.collectibles
+		generated_rooms.assign(game_state.generated_rooms)
+		events.assign(game_state.events)
+		for id: String in game_state.ability_levels:
+			ability_component.set_level(StringName(id), game_state.ability_levels[id])
+		if not custom_run and not game_state.checkpoint_level_path.is_empty():
+			if ResourceUID.has_id(ResourceUID.text_to_id(game_state.checkpoint_level_path)):
+				starting_map = game_state.checkpoint_level_path
+			else:
+				push_warning(
+					"Stale checkpoint UID, falling back to starting_map: %s"
+					% game_state.checkpoint_level_path
+				)
+	room_loaded.connect(init_room, CONNECT_DEFERRED)
+	load_room(starting_map)
+	var start := map.get_node_or_null(^"SavePoint")
+	if start and not custom_run:
+		player.position = start.position
+	add_module("RoomTransitions.gd")
+	await get_tree().physics_frame
+	reset_map_starting_coords.call_deferred()
+	%Minimap.set_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 8)
+
+
+func _input(event: InputEvent) -> void:
+	var k := event as InputEventKey
+	if k and k.pressed and k.keycode == KEY_F2:
+		get_tree().reload_current_scene()
+
+
+func save_game() -> void:
+	var game_state := GameState.get_or_create_state()
+	game_state.collectibles = collectibles
+	game_state.generated_rooms = generated_rooms
+	game_state.events = events
+	game_state.current_level_path = MetSys.get_current_room_id()
+	var levels_out: Dictionary = { }
+	for id: StringName in ability_component.get_all_levels():
+		levels_out[String(id)] = ability_component.get_level(id)
+	game_state.ability_levels = levels_out
+	GlobalState.save()
+
+
+func reset_map_starting_coords() -> void:
+	$UI/MapWindow.reset_starting_coords()
+
+
+func init_room() -> void:
+	if death_response_component:
+		death_response_component.mark_room_entry_point()
+	if MetSys.last_player_position.x == Vector2i.MAX.x:
+		MetSys.set_player_position(player.position)
+	var room_instance: MetroidvaniaSystem.RoomInstance = MetSys.get_current_room_instance()
+	var room_camera := room_instance.get_node_or_null(^"PhantomCamera2D") as PhantomCamera2D
+	if room_camera:
+		room_camera.follow_target = player
 
 ===== /home/void/repositories/metroidvania-gamejam/SampleProject/Scripts/LoopScript.gd =====
 # Overrides room transitions to create confusing maps. Takes effect when player is inside the area. It has to be placed in the middle of room transition.
@@ -2276,95 +2547,3 @@ func on_body_entered(body: Node2D) -> void:
 func _draw() -> void:
 	# Draws the circle.
 	$CollisionShape2D.shape.draw(get_canvas_item(), Color.BLUE)
-
-===== /home/void/repositories/metroidvania-gamejam/SampleProject/Scripts/Game.gd =====
-class_name Game
-extends "res://addons/MetroidvaniaSystem/Template/Scripts/MetSysGame.gd"
-
-const SaveManager = preload("res://addons/MetroidvaniaSystem/Template/Scripts/SaveManager.gd")
-
-var ability_component: AbilityComponent
-var death_response_component: DeathResponseComponent
-var health: Health
-@export_file("room_link") var starting_map: String
-var collectibles: int:
-	set(count):
-		collectibles = count
-		%CollectibleCount.text = "%d/7" % count
-var generated_rooms: Array[Vector3i]
-var events: Array[String]
-var custom_run: bool
-var loop: String
-
-
-static func get_singleton() -> Game:
-	return (Game as Script).get_meta(&"singleton") as Game
-
-
-func _ready() -> void:
-	get_script().set_meta(&"singleton", self)
-	print(ResourceUID.get_id_path(ResourceUID.text_to_id("uid://cv55nv1c2sbiq")))
-	MetSys.reset_state()
-	set_player($Player)
-	ability_component = Component.find_component(player, AbilityComponent) as AbilityComponent
-	death_response_component = Component.find_component(player, DeathResponseComponent, false) as DeathResponseComponent
-	health = Component.find_component(player, Health, false) as Health
-	MetSys.set_save_data()
-	if GameState.has_game_state():
-		var game_state := GameState.get_or_create_state()
-		collectibles = game_state.collectibles
-		generated_rooms.assign(game_state.generated_rooms)
-		events.assign(game_state.events)
-		for id: String in game_state.ability_levels:
-			ability_component.set_level(StringName(id), game_state.ability_levels[id])
-		if not custom_run and not game_state.checkpoint_level_path.is_empty():
-			if ResourceUID.has_id(ResourceUID.text_to_id(game_state.checkpoint_level_path)):
-				starting_map = game_state.checkpoint_level_path
-			else:
-				push_warning(
-					"Stale checkpoint UID, falling back to starting_map: %s"
-					% game_state.checkpoint_level_path
-				)
-	room_loaded.connect(init_room, CONNECT_DEFERRED)
-	load_room(starting_map)
-	var start := map.get_node_or_null(^"SavePoint")
-	if start and not custom_run:
-		player.position = start.position
-	add_module("RoomTransitions.gd")
-	await get_tree().physics_frame
-	reset_map_starting_coords.call_deferred()
-	%Minimap.set_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 8)
-
-
-func _input(event: InputEvent) -> void:
-	var k := event as InputEventKey
-	if k and k.pressed and k.keycode == KEY_F2:
-		get_tree().reload_current_scene()
-
-
-func save_game() -> void:
-	var game_state := GameState.get_or_create_state()
-	game_state.collectibles = collectibles
-	game_state.generated_rooms = generated_rooms
-	game_state.events = events
-	game_state.current_level_path = MetSys.get_current_room_id()
-	var levels_out: Dictionary = { }
-	for id: StringName in ability_component.get_all_levels():
-		levels_out[String(id)] = ability_component.get_level(id)
-	game_state.ability_levels = levels_out
-	GlobalState.save()
-
-
-func reset_map_starting_coords() -> void:
-	$UI/MapWindow.reset_starting_coords()
-
-
-func init_room() -> void:
-	if death_response_component:
-		death_response_component.mark_room_entry_point()
-	if MetSys.last_player_position.x == Vector2i.MAX.x:
-		MetSys.set_player_position(player.position)
-	var room_instance: MetroidvaniaSystem.RoomInstance = MetSys.get_current_room_instance()
-	var room_camera := room_instance.get_node_or_null(^"PhantomCamera2D") as PhantomCamera2D
-	if room_camera:
-		room_camera.follow_target = player

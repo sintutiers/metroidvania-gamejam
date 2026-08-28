@@ -14,6 +14,7 @@ enum PickupMode {
 @export var show_marker_on_map: bool = true
 @export var marker_index: int = -1
 @export var vanishes_when_collected: bool = true
+@export var granted_weapon: WeaponResource
 
 var _pickup_area: Area2D
 
@@ -44,6 +45,12 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_interacted(_by: Area2D) -> void:
 	MetSys.store_object(self)
 	collected.emit()
+	if granted_weapon:
+		var player := get_tree().get_first_node_in_group(&"player")
+		if player:
+			var inventory := Component.find_component(player, WeaponInventoryComponent, false) as WeaponInventoryComponent
+			if inventory:
+				inventory.add_weapon(granted_weapon)
 	finish_interaction()
 	if vanishes_when_collected:
 		queue_free()

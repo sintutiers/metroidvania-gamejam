@@ -32,12 +32,12 @@
 [ext_resource type="Script" uid="uid://by6vw7j34edj4" path="res://scripts/components/attack_component.gd" id="22_fmmik"]
 [ext_resource type="Texture2D" uid="uid://cexcf7xpv684h" path="res://The Amazing Art and Sound Folder/lamp_on.png" id="22_wx2rq"]
 [ext_resource type="Script" uid="uid://dxdwf5svx01jq" path="res://scripts/components/aim_component.gd" id="23_vbjuv"]
-[ext_resource type="Resource" uid="uid://3fylc7kv7beo" path="res://misc shit for dean/basic_weapon.tres" id="23_wx2rq"]
 [ext_resource type="Script" uid="uid://c0q0rfmy8x2gh" path="res://scripts/components/player_input_component.gd" id="33_wgy36"]
 [ext_resource type="Script" uid="uid://dr8bvnfebp76" path="res://addons/health_hitbox_hurtbox/health/health.gd" id="36_pft2h"]
 [ext_resource type="Script" uid="uid://cts8qlslbl7nn" path="res://scripts/dean_hurt_box_2d.gd" id="37_pft2h"]
 [ext_resource type="Script" uid="uid://d33a1bxcxnqk4" path="res://scripts/components/ability_component.gd" id="38_rpvn3"]
 [ext_resource type="Script" uid="uid://do5fchdp4aaev" path="res://scripts/components/death_response_component.gd" id="38_v7uls"]
+[ext_resource type="Script" uid="uid://cb48wwaxxxjaw" path="res://scripts/components/weapon_inventory_component.gd" id="38_ynh2p"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rnkgc"]
 atlas = ExtResource("1_74cnq")
@@ -1099,7 +1099,6 @@ metadata/_custom_type_script = "uid://dxdwf5svx01jq"
 
 [node name="AttackComponent" type="Node" parent="Gun" unique_id=60511310]
 script = ExtResource("22_fmmik")
-weapon = ExtResource("23_wx2rq")
 metadata/_custom_type_script = "uid://by6vw7j34edj4"
 
 [node name="PlayerInputComponent" type="Node" parent="Gun" unique_id=1636194210]
@@ -1264,3 +1263,7 @@ metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 [node name="DeathResponseComponent" type="Node" parent="." unique_id=1518984277]
 script = ExtResource("38_v7uls")
 metadata/_custom_type_script = "uid://do5fchdp4aaev"
+
+[node name="WeaponInventoryComponent" type="Node" parent="." unique_id=440618476]
+script = ExtResource("38_ynh2p")
+metadata/_custom_type_script = "uid://cb48wwaxxxjaw"
