@@ -47,12 +47,17 @@ func is_launch_accept_event(event: InputEvent) -> bool:
 	return event.is_action_pressed("ui_accept")
 
 
-func is_weapon_next_event(event: InputEvent) -> bool:
-	return event.is_action_pressed("weapon_next")
-
-
-func is_weapon_prev_event(event: InputEvent) -> bool:
-	return event.is_action_pressed("weapon_prev")
+func weapon_scroll_direction(event: InputEvent) -> int:
+	if not event.is_action_pressed("weapon_scroll"):
+		return 0
+	var mb := event as InputEventMouseButton
+	if not mb:
+		return 0
+	if mb.button_index == MOUSE_BUTTON_WHEEL_UP:
+		return 1
+	if mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		return -1
+	return 0
 
 
 func _on_ready() -> void:

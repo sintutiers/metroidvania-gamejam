@@ -38,17 +38,13 @@ func is_launch_accept_event(_event: InputEvent) -> bool:
 	return false
 
 
+func weapon_scroll_direction(_event: InputEvent) -> int:
+	return 0
+
+
 func get_movement_vector() -> Vector2:
 	return Vector2.ZERO
 
 
 func get_aim_world_position() -> Vector2:
 	return Vector2.ZERO
-
-
-func is_weapon_next_event(_event: InputEvent) -> bool:
-	return false
-
-
-func is_weapon_prev_event(_event: InputEvent) -> bool:
-	return false

@@ -1,3 +1,4 @@
+# scripts/collectible_object.gd
 class_name CollectibleObject
 extends InteractableThing
 
@@ -9,12 +10,20 @@ enum PickupMode {
 }
 
 #const is_importer_node := true
-@export var pickup_mode: PickupMode = PickupMode.ON_INTERACT
-@export var object_id: StringName
-@export var show_marker_on_map: bool = true
-@export var marker_index: int = -1
-@export var vanishes_when_collected: bool = true
-@export var granted_weapon: WeaponResource
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var pickup_mode: PickupMode = PickupMode.ON_INTERACT
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var object_id: StringName
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var show_marker_on_map: bool = true
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var marker_index: int = -1
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var vanishes_when_collected: bool = true
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var granted_ability_id: StringName
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var granted_ability_amount: int = 1
 
 var _pickup_area: Area2D
 
@@ -22,6 +31,7 @@ var _pickup_area: Area2D
 ## -1 = use map theme's default marker for collectibles, per MetSys docs.
 func _ready() -> void:
 	super()
+	add_to_group(&"collectible")
 	set_meta(&"object_id", object_id)
 	if MetSys.register_storable_object(self):
 		return
@@ -45,12 +55,12 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_interacted(_by: Area2D) -> void:
 	MetSys.store_object(self)
 	collected.emit()
-	if granted_weapon:
+	if not granted_ability_id.is_empty():
 		var player := get_tree().get_first_node_in_group(&"player")
 		if player:
-			var inventory := Component.find_component(player, WeaponInventoryComponent, false) as WeaponInventoryComponent
-			if inventory:
-				inventory.add_weapon(granted_weapon)
+			var ability_component := Component.find_component(player, AbilityComponent, false) as AbilityComponent
+			if ability_component:
+				ability_component.grant(granted_ability_id, granted_ability_amount)
 	finish_interaction()
 	if vanishes_when_collected:
 		queue_free()

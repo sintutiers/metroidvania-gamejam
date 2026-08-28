@@ -21,7 +21,6 @@
 [ext_resource type="Texture2D" uid="uid://bs6wqopeuwodf" path="res://The Amazing Art and Sound Folder/secret_entity.png" id="17_lgg4s"]
 [ext_resource type="Script" uid="uid://c642xwttxatjc" path="res://scripts/components/locked_gate_component.gd" id="18_l52r0"]
 [ext_resource type="Script" uid="uid://df3asxwplixpa" path="res://scripts/gate_requirement.gd" id="19_xef7y"]
-[ext_resource type="Script" uid="uid://cktqjl066w82y" path="res://scripts/object_collected_requirement.gd" id="20_0hol0"]
 [ext_resource type="Script" uid="uid://dq5r7n4mxqqoa" path="res://scripts/interactable_thing.gd" id="21_na23k"]
 [ext_resource type="Script" uid="uid://dk3niudvdqw4d" path="res://scripts/collectible_object.gd" id="22_23l2s"]
 [ext_resource type="Texture2D" uid="uid://crmih01m3g7fj" path="res://The Amazing Art and Sound Folder/obmil_entity.png" id="23_5skal"]
@@ -44,11 +43,11 @@ size = Vector2(100.762, 20)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j6erd"]
 size = Vector2(20, 400)
 
-[sub_resource type="Resource" id="Resource_q1sf4"]
-script = ExtResource("20_0hol0")
+[sub_resource type="Resource" id="Resource_7nu4i"]
+script = ExtResource("19_xef7y")
+check_type = 1
 object_id = &"test"
-source_path = NodePath("../../colectableshit")
-metadata/_custom_type_script = "uid://cktqjl066w82y"
+metadata/_custom_type_script = "uid://df3asxwplixpa"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wjmfi"]
 size = Vector2(40, 430)
@@ -285,7 +284,7 @@ shape = SubResource("RectangleShape2D_j6erd")
 
 [node name="LockedGateComponent" type="Node" parent="gate test" unique_id=1194142569]
 script = ExtResource("18_l52r0")
-requirements = Array[ExtResource("19_xef7y")]([SubResource("Resource_q1sf4")])
+requirements = Array[ExtResource("19_xef7y")]([SubResource("Resource_7nu4i")])
 require_all = false
 unlock_mode = 2
 metadata/_custom_type_script = "uid://c642xwttxatjc"

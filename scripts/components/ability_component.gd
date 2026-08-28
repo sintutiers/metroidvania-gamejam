@@ -4,7 +4,8 @@ extends Component
 
 signal ability_granted(id: StringName, new_level: int)
 
-@export var starting_levels: Dictionary[StringName, int] = { }
+@export_custom(ETP.NONE, ETP.PROPERTY)
+var starting_levels: Dictionary[StringName, int] = { }
 
 var _levels: Dictionary[StringName, int] = { }
 
