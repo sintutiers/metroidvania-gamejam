@@ -65,63 +65,38 @@ func _on_ground_motion_changed(motion: StringName) -> void:
 func _on_jumped(jump_number: int) -> void:
 	_is_airborne = true
 	_is_tumbling = jump_number != 1
-<<<<<<< HEAD
-	sprite.play(&"jump" if jump_number == 1 else &"airspin")
-=======
 	sprite.play(Animations.JUMP if jump_number == 1 else Animations.AIRSPIN)
->>>>>>> origin/main
 
 
 func _on_wall_jumped() -> void:
 	_is_airborne = true
 	_is_tumbling = false
-<<<<<<< HEAD
-	sprite.play(&"jump")
-=======
 	sprite.play(Animations.JUMP)
->>>>>>> origin/main
 
 
 func _on_airspin() -> void:
 	_is_airborne = true
 	_is_tumbling = true
-<<<<<<< HEAD
-	sprite.play(&"airspin")
-=======
 	sprite.play(Animations.AIRSPIN)
->>>>>>> origin/main
 
 
 func _on_extra_jumped(_jump_number: int) -> void:
 	_is_airborne = true
 	_is_tumbling = true
-<<<<<<< HEAD
-	sprite.play(&"airspin")
-=======
 	sprite.play(Animations.AIRSPIN)
->>>>>>> origin/main
 
 
 func _on_wall_slid() -> void:
 	_is_airborne = true
 	_is_tumbling = false
-<<<<<<< HEAD
-	if sprite.animation != &"wall_slide":
-		sprite.play(&"wall_slide")
-=======
 	if sprite.animation != Animations.WALL_SLIDE:
 		sprite.play(Animations.WALL_SLIDE)
->>>>>>> origin/main
 
 
 func _on_dashed() -> void:
 	_is_airborne = true
 	_is_tumbling = false
-<<<<<<< HEAD
-	sprite.play(&"dash")
-=======
 	sprite.play(Animations.DASH)
->>>>>>> origin/main
 
 
 func _on_dash_ended() -> void:
@@ -145,11 +120,7 @@ func _on_fired() -> void:
 	if _is_airborne:
 		return
 	var is_moving: bool = _current_motion == Motions.WALK or _current_motion == Motions.RUN
-<<<<<<< HEAD
-	sprite.play(&"shoot_running" if is_moving else &"shoot")
-=======
 	sprite.play(Animations.SHOOT_RUNNING if is_moving else Animations.SHOOT)
->>>>>>> origin/main
 
 
 func _on_aim_started() -> void:
@@ -170,11 +141,7 @@ func _on_started_falling() -> void:
 	if _is_aiming or _is_tumbling:
 		return
 	_is_airborne = true
-<<<<<<< HEAD
-	sprite.play(&"falling")
-=======
 	sprite.play(Animations.FALLING)
->>>>>>> origin/main
 
 
 func _on_animation_finished() -> void:

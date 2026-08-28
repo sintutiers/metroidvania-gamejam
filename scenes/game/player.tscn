@@ -34,14 +34,10 @@
 [ext_resource type="Script" uid="uid://dxdwf5svx01jq" path="res://scripts/components/aim_component.gd" id="23_vbjuv"]
 [ext_resource type="Resource" uid="uid://3fylc7kv7beo" path="res://misc shit for dean/basic_weapon.tres" id="23_wx2rq"]
 [ext_resource type="Script" uid="uid://c0q0rfmy8x2gh" path="res://scripts/components/player_input_component.gd" id="33_wgy36"]
-<<<<<<< HEAD
-[ext_resource type="Script" uid="uid://cdosj5tpukr08" path="res://scripts/components/health_component.gd" id="34_cqjlk"]
-=======
 [ext_resource type="Script" uid="uid://dr8bvnfebp76" path="res://addons/health_hitbox_hurtbox/health/health.gd" id="36_pft2h"]
 [ext_resource type="Script" uid="uid://cts8qlslbl7nn" path="res://scripts/dean_hurt_box_2d.gd" id="37_pft2h"]
 [ext_resource type="Script" uid="uid://d33a1bxcxnqk4" path="res://scripts/components/ability_component.gd" id="38_rpvn3"]
 [ext_resource type="Script" uid="uid://do5fchdp4aaev" path="res://scripts/components/death_response_component.gd" id="38_v7uls"]
->>>>>>> origin/main
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rnkgc"]
 atlas = ExtResource("1_74cnq")
@@ -1065,8 +1061,6 @@ metadata/_custom_type_script = "uid://c04nw515cb8mx"
 script = ExtResource("7_0eoyi")
 metadata/_custom_type_script = "uid://cfxp2t1o4nm1s"
 
-<<<<<<< HEAD
-=======
 [node name="FacingComponent" type="Node" parent="." unique_id=291864630]
 script = ExtResource("2_68xwl")
 metadata/_custom_type_script = "uid://clhg7apuc3ldq"
@@ -1083,18 +1077,10 @@ metadata/_custom_type_script = "uid://kb1gt4lu1sxw"
 script = ExtResource("6_dsw4c")
 metadata/_custom_type_script = "uid://b0bul4sdikiw3"
 
->>>>>>> origin/main
 [node name="PlayerInputComponent" type="Node" parent="." unique_id=1637155963]
 script = ExtResource("33_wgy36")
 metadata/_custom_type_script = "uid://c0q0rfmy8x2gh"
 
-<<<<<<< HEAD
-[node name="HealthComponent" type="Node" parent="." unique_id=2003463793]
-script = ExtResource("34_cqjlk")
-metadata/_custom_type_script = "uid://cdosj5tpukr08"
-
-=======
->>>>>>> origin/main
 [node name="Gun" type="Node2D" parent="." unique_id=1189904842]
 
 [node name="Muzzle" type="Node2D" parent="Gun" unique_id=2025839135]

@@ -1,10 +1,6 @@
 # scripts/components/sideways_movement_component.gd
 class_name SidewaysMovementComponent
-<<<<<<< HEAD
-extends MovementBase
-=======
 extends PlatformerMovementBase
->>>>>>> origin/main
 
 @export_group("Movement")
 @export_range(0.0, 1000.0, 10.0, ETP.PROPERTY)
@@ -19,13 +15,6 @@ var turn_acceleration: float = 3600.0
 var move_friction: float = 1200.0
 
 @export_group("Jump")
-<<<<<<< HEAD
-@export var jump_height: float = 80.0
-@export var max_jumps: int = 2
-@export var jump_gravity: float = 0.0
-@export var coyote_time: float = 0.1
-@export var jump_buffer_time: float = 0.1
-=======
 @export_range(0.0, 500.0, 5.0, ETP.PROPERTY)
 var jump_height: float = 80.0
 @export_range(0.0, 3000.0, 10.0, ETP.PROPERTY)
@@ -44,7 +33,6 @@ var jump_cut_multiplier: float = 0.5
 var running_jump_height_multiplier: float = 1.5
 @export_range(0.0, 3.0, 0.05, ETP.PROPERTY)
 var momentum_jump_distance_multiplier: float = 1.5
->>>>>>> origin/main
 
 @export_group("Fall")
 @export_range(0.0, 2000.0, 10.0, ETP.PROPERTY)
@@ -87,11 +75,8 @@ var crouch_speed_multiplier: float = 0.5
 var facing_component: FacingComponent
 var collision_shape: CollisionShape2D
 var input_component: InputComponent
-<<<<<<< HEAD
-=======
 
 var ability_component: AbilityComponent
->>>>>>> origin/main
 
 var launch_component: LaunchComponent
 var _was_moving: bool = false
@@ -143,10 +128,7 @@ func _on_setup() -> void:
 	collision_shape = get_component(CollisionShape2D, false) as CollisionShape2D
 	launch_component = get_component(LaunchComponent, false) as LaunchComponent
 	input_component = get_component(InputComponent) as InputComponent
-<<<<<<< HEAD
-=======
 	ability_component = get_component(AbilityComponent, false) as AbilityComponent
->>>>>>> origin/main
 	if collision_shape:
 		_standing_shape_position = collision_shape.position
 	if launch_component:
@@ -312,11 +294,7 @@ func _on_air_physics(delta: float) -> void:
 	_update_jump_buffer(delta)
 
 	if input_component.jump_just_released() and body.velocity.y < 0.0:
-<<<<<<< HEAD
-		body.velocity.y *= jump_cut_mult
-=======
 		body.velocity.y *= jump_cut_multiplier
->>>>>>> origin/main
 
 	var input_dir: float = input_component.move_axis()
 	_apply_horizontal(delta, input_dir, false)
@@ -367,10 +345,7 @@ func _on_dash_entered() -> void:
 	_dash_cooldown_timer = dash_cooldown
 	_dashes_used += 1
 	_was_falling = false
-<<<<<<< HEAD
-=======
 	is_uninterruptible = true
->>>>>>> origin/main
 	_dash_direction = facing_component.facing.x if not is_zero_approx(facing_component.facing.x) else 1.0
 	dashed.emit()
 
@@ -401,11 +376,7 @@ func _on_crouch_entered() -> void:
 
 func _on_crouch_physics(delta: float) -> void:
 	var input_dir: float = input_component.move_axis()
-<<<<<<< HEAD
-	_apply_horizontal(delta, input_dir, false, crouch_speed_mult)
-=======
 	_apply_horizontal(delta, input_dir, false, crouch_speed_multiplier)
->>>>>>> origin/main
 	body.move_and_slide()
 
 	var motion: StringName = Motions.CROUCH_WALK if input_dir != 0.0 else Motions.CROUCH_IDLE

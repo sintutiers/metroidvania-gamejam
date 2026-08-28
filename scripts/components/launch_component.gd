@@ -6,11 +6,8 @@ signal landed
 signal fell
 
 var input_component: InputComponent
-<<<<<<< HEAD
-=======
 
 var movement: MovementBase
->>>>>>> origin/main
 var _target: Vector2
 var _speed: float = 0.0
 
@@ -34,11 +31,8 @@ func launch(direction: Vector2, speed: float, distance: float) -> void:
 		return
 	_speed = speed
 	_target = body.global_position + direction.normalized() * distance
-<<<<<<< HEAD
-=======
 	if movement:
 		movement.is_uninterruptible = true
->>>>>>> origin/main
 	state_chart.send_event(StateEvents.LAUNCH)
 
 
@@ -55,10 +49,7 @@ func clear_pad() -> void:
 
 func _on_setup() -> void:
 	input_component = get_component(InputComponent) as InputComponent
-<<<<<<< HEAD
-=======
 	movement = get_component(MovementBase, false) as MovementBase
->>>>>>> origin/main
 
 
 func _on_ready() -> void:
@@ -73,11 +64,8 @@ func _on_launch_physics(delta: float) -> void:
 	if remaining <= step:
 		body.global_position = _target
 		body.velocity = Vector2.ZERO
-<<<<<<< HEAD
-=======
 		if movement:
 			movement.is_uninterruptible = false
->>>>>>> origin/main
 		state_chart.send_event(StateEvents.LAUNCH_END)
 		if body.is_on_floor():
 			landed.emit()
