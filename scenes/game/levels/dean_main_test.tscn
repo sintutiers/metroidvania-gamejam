@@ -30,6 +30,8 @@
 [ext_resource type="Texture2D" uid="uid://wiq0mic5m6is" path="res://SampleProject/Sprites/Collectible.png" id="25_s027v"]
 [ext_resource type="Texture2D" uid="uid://clhhogcvmxk7x" path="res://The Amazing Art and Sound Folder/chair2 duke.png" id="26_ilgan"]
 [ext_resource type="Script" uid="uid://0u1nlyd1ld6o" path="res://SampleProject/Scripts/SavePoint.gd" id="26_scqs1"]
+[ext_resource type="Texture2D" uid="uid://qmkkud72jx68" path="res://The Amazing Art and Sound Folder/cassie_white2.png" id="31_mdd67"]
+[ext_resource type="Texture2D" uid="uid://6yeroqsmvbna" path="res://The Amazing Art and Sound Folder/cassie_red2.png" id="32_dw2hi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
 size = Vector2(50, 50)
@@ -389,10 +391,16 @@ metadata/_edit_use_anchors_ = true
 [node name="Enemy" parent="." unique_id=807929367 instance=ExtResource("10_s027v")]
 position = Vector2(876, 248)
 
+[node name="CassieWhite2" type="Sprite2D" parent="Enemy" unique_id=1991511024]
+texture = ExtResource("31_mdd67")
+
 [node name="Enemy2" parent="." unique_id=1567061191 instance=ExtResource("10_s027v")]
 position = Vector2(956, 314)
 
-[node name="EnemyBehaviorComponent" parent="Enemy2" index="5" unique_id=158614596]
+[node name="CassieRed2" type="Sprite2D" parent="Enemy2" unique_id=1391629225]
+texture = ExtResource("32_dw2hi")
+
+[node name="EnemyBehaviorComponent" parent="Enemy2" index="6" unique_id=158614596]
 is_flying = true
 
 [editable path="Enemy2"]

@@ -5,3 +5,4 @@ extends Resource
 @export var damage: float = 10.0
 @export var behavior: WeaponBehavior
 @export var ability_id: StringName
+@export var gun_texture: Texture2D

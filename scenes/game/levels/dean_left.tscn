@@ -1,13 +1,12 @@
 [gd_scene format=3 uid="uid://b4rmoqo0vtwm5"]
 
-[ext_resource type="Texture2D" uid="uid://dh2pjnx1h4p35" path="res://The Amazing Art and Sound Folder/Section2art_Erin/backsky.png" id="1_8b6n8"]
 [ext_resource type="AudioStream" uid="uid://3d3avd2db6k5" path="res://The Amazing Art and Sound Folder/worldMusic2.mp3" id="2_owl58"]
-[ext_resource type="Texture2D" uid="uid://cimdsrnvuqkyr" path="res://The Amazing Art and Sound Folder/Section2art_Erin/mountain2.png" id="2_sohcg"]
-[ext_resource type="Texture2D" uid="uid://dwmmy4hdgs536" path="res://The Amazing Art and Sound Folder/Section2art_Erin/hills3.png" id="3_owl58"]
-[ext_resource type="Texture2D" uid="uid://dd7kk4e8dnmhs" path="res://The Amazing Art and Sound Folder/Section2art_Erin/perspective4.png" id="4_56i3r"]
-[ext_resource type="Texture2D" uid="uid://b2eqb0asp3cil" path="res://The Amazing Art and Sound Folder/Section2art_Erin/hills5.png" id="5_epvvq"]
+[ext_resource type="Texture2D" uid="uid://ct53ntrfvmlwv" path="res://The Amazing Art and Sound Folder/UPDATEDsection2_erin/p1.png" id="3_8b6n8"]
+[ext_resource type="Texture2D" uid="uid://x3khrw5h556" path="res://The Amazing Art and Sound Folder/UPDATEDsection2_erin/p2.png" id="4_sohcg"]
+[ext_resource type="Texture2D" uid="uid://cv1cx1w7kjvgp" path="res://The Amazing Art and Sound Folder/UPDATEDsection2_erin/p3.png" id="5_owl58"]
+[ext_resource type="Texture2D" uid="uid://ds5ggdqs2bktw" path="res://The Amazing Art and Sound Folder/UPDATEDsection2_erin/p4.png" id="6_56i3r"]
 [ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="6_r3pn2"]
-[ext_resource type="Texture2D" uid="uid://b137yv5sjkkx7" path="res://The Amazing Art and Sound Folder/Section2art_Erin/frontpath6.png" id="6_rmi45"]
+[ext_resource type="Texture2D" uid="uid://c6moeffa7fp3t" path="res://The Amazing Art and Sound Folder/UPDATEDsection2_erin/p5.png" id="7_epvvq"]
 [ext_resource type="Texture2D" uid="uid://b1hhqiedxtx81" path="res://The Amazing Art and Sound Folder/entity1_grief.png" id="7_rmi45"]
 [ext_resource type="PackedScene" uid="uid://bkcsjsk2ciff" path="res://addons/maaacks_game_template/base/nodes/music_players/background_music_player.tscn" id="7_sohcg"]
 [ext_resource type="Texture2D" uid="uid://sbysu1agubiy" path="res://The Amazing Art and Sound Folder/erinnewpath.png" id="8_nyntl"]
@@ -95,8 +94,8 @@ scroll_scale = Vector2(0.1, 1)
 repeat_size = Vector2(4800, 2480)
 repeat_times = 2
 
-[node name="Backsky" type="Sprite2D" parent="paralax/Parallax2D" unique_id=1092380120]
-texture = ExtResource("1_8b6n8")
+[node name="P1" type="Sprite2D" parent="paralax/Parallax2D" unique_id=2107684114]
+texture = ExtResource("3_8b6n8")
 centered = false
 
 [node name="Parallax2D2" type="Parallax2D" parent="paralax" unique_id=1974774224]
@@ -104,8 +103,8 @@ scroll_scale = Vector2(0.2, 0.9)
 repeat_size = Vector2(4800, 0)
 repeat_times = 2
 
-[node name="Mountain2" type="Sprite2D" parent="paralax/Parallax2D2" unique_id=1895332254]
-texture = ExtResource("2_sohcg")
+[node name="P2" type="Sprite2D" parent="paralax/Parallax2D2" unique_id=1808806938]
+texture = ExtResource("4_sohcg")
 centered = false
 
 [node name="Parallax2D3" type="Parallax2D" parent="paralax" unique_id=785570408]
@@ -113,8 +112,8 @@ scroll_scale = Vector2(0.3, 0.9)
 repeat_size = Vector2(4800, 0)
 repeat_times = 2
 
-[node name="Hills3" type="Sprite2D" parent="paralax/Parallax2D3" unique_id=1476044968]
-texture = ExtResource("3_owl58")
+[node name="P3" type="Sprite2D" parent="paralax/Parallax2D3" unique_id=1714351353]
+texture = ExtResource("5_owl58")
 centered = false
 
 [node name="Parallax2D4" type="Parallax2D" parent="paralax" unique_id=645641048]
@@ -122,8 +121,8 @@ scroll_scale = Vector2(0.5, 0.9)
 repeat_size = Vector2(4800, 0)
 repeat_times = 2
 
-[node name="Perspective4" type="Sprite2D" parent="paralax/Parallax2D4" unique_id=798142753]
-texture = ExtResource("4_56i3r")
+[node name="P4" type="Sprite2D" parent="paralax/Parallax2D4" unique_id=55657911]
+texture = ExtResource("6_56i3r")
 centered = false
 
 [node name="Parallax2D5" type="Parallax2D" parent="paralax" unique_id=1961962587]
@@ -131,17 +130,13 @@ scroll_scale = Vector2(0.7, 0.9)
 repeat_size = Vector2(4800, 0)
 repeat_times = 2
 
-[node name="Hills5" type="Sprite2D" parent="paralax/Parallax2D5" unique_id=694267004]
-texture = ExtResource("5_epvvq")
+[node name="P5" type="Sprite2D" parent="paralax/Parallax2D5" unique_id=2077582425]
+texture = ExtResource("7_epvvq")
 centered = false
 
 [node name="Parallax2D6" type="Parallax2D" parent="paralax" unique_id=451295441]
 repeat_size = Vector2(4800, 0)
 repeat_times = 2
-
-[node name="Frontpath6" type="Sprite2D" parent="paralax/Parallax2D6" unique_id=1346536676]
-texture = ExtResource("6_rmi45")
-centered = false
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=654961184]
 

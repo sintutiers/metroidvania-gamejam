@@ -2,9 +2,15 @@
 
 [ext_resource type="Script" uid="uid://d2ovqlwx3isma" path="res://scripts/weapon_resource.gd" id="1_6ks1w"]
 [ext_resource type="Resource" uid="uid://bmvou5r101cjl" path="res://misc shit for dean/shotgun_shell.tres" id="1_71d8r"]
+[ext_resource type="Texture2D" uid="uid://ck2pbxelo0h0y" path="res://The Amazing Art and Sound Folder/maingunart_Erin/gun.png" id="2_awndk"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xfcrr"]
+atlas = ExtResource("2_awndk")
+region = Rect2(235, 687, 746, 285)
 
 [resource]
 script = ExtResource("1_6ks1w")
 behavior = ExtResource("1_71d8r")
 ability_id = &"shotgun"
+gun_texture = SubResource("AtlasTexture_xfcrr")
 metadata/_custom_type_script = "uid://d2ovqlwx3isma"

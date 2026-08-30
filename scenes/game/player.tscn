@@ -30,7 +30,6 @@
 [ext_resource type="Script" uid="uid://c04nw515cb8mx" path="res://scripts/components/vfx_component.gd" id="19_1rckg"]
 [ext_resource type="PackedScene" uid="uid://cnfeymuwv6c4q" path="res://misc shit for dean/JumpDust.tscn" id="20_vrrwq"]
 [ext_resource type="Script" uid="uid://by6vw7j34edj4" path="res://scripts/components/attack_component.gd" id="22_fmmik"]
-[ext_resource type="Texture2D" uid="uid://cexcf7xpv684h" path="res://The Amazing Art and Sound Folder/lamp_on.png" id="22_wx2rq"]
 [ext_resource type="Script" uid="uid://dxdwf5svx01jq" path="res://scripts/components/aim_component.gd" id="23_vbjuv"]
 [ext_resource type="Script" uid="uid://dkim8wle57ymu" path="res://scenes/game/gun.gd" id="30_g8nad"]
 [ext_resource type="Script" uid="uid://c0q0rfmy8x2gh" path="res://scripts/components/player_input_component.gd" id="33_wgy36"]
@@ -1088,15 +1087,9 @@ metadata/_custom_type_script = "uid://c0q0rfmy8x2gh"
 [node name="Gun" type="Node2D" parent="." unique_id=1189904842]
 script = ExtResource("30_g8nad")
 
-[node name="Muzzle" type="Node2D" parent="Gun" unique_id=2025839135]
+[node name="Muzzle" type="Sprite2D" parent="Gun" unique_id=1358332875]
 unique_name_in_owner = true
 position = Vector2(26, -8)
-
-[node name="Sprite2D" type="Sprite2D" parent="Gun/Muzzle" unique_id=517606903]
-position = Vector2(-8.129, 0)
-rotation = -1.5707964
-scale = Vector2(0.397, 0.397)
-texture = ExtResource("22_wx2rq")
 
 [node name="AimComponent" type="Node" parent="Gun" unique_id=400043272]
 script = ExtResource("23_vbjuv")
