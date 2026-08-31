@@ -1,14 +1,17 @@
 name: "godot-ci export"
-on: push
-
+on:
+  push:
+    branches: [main]
 permissions:
-  contents: write
+  contents: read
 
 # NOTE: If your `project.godot` is at the repository root, set `PROJECT_PATH` below to ".".
 # NOTE: android export code taken and modified from `Simon Dalvai @dulvui`
-
+concurrency:
+  group: godot-ci-export-${{ github.ref }}
+  cancel-in-progress: true
 env:
-  GODOT_VERSION: 4.7.1
+  GODOT_VERSION: 4.7.2
   EXPORT_NAME: metroidvania jam cool dean version
   PROJECT_PATH: .
 
@@ -17,7 +20,7 @@ jobs:
     name: Windows Export
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:4.7.1
+      image: barichello/godot-ci:4.7.2
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -45,7 +48,7 @@ jobs:
     name: Linux Export
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:4.7.1
+      image: barichello/godot-ci:4.7.2
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -71,10 +74,10 @@ jobs:
     name: Web Export
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:4.7.1
+      image: barichello/godot-ci:4.7.2
     permissions:
-      pages: write # Required to deploy to GitHub Pages
-      id-token: write # Required to verify the deployment
+      pages: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -101,7 +104,7 @@ jobs:
     name: Mac Export
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:4.7.1
+      image: barichello/godot-ci:4.7.2
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -129,7 +132,7 @@ jobs:
   #   name: Android Export
   #   runs-on: ubuntu-latest
   #   container:
-  #     image: barichello/godot-ci:4.7
+  #     image: barichello/godot-ci:4.7.2
   #   steps:
   #     - name: Checkout
   #       uses: actions/checkout@v6

@@ -7,23 +7,24 @@ on:
       - completed
 
 permissions:
-  contents: write
-  actions: read
-
+  contents: read
+concurrency:
+  group: create-release
+  cancel-in-progress: false
 jobs:
   create:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+      actions: read
     steps:
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 0
-
+          fetch-depth: 1
       - name: Compute next version
         run: |
-          git fetch --tags
-
+          git fetch --tags --depth=1
           LATEST=$(git tag --list "0.0.*" --sort=-v:refname | head -n 1)
 
           if [ -z "$LATEST" ]; then
@@ -41,11 +42,11 @@ jobs:
           path: artifacts
 
       - name: Create prerelease with assets
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: ${{ env.TAG }}
-          name: ${{ env.TAG }}
-          prerelease: true
-          files: artifacts/**
+        run: |
+          shopt -s globstar
+          gh release create "$TAG" artifacts/**/* --title "$TAG" --prerelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Report failure
+        if: failure()
+        run: echo "### Release failed for tag \`$TAG\`" >> $GITHUB_STEP_SUMMARY
