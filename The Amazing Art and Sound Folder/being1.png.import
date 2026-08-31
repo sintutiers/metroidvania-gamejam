@@ -17,7 +17,7 @@ dest_files=["res://.godot/imported/being1.png-201bfa2db91ce3da5971e0fd8956328e.c
 
 compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.6
+compress/lossy_quality=0.8
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

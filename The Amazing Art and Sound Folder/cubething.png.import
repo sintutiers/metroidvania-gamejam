@@ -17,7 +17,7 @@ dest_files=["res://.godot/imported/cubething.png-9bd262f881d04a1aa201c2b7f156b3e
 
 compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.6
+compress/lossy_quality=0.8
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

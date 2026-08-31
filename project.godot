@@ -82,6 +82,19 @@ import/blender/enabled=false
 
 theme/custom="uid://bac1khm2nmjl3"
 
+[importer_defaults]
+
+texture={
+&"compress/channel_pack": 1,
+&"compress/lossy_quality": 0.95,
+&"compress/mode": 1,
+&"compress/normal_map": 2,
+&"detect_3d/compress_to": 0
+}
+texture_atlas={
+&"crop_to_region": true
+}
+
 [input]
 
 move_left={

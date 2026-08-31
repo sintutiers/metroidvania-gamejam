@@ -17,7 +17,7 @@ dest_files=["res://.godot/imported/emoji_font.png-f5ec1aa932212fd99f37189bd5dd47
 
 compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.6
+compress/lossy_quality=0.8
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

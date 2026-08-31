@@ -17,7 +17,7 @@ dest_files=["res://.godot/imported/table2 duke.png-1c50519d2a8a2ed4fc9f52e8c6c0f
 
 compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.6
+compress/lossy_quality=0.8
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

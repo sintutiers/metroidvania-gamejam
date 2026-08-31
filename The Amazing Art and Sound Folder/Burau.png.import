@@ -17,7 +17,7 @@ dest_files=["res://.godot/imported/Burau.png-6c1b7da90486ee5397b3fd1440f3b8ad.ct
 
 compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.6
+compress/lossy_quality=0.8
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
