@@ -13,4 +13,5 @@ script = ExtResource("1_6ks1w")
 behavior = ExtResource("1_71d8r")
 ability_id = &"shotgun"
 gun_texture = SubResource("AtlasTexture_xfcrr")
+gun_scale = Vector2(0.1, 0.1)
 metadata/_custom_type_script = "uid://d2ovqlwx3isma"

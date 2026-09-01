@@ -51,5 +51,5 @@ metadata/_custom_type_script = "uid://do5fchdp4aaev"
 
 [node name="InvincibilityComponent" type="Node" parent="." unique_id=1918235450]
 script = ExtResource("7_yljw7")
-duration = 0.25
+duration = 0.1
 metadata/_custom_type_script = "uid://bpkobonkdnhs4"

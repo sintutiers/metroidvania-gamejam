@@ -1087,9 +1087,12 @@ metadata/_custom_type_script = "uid://c0q0rfmy8x2gh"
 [node name="Gun" type="Node2D" parent="." unique_id=1189904842]
 script = ExtResource("30_g8nad")
 
-[node name="Muzzle" type="Sprite2D" parent="Gun" unique_id=1358332875]
+[node name="Muzzle" type="Node2D" parent="Gun" unique_id=1172783317]
 unique_name_in_owner = true
 position = Vector2(26, -8)
+
+[node name="GunSprite" type="Sprite2D" parent="Gun" unique_id=1841436181]
+unique_name_in_owner = true
 
 [node name="AimComponent" type="Node" parent="Gun" unique_id=400043272]
 script = ExtResource("23_vbjuv")
@@ -1260,6 +1263,8 @@ metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
 [node name="DeathResponseComponent" type="Node" parent="." unique_id=1518984277]
 script = ExtResource("38_v7uls")
+free_on_death = false
+respawn_on_death = true
 metadata/_custom_type_script = "uid://do5fchdp4aaev"
 
 [node name="WeaponInventoryComponent" type="Node" parent="." unique_id=440618476]

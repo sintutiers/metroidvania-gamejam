@@ -6,3 +6,4 @@ extends Resource
 @export var behavior: WeaponBehavior
 @export var ability_id: StringName
 @export var gun_texture: Texture2D
+@export var gun_scale: Vector2 = Vector2.ONE

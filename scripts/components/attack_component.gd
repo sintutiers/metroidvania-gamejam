@@ -43,7 +43,7 @@ func _on_weapon_changed(new_weapon: WeaponResource) -> void:
 	if new_weapon:
 		var gun := get_component(Gun, false) as Gun
 		if gun:
-			gun.set_visual(new_weapon.gun_texture)
+			gun.set_visual(new_weapon.gun_texture, new_weapon.gun_scale)
 
 
 func _try_fire() -> void:

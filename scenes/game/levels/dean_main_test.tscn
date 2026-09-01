@@ -14,7 +14,6 @@
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="6_o3iea"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="8_5nru6"]
 [ext_resource type="Script" uid="uid://br8ja4246nfyg" path="res://scripts/jumpad.gd" id="9_h3gf6"]
-[ext_resource type="Texture2D" uid="uid://0es5efbo4548" path="res://The Amazing Art and Sound Folder/eye.png" id="10_aew1q"]
 [ext_resource type="PackedScene" uid="uid://cyp6mvgmkcxs" path="res://scenes/game/enemy.tscn" id="10_s027v"]
 [ext_resource type="Texture2D" uid="uid://bs6wqopeuwodf" path="res://The Amazing Art and Sound Folder/secret_entity.png" id="13_klppx"]
 [ext_resource type="Script" uid="uid://84okuoju0wev" path="res://scenes/game/levels/gate.gd" id="13_ueimi"]
@@ -66,28 +65,6 @@ size = Vector2(40, 430)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kmoln"]
 size = Vector2(2913, 20)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_wug2n"]
-atlas = ExtResource("10_aew1q")
-region = Rect2(0, 0, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3xwlj"]
-atlas = ExtResource("10_aew1q")
-region = Rect2(0, 100, 100, 100)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_q1sf4"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_wug2n")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3xwlj")
-}],
-"loop": 1,
-"name": &"default",
-"speed": 1.0
-}]
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_driqh"]
 radius = 32.0
 
@@ -98,12 +75,14 @@ stream = ExtResource("2_s027v")
 
 [node name="paralax" type="CanvasLayer" parent="." unique_id=231199125]
 layer = -1
+offset = Vector2(400, 0)
 scale = Vector2(0.219, 0.219)
-transform = Transform2D(0.219, 0, 0, 0.219, 0, 0)
+transform = Transform2D(0.219, 0, 0, 0.219, 400, 0)
 follow_viewport_enabled = true
 
 [node name="Parallax2D" type="Parallax2D" parent="paralax" unique_id=1639397260]
 scroll_scale = Vector2(0.1, 1)
+scroll_offset = Vector2(-4800, 0)
 repeat_size = Vector2(4800, 2480)
 repeat_times = 3
 
@@ -303,7 +282,7 @@ script = ExtResource("17_ueimi")
 pickup_mode = 1
 object_id = &"test"
 show_marker_on_map = false
-sprite = Object(AnimatedSprite2D,"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"oversampling_with_scale":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(642, 310),"rotation":0.0,"scale":Vector2(2, 2),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_q1sf4"),"animation":&"default","autoplay":"default","frame":0,"frame_progress":0.026022155,"speed_scale":1.0,"centered":true,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
+sprite = Object(AnimatedSprite2D,"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"oversampling_with_scale":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(642, 310),"rotation":0.0,"scale":Vector2(2, 2),"skew":0.0,"sprite_frames":null,"animation":&"default","autoplay":"default","frame":0,"frame_progress":0.026022155,"speed_scale":1.0,"centered":true,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
 
 
 [node name="Area2D" type="Area2D" parent="colectableshit" unique_id=367648136]
@@ -321,7 +300,7 @@ script = ExtResource("17_ueimi")
 pickup_mode = 1
 object_id = &"pistol"
 granted_ability_id = &"pistol"
-sprite = Object(AnimatedSprite2D,"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"oversampling_with_scale":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(642, 310),"rotation":0.0,"scale":Vector2(2, 2),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_q1sf4"),"animation":&"default","autoplay":"default","frame":0,"frame_progress":0.026022155,"speed_scale":1.0,"centered":true,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
+sprite = Object(AnimatedSprite2D,"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"oversampling_with_scale":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(642, 310),"rotation":0.0,"scale":Vector2(2, 2),"skew":0.0,"sprite_frames":null,"animation":&"default","autoplay":"default","frame":0,"frame_progress":0.026022155,"speed_scale":1.0,"centered":true,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
 
 
 [node name="Area2D" type="Area2D" parent="pistol" unique_id=1274871072]
@@ -339,7 +318,7 @@ script = ExtResource("17_ueimi")
 pickup_mode = 1
 object_id = &"shotgun"
 granted_ability_id = &"shotgun"
-sprite = Object(AnimatedSprite2D,"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"oversampling_with_scale":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(642, 310),"rotation":0.0,"scale":Vector2(2, 2),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_q1sf4"),"animation":&"default","autoplay":"default","frame":0,"frame_progress":0.026022155,"speed_scale":1.0,"centered":true,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
+sprite = Object(AnimatedSprite2D,"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"oversampling_with_scale":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(642, 310),"rotation":0.0,"scale":Vector2(2, 2),"skew":0.0,"sprite_frames":null,"animation":&"default","autoplay":"default","frame":0,"frame_progress":0.026022155,"speed_scale":1.0,"centered":true,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
 
 
 [node name="Area2D" type="Area2D" parent="shotgun" unique_id=1845041846]
@@ -359,13 +338,6 @@ shape = SubResource("RectangleShape2D_kmoln")
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="walls" unique_id=1188445367]
 position = Vector2(1400, 0)
 shape = SubResource("RectangleShape2D_kmoln")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1663140860]
-position = Vector2(642, 310)
-scale = Vector2(2, 2)
-sprite_frames = SubResource("SpriteFrames_q1sf4")
-autoplay = "default"
-frame_progress = 0.026022155
 
 [node name="RoomInstance" parent="." unique_id=1246059462 instance=ExtResource("20_ueimi")]
 

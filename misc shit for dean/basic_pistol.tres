@@ -2,11 +2,16 @@
 
 [ext_resource type="Resource" uid="uid://b6wlxyetujrfi" path="res://misc shit for dean/basic_bullet.tres" id="1_a3tq1"]
 [ext_resource type="Script" uid="uid://d2ovqlwx3isma" path="res://scripts/weapon_resource.gd" id="1_g11wx"]
-[ext_resource type="Texture2D" uid="uid://cexcf7xpv684h" path="res://The Amazing Art and Sound Folder/lamp_on.png" id="2_0du0c"]
+[ext_resource type="Texture2D" uid="uid://cgvunnofqqt0k" path="res://The Amazing Art and Sound Folder/maingunart_Erin/gunwitharms.png" id="2_0du0c"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yljw7"]
+atlas = ExtResource("2_0du0c")
+region = Rect2(243, 217, 707, 347)
 
 [resource]
 script = ExtResource("1_g11wx")
 behavior = ExtResource("1_a3tq1")
 ability_id = &"pistol"
-gun_texture = ExtResource("2_0du0c")
+gun_texture = SubResource("AtlasTexture_yljw7")
+gun_scale = Vector2(0.1, 0.1)
 metadata/_custom_type_script = "uid://d2ovqlwx3isma"
