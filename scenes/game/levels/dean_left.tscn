@@ -220,6 +220,7 @@ position = Vector2(0, 300)
 script = ExtResource("10_bmn5b")
 follow_mode = 5
 tween_resource = SubResource("Resource_5ix0u")
+tween_on_load = false
 draw_limits = true
 limit_top = 30
 limit_bottom = 589

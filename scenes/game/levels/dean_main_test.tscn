@@ -217,6 +217,7 @@ script = ExtResource("5_ueimi")
 shake_trauma_power = 10.0
 follow_mode = 5
 tween_resource = SubResource("Resource_5ix0u")
+tween_on_load = false
 draw_limits = true
 limit_top = 0
 limit_bottom = 580
