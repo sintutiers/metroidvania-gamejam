@@ -2,6 +2,7 @@
 class_name LaunchComponent
 extends Component
 
+signal launched
 signal landed
 signal fell
 
@@ -33,6 +34,7 @@ func launch(direction: Vector2, speed: float, distance: float) -> void:
 	_target = body.global_position + direction.normalized() * distance
 	if movement:
 		movement.is_uninterruptible = true
+	launched.emit()
 	state_chart.send_event(StateEvents.LAUNCH)
 
 
@@ -53,8 +55,8 @@ func _on_setup() -> void:
 
 
 func _on_ready() -> void:
-	track(launch_state.state_physics_processing, _on_launch_physics)
-	track(launch_state.state_entered, fell.emit)
+	launch_state.state_physics_processing.connect(_on_launch_physics)
+	launch_state.state_entered.connect(fell.emit)
 
 
 func _on_launch_physics(delta: float) -> void:

@@ -10,9 +10,6 @@
 [ext_resource type="Texture2D" uid="uid://bnudy5dmsjhxe" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/cloud2cityscape.png" id="4_7nu4i"]
 [ext_resource type="Texture2D" uid="uid://by012a0lsf264" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/frontcity.png" id="5_s027v"]
 [ext_resource type="Texture2D" uid="uid://sbysu1agubiy" path="res://The Amazing Art and Sound Folder/erinnewpath.png" id="5_tqpjq"]
-[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="5_ueimi"]
-[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="6_o3iea"]
-[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="8_5nru6"]
 [ext_resource type="Script" uid="uid://br8ja4246nfyg" path="res://scripts/jumpad.gd" id="9_h3gf6"]
 [ext_resource type="PackedScene" uid="uid://cyp6mvgmkcxs" path="res://scenes/game/enemy.tscn" id="10_s027v"]
 [ext_resource type="Texture2D" uid="uid://bs6wqopeuwodf" path="res://The Amazing Art and Sound Folder/secret_entity.png" id="13_klppx"]
@@ -20,6 +17,7 @@
 [ext_resource type="Script" uid="uid://c642xwttxatjc" path="res://scripts/components/locked_gate_component.gd" id="14_s33yo"]
 [ext_resource type="Script" uid="uid://df3asxwplixpa" path="res://scripts/gate_requirement.gd" id="15_gxxra"]
 [ext_resource type="Texture2D" uid="uid://cmmi6jp6iphdp" path="res://The Amazing Art and Sound Folder/jumppad-DEAN.png" id="16_mdd67"]
+[ext_resource type="Material" uid="uid://h4yrp14cnk0o" path="res://The Amazing Art and Sound Folder/inverst colours.tres" id="16_rtfta"]
 [ext_resource type="Script" uid="uid://dq5r7n4mxqqoa" path="res://scripts/interactable_thing.gd" id="17_q4whl"]
 [ext_resource type="Script" uid="uid://dk3niudvdqw4d" path="res://scripts/collectible_object.gd" id="17_ueimi"]
 [ext_resource type="Texture2D" uid="uid://crmih01m3g7fj" path="res://The Amazing Art and Sound Folder/obmil_entity.png" id="18_ot4ag"]
@@ -28,14 +26,14 @@
 [ext_resource type="Texture2D" uid="uid://wiq0mic5m6is" path="res://SampleProject/Sprites/Collectible.png" id="25_s027v"]
 [ext_resource type="Texture2D" uid="uid://clhhogcvmxk7x" path="res://The Amazing Art and Sound Folder/chair2 duke.png" id="26_ilgan"]
 [ext_resource type="Script" uid="uid://0u1nlyd1ld6o" path="res://SampleProject/Scripts/SavePoint.gd" id="26_scqs1"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="29_rtfta"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="30_rtfta"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="31_dw2hi"]
 [ext_resource type="Texture2D" uid="uid://qmkkud72jx68" path="res://The Amazing Art and Sound Folder/cassie_white2.png" id="31_mdd67"]
 [ext_resource type="Texture2D" uid="uid://6yeroqsmvbna" path="res://The Amazing Art and Sound Folder/cassie_red2.png" id="32_dw2hi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
 size = Vector2(50, 50)
-
-[sub_resource type="Resource" id="Resource_5ix0u"]
-script = ExtResource("8_5nru6")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lfwmx"]
 size = Vector2(100.762, 20)
@@ -68,6 +66,9 @@ size = Vector2(2913, 20)
 [sub_resource type="CircleShape2D" id="CircleShape2D_driqh"]
 radius = 32.0
 
+[sub_resource type="Resource" id="Resource_lroia"]
+script = ExtResource("31_dw2hi")
+
 [node name="DeanMainTest" type="Node2D" unique_id=1756909701]
 
 [node name="BackgroundMusicPlayer" parent="." unique_id=1446051342 instance=ExtResource("1_7nu4i")]
@@ -76,8 +77,8 @@ stream = ExtResource("2_s027v")
 [node name="paralax" type="CanvasLayer" parent="." unique_id=231199125]
 layer = -1
 offset = Vector2(400, 0)
-scale = Vector2(0.219, 0.219)
-transform = Transform2D(0.219, 0, 0, 0.219, 400, 0)
+scale = Vector2(0.4, 0.4)
+transform = Transform2D(0.4, 0, 0, 0.4, 400, 0)
 follow_viewport_enabled = true
 
 [node name="Parallax2D" type="Parallax2D" parent="paralax" unique_id=1639397260]
@@ -197,32 +198,6 @@ texture = ExtResource("5_tqpjq")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="platforms/StaticBody2D5" unique_id=282538046]
 shape = SubResource("RectangleShape2D_nd4ja")
 
-[node name="Camera2D2" type="Camera2D" parent="." unique_id=1204252702]
-top_level = true
-position = Vector2(0, 300)
-limit_top = 30
-limit_bottom = 589
-editor_draw_limits = true
-
-[node name="PhantomCameraHost" type="Node" parent="Camera2D2" unique_id=1802143010]
-process_priority = 300
-process_physics_priority = 300
-script = ExtResource("6_o3iea")
-metadata/_custom_type_script = "uid://bd046eokvcnu2"
-
-[node name="PhantomCamera2D2" type="Node2D" parent="." unique_id=910333417]
-top_level = true
-position = Vector2(0, 310)
-script = ExtResource("5_ueimi")
-shake_trauma_power = 10.0
-follow_mode = 5
-tween_resource = SubResource("Resource_5ix0u")
-tween_on_load = false
-draw_limits = true
-limit_top = 0
-limit_bottom = 580
-metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
-
 [node name="launch" type="Area2D" parent="." unique_id=141474343]
 position = Vector2(1262, 475)
 script = ExtResource("9_h3gf6")
@@ -231,6 +206,7 @@ script = ExtResource("9_h3gf6")
 shape = SubResource("RectangleShape2D_lfwmx")
 
 [node name="JumpTiles(jumpTileUp)0001" type="Sprite2D" parent="launch" unique_id=761304634]
+material = ExtResource("16_rtfta")
 position = Vector2(0, 8)
 scale = Vector2(0.08, 0.08)
 texture = SubResource("AtlasTexture_mdd67")
@@ -343,7 +319,7 @@ shape = SubResource("RectangleShape2D_kmoln")
 [node name="RoomInstance" parent="." unique_id=1246059462 instance=ExtResource("20_ueimi")]
 
 [node name="SavePoint" type="Area2D" parent="." unique_id=1107441184]
-position = Vector2(171, 499)
+position = Vector2(332, 315)
 script = ExtResource("26_scqs1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SavePoint" unique_id=1625663513]
@@ -381,5 +357,21 @@ is_flying = true
 
 [node name="CassieRed2" type="Sprite2D" parent="Enemy2" unique_id=1391629225]
 texture = ExtResource("32_dw2hi")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1613516242]
+top_level = true
+editor_draw_limits = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1821244026]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("29_rtfta")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=890062038]
+top_level = true
+script = ExtResource("30_rtfta")
+follow_mode = 2
+tween_resource = SubResource("Resource_lroia")
+draw_limits = true
 
 [editable path="Enemy2"]
