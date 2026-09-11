@@ -31,6 +31,7 @@
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="31_dw2hi"]
 [ext_resource type="Texture2D" uid="uid://qmkkud72jx68" path="res://The Amazing Art and Sound Folder/cassie_white2.png" id="31_mdd67"]
 [ext_resource type="Texture2D" uid="uid://6yeroqsmvbna" path="res://The Amazing Art and Sound Folder/cassie_red2.png" id="32_dw2hi"]
+[ext_resource type="PackedScene" uid="uid://dgbhua1xw0ckx" path="res://SampleProject/Objects/MiniPortal.tscn" id="32_mdd67"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
 size = Vector2(50, 50)
@@ -76,9 +77,9 @@ stream = ExtResource("2_s027v")
 
 [node name="paralax" type="CanvasLayer" parent="." unique_id=231199125]
 layer = -1
-offset = Vector2(400, 0)
+offset = Vector2(0, -444.6)
 scale = Vector2(0.4, 0.4)
-transform = Transform2D(0.4, 0, 0, 0.4, 400, 0)
+transform = Transform2D(0.4, 0, 0, 0.4, 0, -444.6)
 follow_viewport_enabled = true
 
 [node name="Parallax2D" type="Parallax2D" parent="paralax" unique_id=1639397260]
@@ -312,10 +313,6 @@ texture = ExtResource("26_ilgan")
 position = Vector2(1454.5, 551)
 shape = SubResource("RectangleShape2D_kmoln")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="walls" unique_id=1188445367]
-position = Vector2(1400, 0)
-shape = SubResource("RectangleShape2D_kmoln")
-
 [node name="RoomInstance" parent="." unique_id=1246059462 instance=ExtResource("20_ueimi")]
 
 [node name="SavePoint" type="Area2D" parent="." unique_id=1107441184]
@@ -360,6 +357,7 @@ texture = ExtResource("32_dw2hi")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1613516242]
 top_level = true
+limit_bottom = 564
 editor_draw_limits = true
 
 [node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1821244026]
@@ -373,5 +371,9 @@ script = ExtResource("30_rtfta")
 follow_mode = 2
 tween_resource = SubResource("Resource_lroia")
 draw_limits = true
+limit_bottom = 564
+
+[node name="MiniPortal" parent="." unique_id=856143004 instance=ExtResource("32_mdd67")]
+position = Vector2(1098, 112)
 
 [editable path="Enemy2"]
