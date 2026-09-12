@@ -31,7 +31,23 @@
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="31_dw2hi"]
 [ext_resource type="Texture2D" uid="uid://qmkkud72jx68" path="res://The Amazing Art and Sound Folder/cassie_white2.png" id="31_mdd67"]
 [ext_resource type="Texture2D" uid="uid://6yeroqsmvbna" path="res://The Amazing Art and Sound Folder/cassie_red2.png" id="32_dw2hi"]
-[ext_resource type="PackedScene" uid="uid://dgbhua1xw0ckx" path="res://SampleProject/Objects/MiniPortal.tscn" id="32_mdd67"]
+[ext_resource type="Script" uid="uid://b6hvngpyjmbfk" path="res://SampleProject/Scripts/Portal.gd" id="33_dw2hi"]
+[ext_resource type="Texture2D" uid="uid://cyc3rfqblek2s" path="res://The Amazing Art and Sound Folder/Portal.png" id="34_lroia"]
+[ext_resource type="Texture2D" uid="uid://cargdawan7gao" path="res://SampleProject/Sprites/Portal.png" id="35_gapbm"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lroia"]
+radius = 94.51
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lroia"]
+atlas = ExtResource("34_lroia")
+region = Rect2(209, 0, 2993, 2359)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lfwmx"]
+radius = 145.33
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iqqm2"]
+atlas = ExtResource("35_gapbm")
+region = Rect2(3, 3, 234, 234)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
 size = Vector2(50, 50)
@@ -71,6 +87,39 @@ radius = 32.0
 script = ExtResource("31_dw2hi")
 
 [node name="DeanMainTest" type="Node2D" unique_id=1756909701]
+
+[node name="portaltest" type="Area2D" parent="." unique_id=310025981]
+position = Vector2(144, 425)
+script = ExtResource("33_dw2hi")
+portal_id = &"test1"
+target_portal_id = &"mainr"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="portaltest" unique_id=151161962]
+shape = SubResource("CircleShape2D_lroia")
+
+[node name="Sprite2D" type="Sprite2D" parent="portaltest" unique_id=644712579]
+scale = Vector2(0.1, 0.1)
+texture = SubResource("AtlasTexture_lroia")
+
+[node name="InteractableThing" type="Node2D" parent="portaltest" unique_id=86752682]
+script = ExtResource("17_q4whl")
+metadata/_custom_type_script = "uid://dq5r7n4mxqqoa"
+
+[node name="portaltest2" type="Area2D" parent="." unique_id=2001296085]
+position = Vector2(2747, 356)
+script = ExtResource("33_dw2hi")
+portal_id = &"mainr"
+target_portal_id = &"right"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="portaltest2" unique_id=1667665090]
+shape = SubResource("CircleShape2D_lfwmx")
+
+[node name="Sprite2D" type="Sprite2D" parent="portaltest2" unique_id=522566549]
+texture = SubResource("AtlasTexture_iqqm2")
+
+[node name="InteractableThing" type="Node2D" parent="portaltest2" unique_id=1369962796]
+script = ExtResource("17_q4whl")
+metadata/_custom_type_script = "uid://dq5r7n4mxqqoa"
 
 [node name="BackgroundMusicPlayer" parent="." unique_id=1446051342 instance=ExtResource("1_7nu4i")]
 stream = ExtResource("2_s027v")
@@ -316,7 +365,7 @@ shape = SubResource("RectangleShape2D_kmoln")
 [node name="RoomInstance" parent="." unique_id=1246059462 instance=ExtResource("20_ueimi")]
 
 [node name="SavePoint" type="Area2D" parent="." unique_id=1107441184]
-position = Vector2(332, 315)
+position = Vector2(1137, 195)
 script = ExtResource("26_scqs1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SavePoint" unique_id=1625663513]
@@ -372,8 +421,5 @@ follow_mode = 2
 tween_resource = SubResource("Resource_lroia")
 draw_limits = true
 limit_bottom = 564
-
-[node name="MiniPortal" parent="." unique_id=856143004 instance=ExtResource("32_mdd67")]
-position = Vector2(1098, 112)
 
 [editable path="Enemy2"]

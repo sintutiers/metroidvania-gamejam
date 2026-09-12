@@ -17,8 +17,10 @@
 [ext_resource type="Script" uid="uid://c642xwttxatjc" path="res://scripts/components/locked_gate_component.gd" id="18_l52r0"]
 [ext_resource type="Script" uid="uid://df3asxwplixpa" path="res://scripts/gate_requirement.gd" id="19_xef7y"]
 [ext_resource type="Script" uid="uid://dq5r7n4mxqqoa" path="res://scripts/interactable_thing.gd" id="21_na23k"]
+[ext_resource type="Script" uid="uid://b6hvngpyjmbfk" path="res://SampleProject/Scripts/Portal.gd" id="22_1hphq"]
 [ext_resource type="Script" uid="uid://dk3niudvdqw4d" path="res://scripts/collectible_object.gd" id="22_23l2s"]
 [ext_resource type="Texture2D" uid="uid://crmih01m3g7fj" path="res://The Amazing Art and Sound Folder/obmil_entity.png" id="23_5skal"]
+[ext_resource type="Texture2D" uid="uid://cargdawan7gao" path="res://SampleProject/Sprites/Portal.png" id="23_0881a"]
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="25_imbg2"]
 [ext_resource type="Script" uid="uid://0u1nlyd1ld6o" path="res://SampleProject/Scripts/SavePoint.gd" id="26_i3h1y"]
 
@@ -51,6 +53,13 @@ size = Vector2(40, 430)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_driqh"]
 radius = 32.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nx2qg"]
+radius = 145.33
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m2dbr"]
+atlas = ExtResource("23_0881a")
+region = Rect2(3, 3, 234, 234)
 
 [node name="DeanMainTest" type="Node2D" unique_id=1756909701]
 
@@ -288,3 +297,19 @@ theme_override_font_sizes/font_size = 40
 text = "S"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="portaltest2" type="Area2D" parent="." unique_id=948914499]
+position = Vector2(2747, 356)
+script = ExtResource("22_1hphq")
+portal_id = &"right"
+target_portal_id = &"mainr"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="portaltest2" unique_id=274378091]
+shape = SubResource("CircleShape2D_nx2qg")
+
+[node name="Sprite2D" type="Sprite2D" parent="portaltest2" unique_id=1707828290]
+texture = SubResource("AtlasTexture_m2dbr")
+
+[node name="InteractableThing" type="Node2D" parent="portaltest2" unique_id=241624012]
+script = ExtResource("21_na23k")
+metadata/_custom_type_script = "uid://dq5r7n4mxqqoa"
