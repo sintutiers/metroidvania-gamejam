@@ -1019,7 +1019,7 @@ script = ExtResource("1_rpvn3")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=282735918]
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_q1sf4")
-animation = &"dash"
+animation = &"run-NEW"
 autoplay = "airspin"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=359072486]
@@ -1044,6 +1044,7 @@ metadata/_custom_type_script = "uid://d33a1bxcxnqk4"
 
 [node name="SidewaysMovementComponent" type="Node" parent="." unique_id=870414210]
 script = ExtResource("7_t8yk2")
+default_max_jumps = 1
 wall_jump_enabled = false
 metadata/_custom_type_script = "uid://beajnp3irp7ln"
 
@@ -1089,7 +1090,7 @@ script = ExtResource("30_g8nad")
 
 [node name="Muzzle" type="Node2D" parent="Gun" unique_id=1172783317]
 unique_name_in_owner = true
-position = Vector2(26, -8)
+position = Vector2(17.879, -8)
 
 [node name="GunSprite" type="Sprite2D" parent="Gun" unique_id=1841436181]
 unique_name_in_owner = true

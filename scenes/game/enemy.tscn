@@ -27,6 +27,8 @@ unique_name_in_owner = true
 
 [node name="Health" type="Node" parent="." unique_id=1220611005]
 script = ExtResource("1_dan2o")
+current = 50
+max = 50
 metadata/_custom_type_script = "uid://dr8bvnfebp76"
 
 [node name="FacingComponent" type="Node" parent="." unique_id=582354588]
@@ -51,5 +53,5 @@ metadata/_custom_type_script = "uid://do5fchdp4aaev"
 
 [node name="InvincibilityComponent" type="Node" parent="." unique_id=1918235450]
 script = ExtResource("7_yljw7")
-duration = 0.01
+duration = 0.0
 metadata/_custom_type_script = "uid://bpkobonkdnhs4"

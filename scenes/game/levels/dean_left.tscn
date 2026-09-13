@@ -1,7 +1,10 @@
 [gd_scene format=3 uid="uid://b4rmoqo0vtwm5"]
 
+[ext_resource type="Script" uid="uid://b6hvngpyjmbfk" path="res://SampleProject/Scripts/Portal.gd" id="1_601dg"]
+[ext_resource type="Shader" uid="uid://b6mbgi6cp55s2" path="res://mainsceneportalcolor.gdshader" id="2_8b6n8"]
 [ext_resource type="AudioStream" uid="uid://3d3avd2db6k5" path="res://The Amazing Art and Sound Folder/worldMusic2.mp3" id="2_owl58"]
 [ext_resource type="Texture2D" uid="uid://ct53ntrfvmlwv" path="res://The Amazing Art and Sound Folder/UPDATEDsection2_erin/p1.png" id="3_8b6n8"]
+[ext_resource type="Texture2D" uid="uid://cyc3rfqblek2s" path="res://The Amazing Art and Sound Folder/Portal.png" id="3_sohcg"]
 [ext_resource type="Texture2D" uid="uid://x3khrw5h556" path="res://The Amazing Art and Sound Folder/UPDATEDsection2_erin/p2.png" id="4_sohcg"]
 [ext_resource type="Texture2D" uid="uid://cv1cx1w7kjvgp" path="res://The Amazing Art and Sound Folder/UPDATEDsection2_erin/p3.png" id="5_owl58"]
 [ext_resource type="Texture2D" uid="uid://ds5ggdqs2bktw" path="res://The Amazing Art and Sound Folder/UPDATEDsection2_erin/p4.png" id="6_56i3r"]
@@ -22,6 +25,25 @@
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="22_2strj"]
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="24_eh07p"]
 [ext_resource type="Script" uid="uid://0u1nlyd1ld6o" path="res://SampleProject/Scripts/SavePoint.gd" id="26_vcpj7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_owl58"]
+radius = 94.51
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_56i3r"]
+shader = ExtResource("2_8b6n8")
+shader_parameter/portal_tint = Color(1, 1, 1, 1)
+shader_parameter/vortex_effect_radius = 0.9999999776480001
+shader_parameter/twist_strength = 0.10000000149012
+shader_parameter/pulsation_speed = 0.0999999977648
+shader_parameter/breath_magnitude = 0.29999997466787004
+shader_parameter/overall_rotation_speed = 0.0999999530608
+shader_parameter/texture_scroll_speed_x = 0.0
+shader_parameter/texture_scroll_speed_y = 0.0
+shader_parameter/edge_softness = 0.00999999977648
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_epvvq"]
+atlas = ExtResource("3_sohcg")
+region = Rect2(-525, -550, 4355, 3315)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
 size = Vector2(50, 50)
@@ -62,6 +84,24 @@ size = Vector2(40, 430)
 radius = 32.0
 
 [node name="DeanMainTest" type="Node2D" unique_id=1756909701]
+
+[node name="portaltest" type="Area2D" parent="." unique_id=411850746]
+position = Vector2(1821, -51)
+script = ExtResource("1_601dg")
+portal_id = &"mainl"
+target_portal_id = &"main"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="portaltest" unique_id=1052078633]
+shape = SubResource("CircleShape2D_owl58")
+
+[node name="Sprite2D" type="Sprite2D" parent="portaltest" unique_id=971538984]
+material = SubResource("ShaderMaterial_56i3r")
+scale = Vector2(0.1, 0.1)
+texture = SubResource("AtlasTexture_epvvq")
+
+[node name="InteractableThing" type="Node2D" parent="portaltest" unique_id=742877714]
+script = ExtResource("20_dps7x")
+metadata/_custom_type_script = "uid://dq5r7n4mxqqoa"
 
 [node name="BackgroundMusicPlayer" parent="." unique_id=1446051342 instance=ExtResource("7_sohcg")]
 stream = ExtResource("2_owl58")
@@ -298,6 +338,8 @@ vertical_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=267294005]
 top_level = true
+limit_bottom = 564
+editor_draw_limits = true
 
 [node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=144344936]
 process_priority = 300

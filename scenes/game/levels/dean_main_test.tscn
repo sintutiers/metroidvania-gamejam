@@ -3,28 +3,29 @@
 [ext_resource type="PackedScene" uid="uid://bkcsjsk2ciff" path="res://addons/maaacks_game_template/base/nodes/music_players/background_music_player.tscn" id="1_7nu4i"]
 [ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="1_caqox"]
 [ext_resource type="Texture2D" uid="uid://dq186gvm73cvf" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/backcolor.png" id="1_ofsjo"]
+[ext_resource type="Shader" uid="uid://b6mbgi6cp55s2" path="res://mainsceneportalcolor.gdshader" id="2_lroia"]
 [ext_resource type="AudioStream" uid="uid://s2xdor1521oi" path="res://The Amazing Art and Sound Folder/worldMusic1.mp3" id="2_s027v"]
 [ext_resource type="Texture2D" uid="uid://cw03wev2bt0oe" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/back2sky.png" id="2_scqs1"]
 [ext_resource type="Texture2D" uid="uid://8aiqyqctxayy" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/cityscape3.png" id="3_driqh"]
-[ext_resource type="Texture2D" uid="uid://b1hhqiedxtx81" path="res://The Amazing Art and Sound Folder/entity1_grief.png" id="3_yakda"]
 [ext_resource type="Texture2D" uid="uid://bnudy5dmsjhxe" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/cloud2cityscape.png" id="4_7nu4i"]
 [ext_resource type="Texture2D" uid="uid://by012a0lsf264" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/frontcity.png" id="5_s027v"]
-[ext_resource type="Texture2D" uid="uid://sbysu1agubiy" path="res://The Amazing Art and Sound Folder/erinnewpath.png" id="5_tqpjq"]
 [ext_resource type="Script" uid="uid://br8ja4246nfyg" path="res://scripts/jumpad.gd" id="9_h3gf6"]
 [ext_resource type="PackedScene" uid="uid://cyp6mvgmkcxs" path="res://scenes/game/enemy.tscn" id="10_s027v"]
 [ext_resource type="Texture2D" uid="uid://bs6wqopeuwodf" path="res://The Amazing Art and Sound Folder/secret_entity.png" id="13_klppx"]
 [ext_resource type="Script" uid="uid://84okuoju0wev" path="res://scenes/game/levels/gate.gd" id="13_ueimi"]
+[ext_resource type="Texture2D" uid="uid://byc4ksj2malva" path="res://The Amazing Art and Sound Folder/erinfloor.png" id="14_dw2hi"]
 [ext_resource type="Script" uid="uid://c642xwttxatjc" path="res://scripts/components/locked_gate_component.gd" id="14_s33yo"]
+[ext_resource type="Shader" uid="uid://birge6ymy12k0" path="res://diff_config.gdshader" id="15_gapbm"]
 [ext_resource type="Script" uid="uid://df3asxwplixpa" path="res://scripts/gate_requirement.gd" id="15_gxxra"]
 [ext_resource type="Texture2D" uid="uid://cmmi6jp6iphdp" path="res://The Amazing Art and Sound Folder/jumppad-DEAN.png" id="16_mdd67"]
 [ext_resource type="Material" uid="uid://h4yrp14cnk0o" path="res://The Amazing Art and Sound Folder/inverst colours.tres" id="16_rtfta"]
 [ext_resource type="Script" uid="uid://dq5r7n4mxqqoa" path="res://scripts/interactable_thing.gd" id="17_q4whl"]
 [ext_resource type="Script" uid="uid://dk3niudvdqw4d" path="res://scripts/collectible_object.gd" id="17_ueimi"]
-[ext_resource type="Texture2D" uid="uid://crmih01m3g7fj" path="res://The Amazing Art and Sound Folder/obmil_entity.png" id="18_ot4ag"]
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="20_ueimi"]
 [ext_resource type="Texture2D" uid="uid://cxiyi8p1q47iy" path="res://The Amazing Art and Sound Folder/NewSection1art_Erin/sidewalk.png" id="21_ot4ag"]
+[ext_resource type="Shader" uid="uid://b44fl4xg1rrvh" path="res://scenes/game/levels/OBJECTIVEGETTHIS.gdshader" id="25_gapbm"]
+[ext_resource type="Texture2D" uid="uid://bt6r87nvcxoig" path="res://The Amazing Art and Sound Folder/pc duke.png" id="25_lroia"]
 [ext_resource type="Texture2D" uid="uid://wiq0mic5m6is" path="res://SampleProject/Sprites/Collectible.png" id="25_s027v"]
-[ext_resource type="Texture2D" uid="uid://clhhogcvmxk7x" path="res://The Amazing Art and Sound Folder/chair2 duke.png" id="26_ilgan"]
 [ext_resource type="Script" uid="uid://0u1nlyd1ld6o" path="res://SampleProject/Scripts/SavePoint.gd" id="26_scqs1"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="29_rtfta"]
 [ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="30_rtfta"]
@@ -38,12 +39,36 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_lroia"]
 radius = 94.51
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gapbm"]
+shader = ExtResource("2_lroia")
+shader_parameter/portal_tint = Color(1, 1, 1, 1)
+shader_parameter/vortex_effect_radius = 0.9999999776480001
+shader_parameter/twist_strength = 0.10000000149012
+shader_parameter/pulsation_speed = 0.0999999977648
+shader_parameter/breath_magnitude = 0.29999997466787004
+shader_parameter/overall_rotation_speed = 0.0999999530608
+shader_parameter/texture_scroll_speed_x = 0.0
+shader_parameter/texture_scroll_speed_y = 0.0
+shader_parameter/edge_softness = 0.00999999977648
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_lroia"]
 atlas = ExtResource("34_lroia")
-region = Rect2(209, 0, 2993, 2359)
+region = Rect2(-525, -550, 4355, 3315)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lfwmx"]
 radius = 145.33
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqqm2"]
+shader = ExtResource("2_lroia")
+shader_parameter/portal_tint = Color(1, 1, 1, 1)
+shader_parameter/vortex_effect_radius = 1.0
+shader_parameter/twist_strength = 0.10000000149012
+shader_parameter/pulsation_speed = 0.0999999977648
+shader_parameter/breath_magnitude = 0.09999997913826997
+shader_parameter/overall_rotation_speed = 0.0999999530608
+shader_parameter/texture_scroll_speed_x = 0.0
+shader_parameter/texture_scroll_speed_y = 0.0
+shader_parameter/edge_softness = 0.01
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_iqqm2"]
 atlas = ExtResource("35_gapbm")
@@ -51,6 +76,34 @@ region = Rect2(3, 3, 234, 234)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
 size = Vector2(50, 50)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lroia"]
+shader = ExtResource("15_gapbm")
+shader_parameter/portal_tint = Color(1, 1, 1, 1)
+shader_parameter/vortex_effect_radius = 1.0
+shader_parameter/twist_strength = 0.10000000149012
+shader_parameter/pulsation_speed = 0.0999999977648
+shader_parameter/breath_magnitude = 0.09999997913826997
+shader_parameter/overall_rotation_speed = 0.0
+shader_parameter/texture_scroll_speed_x = 0.0
+shader_parameter/texture_scroll_speed_y = 0.0
+shader_parameter/edge_softness = 0.0999999977648
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gapbm"]
+atlas = ExtResource("14_dw2hi")
+region = Rect2(-5, -5, 40, 40)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1v3vh"]
+shader = ExtResource("15_gapbm")
+shader_parameter/portal_tint = Color(1, 1, 1, 1)
+shader_parameter/vortex_effect_radius = 1.0
+shader_parameter/twist_strength = 0.10000000149012
+shader_parameter/pulsation_speed = 0.0999999977648
+shader_parameter/breath_magnitude = 0.09999997913826997
+shader_parameter/overall_rotation_speed = 0.0
+shader_parameter/texture_scroll_speed_x = 0.0
+shader_parameter/texture_scroll_speed_y = 0.0
+shader_parameter/edge_softness = 0.0999999977648
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lfwmx"]
 size = Vector2(100.762, 20)
@@ -63,8 +116,12 @@ region = Rect2(64, 10, 1438, 512)
 atlas = ExtResource("16_mdd67")
 region = Rect2(64, 10, 1438, 512)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_1v3vh"]
+atlas = ExtResource("13_klppx")
+region = Rect2(24, 7, 22, 55)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j6erd"]
-size = Vector2(20, 400)
+size = Vector2(20, 439)
 
 [sub_resource type="Resource" id="Resource_7nu4i"]
 script = ExtResource("15_gxxra")
@@ -73,7 +130,22 @@ object_id = &"test"
 metadata/_custom_type_script = "uid://df3asxwplixpa"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wjmfi"]
-size = Vector2(40, 430)
+size = Vector2(40, 451)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gapbm"]
+radius = 20.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xfcrr"]
+shader = ExtResource("25_gapbm")
+shader_parameter/thickness = 6.8770003266575
+shader_parameter/ring_count = 16
+shader_parameter/ring_offset = 0.0
+shader_parameter/outline_color = Color(0, 1, 0, 1)
+shader_parameter/border_clipping_fix = true
+shader_parameter/aspect_ratio = 1.0
+shader_parameter/square_border = false
+shader_parameter/offset = Vector2(0, 0)
+shader_parameter/max_or_add = false
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_q1sf4"]
 
@@ -83,13 +155,37 @@ size = Vector2(2913, 20)
 [sub_resource type="CircleShape2D" id="CircleShape2D_driqh"]
 radius = 32.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fu3yw"]
+shader = ExtResource("25_gapbm")
+shader_parameter/thickness = 1.0000000475
+shader_parameter/ring_count = 16
+shader_parameter/ring_offset = 0.0
+shader_parameter/outline_color = Color(1, 0, 0, 1)
+shader_parameter/border_clipping_fix = true
+shader_parameter/aspect_ratio = 1.0
+shader_parameter/square_border = false
+shader_parameter/offset = Vector2(0, 0)
+shader_parameter/max_or_add = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gqnjx"]
+shader = ExtResource("25_gapbm")
+shader_parameter/thickness = 1.0000000475
+shader_parameter/ring_count = 16
+shader_parameter/ring_offset = 0.0
+shader_parameter/outline_color = Color(1, 0, 0, 1)
+shader_parameter/border_clipping_fix = true
+shader_parameter/aspect_ratio = 1.0
+shader_parameter/square_border = false
+shader_parameter/offset = Vector2(0, 0)
+shader_parameter/max_or_add = false
+
 [sub_resource type="Resource" id="Resource_lroia"]
 script = ExtResource("31_dw2hi")
 
 [node name="DeanMainTest" type="Node2D" unique_id=1756909701]
 
 [node name="portaltest" type="Area2D" parent="." unique_id=310025981]
-position = Vector2(144, 425)
+position = Vector2(1821, -51)
 script = ExtResource("33_dw2hi")
 portal_id = &"test1"
 target_portal_id = &"mainr"
@@ -98,6 +194,7 @@ target_portal_id = &"mainr"
 shape = SubResource("CircleShape2D_lroia")
 
 [node name="Sprite2D" type="Sprite2D" parent="portaltest" unique_id=644712579]
+material = SubResource("ShaderMaterial_gapbm")
 scale = Vector2(0.1, 0.1)
 texture = SubResource("AtlasTexture_lroia")
 
@@ -115,6 +212,7 @@ target_portal_id = &"right"
 shape = SubResource("CircleShape2D_lfwmx")
 
 [node name="Sprite2D" type="Sprite2D" parent="portaltest2" unique_id=522566549]
+material = SubResource("ShaderMaterial_iqqm2")
 texture = SubResource("AtlasTexture_iqqm2")
 
 [node name="InteractableThing" type="Node2D" parent="portaltest2" unique_id=1369962796]
@@ -201,32 +299,48 @@ scale = Vector2(0.5, 0.5)
 [node name="platforms" type="Node2D" parent="." unique_id=66196049]
 
 [node name="StaticBody2D" type="StaticBody2D" parent="platforms" unique_id=865399169]
-position = Vector2(615, 515)
+position = Vector2(290, 210)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="platforms/StaticBody2D" unique_id=992438831]
 shape = SubResource("RectangleShape2D_nd4ja")
 
 [node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D" unique_id=1274947148]
-texture = ExtResource("3_yakda")
+material = SubResource("ShaderMaterial_lroia")
+scale = Vector2(1.381, 1.381)
+texture = SubResource("AtlasTexture_gapbm")
 
 [node name="StaticBody2D3" type="StaticBody2D" parent="platforms" unique_id=646671690]
-position = Vector2(621, 363)
+position = Vector2(650, 329)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="platforms/StaticBody2D3" unique_id=1207746649]
 shape = SubResource("RectangleShape2D_nd4ja")
 
 [node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D3" unique_id=2052467733]
-texture = ExtResource("3_yakda")
+material = SubResource("ShaderMaterial_1v3vh")
+scale = Vector2(1.381, 1.381)
+texture = SubResource("AtlasTexture_gapbm")
+
+[node name="StaticBody2D6" type="StaticBody2D" parent="platforms" unique_id=12775875]
+position = Vector2(873, 186)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="platforms/StaticBody2D6" unique_id=168583971]
+shape = SubResource("RectangleShape2D_nd4ja")
+
+[node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D6" unique_id=1158581869]
+material = SubResource("ShaderMaterial_1v3vh")
+scale = Vector2(1.381, 1.381)
+texture = SubResource("AtlasTexture_gapbm")
 
 [node name="StaticBody2D4" type="StaticBody2D" parent="platforms" unique_id=908980549]
 position = Vector2(475, 287)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="platforms/StaticBody2D4" unique_id=1706646764]
-position = Vector2(0, 5)
 shape = SubResource("RectangleShape2D_nd4ja")
 
 [node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D4" unique_id=729220784]
-texture = ExtResource("3_yakda")
+material = SubResource("ShaderMaterial_1v3vh")
+scale = Vector2(1.381, 1.381)
+texture = SubResource("AtlasTexture_gapbm")
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="platforms" unique_id=2108060759]
 position = Vector2(464, 475)
@@ -235,21 +349,24 @@ position = Vector2(464, 475)
 shape = SubResource("RectangleShape2D_nd4ja")
 
 [node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D2" unique_id=1860124635]
-texture = ExtResource("3_yakda")
+material = SubResource("ShaderMaterial_1v3vh")
+scale = Vector2(1.381, 1.381)
+texture = SubResource("AtlasTexture_gapbm")
 
 [node name="StaticBody2D5" type="StaticBody2D" parent="platforms" unique_id=1954912367]
-position = Vector2(340, 425)
+position = Vector2(301, 388)
 disable_mode = 1
-
-[node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D5" unique_id=229806752]
-scale = Vector2(0.548, 0.548)
-texture = ExtResource("5_tqpjq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="platforms/StaticBody2D5" unique_id=282538046]
 shape = SubResource("RectangleShape2D_nd4ja")
 
+[node name="Erinnewpath" type="Sprite2D" parent="platforms/StaticBody2D5" unique_id=229806752]
+material = SubResource("ShaderMaterial_1v3vh")
+scale = Vector2(1.381, 1.381)
+texture = SubResource("AtlasTexture_gapbm")
+
 [node name="launch" type="Area2D" parent="." unique_id=141474343]
-position = Vector2(1262, 475)
+position = Vector2(783, 484)
 script = ExtResource("9_h3gf6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="launch" unique_id=458524574]
@@ -262,7 +379,7 @@ scale = Vector2(0.08, 0.08)
 texture = SubResource("AtlasTexture_mdd67")
 
 [node name="launch2" type="Area2D" parent="." unique_id=761252793]
-position = Vector2(1481, 419)
+position = Vector2(1713, 391)
 script = ExtResource("9_h3gf6")
 require_input = true
 
@@ -274,19 +391,21 @@ position = Vector2(0, 7)
 scale = Vector2(0.08, 0.08)
 texture = SubResource("AtlasTexture_dw2hi")
 
-[node name="gate test" type="StaticBody2D" parent="." unique_id=1512242068]
+[node name="gate" type="StaticBody2D" parent="." unique_id=1512242068]
 position = Vector2(1373, 302)
 script = ExtResource("13_ueimi")
 
-[node name="Sprite2D" type="Sprite2D" parent="gate test" unique_id=67342960]
-position = Vector2(-3, -6)
-scale = Vector2(1.1, 7.718)
-texture = ExtResource("13_klppx")
+[node name="Sprite2D" type="Sprite2D" parent="gate" unique_id=67342960]
+modulate = Color(1, 1, 1, 0.49411765)
+position = Vector2(35.499985, 10.877487)
+scale = Vector2(4.5000024, 8.331727)
+texture = SubResource("AtlasTexture_1v3vh")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="gate test" unique_id=1932025692]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="gate" unique_id=1932025692]
+position = Vector2(0, 19.5)
 shape = SubResource("RectangleShape2D_j6erd")
 
-[node name="LockedGateComponent" type="Node" parent="gate test" unique_id=1194142569]
+[node name="LockedGateComponent" type="Node" parent="gate" unique_id=1194142569]
 script = ExtResource("14_s33yo")
 requirements = Array[ExtResource("15_gxxra")]([SubResource("Resource_7nu4i")])
 require_all = false
@@ -294,17 +413,18 @@ unlock_mode = 2
 metadata/_custom_type_script = "uid://c642xwttxatjc"
 metadata/object_id = &"dean_main_test/gate test/LockedGateComponent"
 
-[node name="InteractableThing" type="Node2D" parent="gate test" unique_id=1131522710]
+[node name="InteractableThing" type="Node2D" parent="gate" unique_id=1131522710]
 script = ExtResource("17_q4whl")
 metadata/_custom_type_script = "uid://dq5r7n4mxqqoa"
 
-[node name="Area2D" type="Area2D" parent="gate test" unique_id=744711966]
+[node name="Area2D" type="Area2D" parent="gate" unique_id=744711966]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="gate test/Area2D" unique_id=1013184444]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="gate/Area2D" unique_id=1013184444]
+position = Vector2(0, 10.5)
 shape = SubResource("RectangleShape2D_wjmfi")
 
 [node name="colectableshit" type="Node2D" parent="." unique_id=437612271]
-position = Vector2(1031, 450)
+position = Vector2(686, 142)
 script = ExtResource("17_ueimi")
 pickup_mode = 1
 object_id = &"test"
@@ -315,11 +435,12 @@ sprite = Object(AnimatedSprite2D,"unique_name_in_owner":false,"process_mode":0,"
 [node name="Area2D" type="Area2D" parent="colectableshit" unique_id=367648136]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="colectableshit/Area2D" unique_id=570981217]
-shape = SubResource("CircleShape2D_q1sf4")
+shape = SubResource("CircleShape2D_gapbm")
 
 [node name="Sprite2D" type="Sprite2D" parent="colectableshit" unique_id=504413036]
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("18_ot4ag")
+material = SubResource("ShaderMaterial_xfcrr")
+scale = Vector2(2, 2)
+texture = ExtResource("25_lroia")
 
 [node name="pistol" type="Node2D" parent="." unique_id=1906239649]
 position = Vector2(1117, 491)
@@ -336,7 +457,6 @@ sprite = Object(AnimatedSprite2D,"unique_name_in_owner":false,"process_mode":0,"
 shape = SubResource("CircleShape2D_q1sf4")
 
 [node name="Sprite2D" type="Sprite2D" parent="pistol" unique_id=660947874]
-scale = Vector2(0.5, 0.5)
 texture = ExtResource("25_s027v")
 
 [node name="shotgun" type="Node2D" parent="." unique_id=1274993406]
@@ -354,7 +474,7 @@ sprite = Object(AnimatedSprite2D,"unique_name_in_owner":false,"process_mode":0,"
 shape = SubResource("CircleShape2D_q1sf4")
 
 [node name="Sprite2D" type="Sprite2D" parent="shotgun" unique_id=318389710]
-texture = ExtResource("26_ilgan")
+texture = ExtResource("25_s027v")
 
 [node name="walls" type="StaticBody2D" parent="." unique_id=1167011180]
 
@@ -365,7 +485,7 @@ shape = SubResource("RectangleShape2D_kmoln")
 [node name="RoomInstance" parent="." unique_id=1246059462 instance=ExtResource("20_ueimi")]
 
 [node name="SavePoint" type="Area2D" parent="." unique_id=1107441184]
-position = Vector2(1137, 195)
+position = Vector2(1098, -293)
 script = ExtResource("26_scqs1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SavePoint" unique_id=1625663513]
@@ -390,18 +510,20 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Enemy" parent="." unique_id=807929367 instance=ExtResource("10_s027v")]
-position = Vector2(876, 248)
+position = Vector2(941, 245)
 
 [node name="CassieWhite2" type="Sprite2D" parent="Enemy" unique_id=1991511024]
+material = SubResource("ShaderMaterial_fu3yw")
 texture = ExtResource("31_mdd67")
 
 [node name="Enemy2" parent="." unique_id=1567061191 instance=ExtResource("10_s027v")]
-position = Vector2(956, 314)
+position = Vector2(209, -19)
 
 [node name="EnemyBehaviorComponent" parent="Enemy2" index="5" unique_id=158614596]
 is_flying = true
 
 [node name="CassieRed2" type="Sprite2D" parent="Enemy2" unique_id=1391629225]
+material = SubResource("ShaderMaterial_gqnjx")
 texture = ExtResource("32_dw2hi")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1613516242]

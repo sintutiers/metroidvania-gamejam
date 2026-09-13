@@ -11,6 +11,7 @@ atlas = ExtResource("2_81lgk")
 region = Rect2(1042, 637, 208, 134)
 
 [node name="Bullet" type="Area2D" unique_id=2115749226]
+scale = Vector2(1.5, 1.5)
 script = ExtResource("1_81lgk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=858850243]
