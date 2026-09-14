@@ -1019,7 +1019,7 @@ script = ExtResource("1_rpvn3")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=282735918]
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_q1sf4")
-animation = &"run-NEW"
+animation = &"shoot_running"
 autoplay = "airspin"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=359072486]

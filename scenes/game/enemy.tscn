@@ -27,8 +27,8 @@ unique_name_in_owner = true
 
 [node name="Health" type="Node" parent="." unique_id=1220611005]
 script = ExtResource("1_dan2o")
-current = 50
-max = 50
+current = 25
+max = 25
 metadata/_custom_type_script = "uid://dr8bvnfebp76"
 
 [node name="FacingComponent" type="Node" parent="." unique_id=582354588]
