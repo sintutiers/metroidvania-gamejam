@@ -186,10 +186,10 @@ script = ExtResource("31_dw2hi")
 [node name="DeanMainTest" type="Node2D" unique_id=1756909701]
 
 [node name="portaltest" type="Area2D" parent="." unique_id=310025981]
-position = Vector2(1821, -51)
+position = Vector2(904, -73)
 script = ExtResource("33_dw2hi")
 portal_id = &"test1"
-target_portal_id = &"mainr"
+target_portal_id = &"mainl"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="portaltest" unique_id=151161962]
 shape = SubResource("CircleShape2D_lroia")
@@ -380,6 +380,7 @@ scale = Vector2(0.08, 0.08)
 texture = SubResource("AtlasTexture_mdd67")
 
 [node name="launch2" type="Area2D" parent="." unique_id=761252793]
+visible = false
 position = Vector2(1713, 391)
 script = ExtResource("9_h3gf6")
 require_input = true

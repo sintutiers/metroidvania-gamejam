@@ -21,8 +21,11 @@
 [ext_resource type="Script" uid="uid://dk3niudvdqw4d" path="res://scripts/collectible_object.gd" id="22_23l2s"]
 [ext_resource type="Texture2D" uid="uid://crmih01m3g7fj" path="res://The Amazing Art and Sound Folder/obmil_entity.png" id="23_5skal"]
 [ext_resource type="Texture2D" uid="uid://cargdawan7gao" path="res://SampleProject/Sprites/Portal.png" id="23_0881a"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="24_70lif"]
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="25_imbg2"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="25_qub21"]
 [ext_resource type="Script" uid="uid://0u1nlyd1ld6o" path="res://SampleProject/Scripts/SavePoint.gd" id="26_i3h1y"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="26_s6d3m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nd4ja"]
 size = Vector2(50, 50)
@@ -33,6 +36,9 @@ region = Rect2(64, 1949, 1438, 1137)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kmoln"]
 size = Vector2(2242, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_m2dbr"]
+size = Vector2(20, 600)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lfwmx"]
 size = Vector2(100.762, 20)
@@ -65,6 +71,9 @@ radius = 145.33
 atlas = ExtResource("23_0881a")
 region = Rect2(3, 3, 234, 234)
 
+[sub_resource type="Resource" id="Resource_han7g"]
+script = ExtResource("25_qub21")
+
 [node name="DeanMainTest" type="Node2D" unique_id=1756909701]
 
 [node name="BackgroundMusicPlayer" parent="." unique_id=1446051342 instance=ExtResource("7_70lif")]
@@ -72,8 +81,9 @@ stream = ExtResource("2_qub21")
 
 [node name="paralax" type="CanvasLayer" parent="." unique_id=231199125]
 layer = -1
+offset = Vector2(0, -444.6)
 scale = Vector2(0.4, 0.4)
-transform = Transform2D(0.4, 0, 0, 0.4, 0, 0)
+transform = Transform2D(0.4, 0, 0, 0.4, 0, -444.6)
 follow_viewport_enabled = true
 
 [node name="Parallax2D" type="Parallax2D" parent="paralax" unique_id=1639397260]
@@ -202,6 +212,14 @@ texture = SubResource("AtlasTexture_27gbp")
 position = Vector2(1096, 549)
 shape = SubResource("RectangleShape2D_kmoln")
 
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="walls" unique_id=1450897670]
+position = Vector2(0, 243)
+shape = SubResource("RectangleShape2D_m2dbr")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="walls" unique_id=1723323814]
+position = Vector2(2206, 238)
+shape = SubResource("RectangleShape2D_m2dbr")
+
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="walls" unique_id=1188445367]
 position = Vector2(492, 11)
 shape = SubResource("RectangleShape2D_kmoln")
@@ -304,10 +322,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="portaltest2" type="Area2D" parent="." unique_id=948914499]
-position = Vector2(2747, 356)
+position = Vector2(1960, 355)
 script = ExtResource("22_1hphq")
 portal_id = &"right"
-target_portal_id = &"mainr"
+target_portal_id = &"mainl"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="portaltest2" unique_id=274378091]
 shape = SubResource("CircleShape2D_nx2qg")
@@ -318,3 +336,21 @@ texture = SubResource("AtlasTexture_m2dbr")
 [node name="InteractableThing" type="Node2D" parent="portaltest2" unique_id=241624012]
 script = ExtResource("21_na23k")
 metadata/_custom_type_script = "uid://dq5r7n4mxqqoa"
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=2109714553]
+top_level = true
+limit_bottom = 557
+editor_draw_limits = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=938096913]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("26_s6d3m")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=1051626953]
+top_level = true
+script = ExtResource("24_70lif")
+follow_mode = 2
+tween_resource = SubResource("Resource_han7g")
+draw_limits = true
+limit_bottom = 557

@@ -24,7 +24,10 @@
 [ext_resource type="Texture2D" uid="uid://crmih01m3g7fj" path="res://The Amazing Art and Sound Folder/obmil_entity.png" id="22_2hxap"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="22_2strj"]
 [ext_resource type="PackedScene" uid="uid://bsg0351mx3b4u" path="res://addons/MetroidvaniaSystem/Nodes/RoomInstance.tscn" id="24_eh07p"]
+[ext_resource type="Script" uid="uid://dhvpxipall616" path="res://scripts/room_camera.gd" id="26_sohcg"]
 [ext_resource type="Script" uid="uid://0u1nlyd1ld6o" path="res://SampleProject/Scripts/SavePoint.gd" id="26_vcpj7"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="27_owl58"]
+[ext_resource type="Texture2D" uid="uid://cargdawan7gao" path="res://SampleProject/Sprites/Portal.png" id="28_owl58"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_owl58"]
 radius = 94.51
@@ -32,7 +35,7 @@ radius = 94.51
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_56i3r"]
 shader = ExtResource("2_8b6n8")
 shader_parameter/portal_tint = Color(1, 1, 1, 1)
-shader_parameter/vortex_effect_radius = 0.9999999776480001
+shader_parameter/vortex_effect_radius = 0.999999977648
 shader_parameter/twist_strength = 0.10000000149012
 shader_parameter/pulsation_speed = 0.0999999977648
 shader_parameter/breath_magnitude = 0.29999997466787004
@@ -54,6 +57,9 @@ region = Rect2(422, 176, 1161, 1706)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kmoln"]
 size = Vector2(2242, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_601dg"]
+size = Vector2(20, 500)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lfwmx"]
 size = Vector2(100.762, 44.9)
@@ -82,6 +88,16 @@ size = Vector2(40, 430)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_driqh"]
 radius = 32.0
+
+[sub_resource type="Resource" id="Resource_56i3r"]
+script = ExtResource("27_owl58")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nx2qg"]
+radius = 145.33
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m2dbr"]
+atlas = ExtResource("28_owl58")
+region = Rect2(3, 3, 234, 234)
 
 [node name="DeanMainTest" type="Node2D" unique_id=1756909701]
 
@@ -232,6 +248,14 @@ texture = SubResource("AtlasTexture_601dg")
 position = Vector2(1096, 549)
 shape = SubResource("RectangleShape2D_kmoln")
 
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="walls" unique_id=1260020140]
+position = Vector2(-4, 294)
+shape = SubResource("RectangleShape2D_601dg")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="walls" unique_id=241108182]
+position = Vector2(2202, 290)
+shape = SubResource("RectangleShape2D_601dg")
+
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="walls" unique_id=1188445367]
 position = Vector2(492, 11)
 shape = SubResource("RectangleShape2D_kmoln")
@@ -313,7 +337,7 @@ texture = ExtResource("22_2hxap")
 [node name="RoomInstance" parent="." unique_id=1246059462 instance=ExtResource("24_eh07p")]
 
 [node name="SavePoint" type="Area2D" parent="." unique_id=1107441184]
-position = Vector2(157, 501)
+position = Vector2(2076, 75)
 script = ExtResource("26_vcpj7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SavePoint" unique_id=1625663513]
@@ -336,12 +360,36 @@ text = "S"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=267294005]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=783886943]
 top_level = true
-limit_bottom = 564
+limit_bottom = 558
 editor_draw_limits = true
 
-[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=144344936]
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1770745733]
 process_priority = 300
 process_physics_priority = 300
 script = ExtResource("22_2strj")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=251945295]
+top_level = true
+script = ExtResource("26_sohcg")
+follow_mode = 2
+tween_resource = SubResource("Resource_56i3r")
+draw_limits = true
+limit_bottom = 558
+metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
+
+[node name="portaltest2" type="Area2D" parent="." unique_id=702514438]
+position = Vector2(238, 330)
+script = ExtResource("1_601dg")
+target_portal_id = &"right"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="portaltest2" unique_id=221461665]
+shape = SubResource("CircleShape2D_nx2qg")
+
+[node name="Sprite2D" type="Sprite2D" parent="portaltest2" unique_id=180085896]
+texture = SubResource("AtlasTexture_m2dbr")
+
+[node name="InteractableThing" type="Node2D" parent="portaltest2" unique_id=802606428]
+script = ExtResource("20_dps7x")
+metadata/_custom_type_script = "uid://dq5r7n4mxqqoa"
